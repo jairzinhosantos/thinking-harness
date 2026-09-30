@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "diagrams": [
+    {
+      "source": "diagrams/source/agentic-development-workflow.drawio",
+      "preview": "diagrams/exports/agentic-development-workflow.svg",
+      "source_sha256": "3a785e3fa13548335ab63a8a83e235be4093cf90a86796e48abac742305555fa",
+      "preview_sha256": "70545fb98d6cac31a76aee93a2c1cbc1dd02775b68c30239e44316037895d778"
+    }
+  ]
+}

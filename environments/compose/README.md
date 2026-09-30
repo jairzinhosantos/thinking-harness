@@ -1,3 +1,3 @@
 # Compose
 
-Definiciones futuras del caso seleccionado; no hay servicios desplegados.
+Future service definitions for the selected case. No services are deployed.

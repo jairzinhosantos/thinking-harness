@@ -1,3 +1,3 @@
 # Implementation
 
-El método se implementará aquí después de delimitar el primer piloto. No hay API publicada.
+The method will be implemented here after defining the first pilot. No API is published.

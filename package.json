@@ -1,0 +1,10 @@
+{
+  "name": "thinking-harness-docs",
+  "private": true,
+  "description": "Documentation validation for Thinking Harness",
+  "scripts": {
+    "check:diagrams": "python3 scripts/check_diagrams.py"
+  },
+  "engines": {"node": ">=22"},
+  "devDependencies": {"@mermaid-js/mermaid-cli": "11.16.0"}
+}

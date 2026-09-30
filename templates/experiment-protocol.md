@@ -1,14 +1,14 @@
 # Experiment protocol template
 
-Asignar exp-NNNN, revisión, estado y fecha.
+Assign exp-NNNN, revision, status, and date.
 
-- Pregunta e hipótesis.
-- Caso, unidades de análisis y selección de instancias.
-- Condiciones y comparadores.
-- Factores modificados y controlados.
-- Desarrollo, validación y prueba reservada.
-- Métricas y criterio de aceptación.
-- Presupuesto total, repeticiones y parada.
-- Versiones, semillas y configuración.
-- Plan de análisis, incertidumbre y tratamiento de fallos.
-- Evidencia a conservar y cambios permitidos.
+- Question and hypothesis.
+- Case, units of analysis, and instance selection.
+- Conditions and comparators.
+- Modified and controlled factors.
+- Development, validation, and held-out test sets.
+- Metrics and acceptance criteria.
+- Total budget, repetitions, and stop conditions.
+- Versions, seeds, and configuration.
+- Analysis plan, uncertainty, and failure handling.
+- Evidence to retain and permitted changes.

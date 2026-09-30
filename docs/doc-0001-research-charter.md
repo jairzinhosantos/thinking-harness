@@ -1,43 +1,45 @@
 ---
 id: doc-0001
-title: Propósito de la investigación
+title: "Research charter"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 ---
 
-# Propósito de la investigación
+# Research charter
 
-## Motivación
-La construcción de soluciones agénticas requiere diseñar y ajustar prompts, herramientas,
-flujos, memoria, controles y evaluación. Se busca estudiar cómo automatizar parte de ese
-trabajo y medir su relación con la calidad, el costo y la intervención humana.
 
-## Pregunta provisional
-Bajo un presupuesto acotado, ¿qué mecanismo permite construir o mejorar un harness
-para una familia específica de tareas, frente a una referencia definida?
+## Motivation
+Building agentic solutions requires designing and adjusting instructions, tools, workflows,
+memory, controls, and evaluation. We aim to study how to automate part of this work and
+measure its relationship with quality, cost, and human intervention.
 
-## Alternativas abiertas
-Mejora recursiva, optimización con mejorador fijo, computación evolutiva, planning y RL.
-Modelos fijos como punto de partida de factibilidad; entrenar un controlador o modelo
-requiere justificación y estimación de recursos. No asumir que feedback equivale a RL.
+## Provisional question
+Under a bounded budget, which mechanism can construct or improve a harness for a specific
+family of tasks compared with a defined baseline?
 
-## Delimitación pendiente
-Elegir un caso principal entre proceso simulado, juego y tareas de código.
-Una colaboración institucional es opcional. No implementar varios frameworks por anticipado.
-La contribución deberá contrastarse con los trabajos más cercanos y una evaluación independiente.
+## Open alternatives
+Recursive improvement, fixed-improver optimization, evolutionary computation, planning,
+and reinforcement learning (RL). Fixed models are the starting point for feasibility;
+training a controller or model needs justification and a resource estimate.
+Feedback alone does not imply RL.
 
-## Indicadores candidatos
-Calidad, tiempo hasta aceptación, intervención humana, costo total, generalización y estabilidad.
-Se definirán operacionalmente antes de ejecutar comparaciones confirmatorias.
+## Scope to decide
+Select a primary case among a simulated process, a game, or coding tasks.
+Institutional collaboration is optional. Do not implement multiple frameworks in advance.
+Compare the candidate contribution with close prior work and an independent evaluation.
 
-## Método propuesto
-DSRM para construir y evaluar; FEDS para planificar evaluación;
-prácticas seleccionadas de PRINCE2 y Kanban para gestión.
-Esta combinación es una adaptación propia, no un estándar único certificado.
+## Candidate measures
+Quality, time to acceptance, human intervention, total cost, generalization, and stability.
+Define these operationally before confirmatory comparisons.
 
-## Fuentes metodológicas
+## Proposed method
+Use DSRM for construction and evaluation, FEDS for evaluation planning, and selected
+PRINCE2 and Kanban practices for management. This combination is our adaptation,
+not a single certified standard.
+
+## Methodological references
 - [DSRM](https://doi.org/10.2753/MIS0742-1222240302)
 - [FEDS](https://doi.org/10.1057/ejis.2014.36)
 - [Kanban](https://kanbanguides.org/the-kanban-guide/)

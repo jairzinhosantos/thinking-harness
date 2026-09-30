@@ -1,7 +1,11 @@
-## Problema y resultado
+## Problem and outcome
 
-## Issue y evidencia
+## Issue and evidence
 
-## Verificación realizada
+Refs #<issue-number>. Task PRs target develop. Promotion PRs target main.
 
-## Limitaciones y decisiones pendientes
+## Validation
+
+## Limitations and pending decisions
+
+For a promotion: identify the baseline, recorded researcher acceptance, and proposed tag.

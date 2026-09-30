@@ -1,3 +1,3 @@
 # Manifests
 
-Manifiestos de ejecuciones efectivamente realizadas. Ninguna ejecución científica registrada.
+Manifests of actual executions. No scientific run is registered yet.

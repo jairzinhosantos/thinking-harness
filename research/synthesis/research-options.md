@@ -1,15 +1,15 @@
-# Opciones de investigación
+# Research options
 
-Esta matriz registra hipótesis de trabajo, no conclusiones sobre novedad.
+This matrix records working hypotheses, not conclusions about novelty.
 
-| Opción | Pregunta | Evidencia necesaria |
+| Option | Question | Evidence needed |
 |---|---|---|
-| Mejorador fijo | Qué mejora un harness acotado con feedback | Baseline y costo por candidato |
-| Mejora recursiva | Qué aporta modificar el mejorador | Ablación con mejorador fijo y presupuesto comparable |
-| Evolución | Qué aporta mantener población o archivo | Comparación con búsqueda local |
-| Planning | Qué aporta planificar operaciones de construcción | Modelo de acciones y costo de búsqueda |
-| RL | Qué puede aprender una política de construcción | Costo de entrenamiento y generalización entre tareas |
+| Fixed improver | What feedback improves in a bounded harness | Baseline and per-candidate cost |
+| Recursive improvement | What modifying the improver adds | Fixed-improver ablation with comparable budgets |
+| Evolution | What maintaining a population or archive adds | Comparison with local search |
+| Planning | What planning construction operations adds | Action model and search cost |
+| RL | What a construction policy can learn | Training cost and generalization across tasks |
 
-Casos candidatos: juego pequeño, proceso simulado o tareas de código.
-Elegir por evaluabilidad, costo, cercanía al problema y reproducibilidad.
-Self-Harness debe revisarse antes de afirmar que la mejora de harnesses es una brecha inédita.
+Candidate cases: a small game, simulated process, or coding tasks.
+Select for evaluability, cost, problem relevance, and reproducibility.
+Review Self-Harness before claiming harness improvement is an unexplored gap.

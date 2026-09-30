@@ -1,5 +1,5 @@
 # Benchmarks
 
-Aquí se definirán tareas, escenarios y evaluadores del caso seleccionado.
-La selección sigue abierta. El evaluador reservado no debe quedar accesible al candidato.
-El primer piloto probará medición de extremo a extremo antes de ampliar la infraestructura.
+Tasks, scenarios, and evaluators for the selected case will live here. Selection is open.
+Keep held-out evaluation inaccessible to candidates. The first pilot tests end-to-end
+measurement before expanding infrastructure.

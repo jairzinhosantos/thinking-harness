@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 STATUSES = {'draft', 'in-review', 'accepted', 'superseded', 'withdrawn'}
 ID = re.compile(r'(std|dec|prd|pap|case|exp|doc)-\d{4}')
-IGNORED = {'.git', '.venv', '__pycache__', '_scratch', '_local', 'runs'}
+IGNORED = {'.git', '.venv', '__pycache__', '_scratch', '_local', 'runs', 'node_modules'}
 FIELDS = ['id', 'title', 'status', 'revision', 'created', 'updated', 'path']
 
 
@@ -171,6 +171,8 @@ def main(argv=None):
     errors.extend(local_links(root))
     errors.extend(literature_checks(root))
     errors.extend(diagram_checks(root))
+    from check_diagrams import preview_checks
+    errors.extend(preview_checks(root))
     catalog = root / 'docs/catalog.csv'
     expected = render_catalog(rows)
     if args.write_catalog and not errors:

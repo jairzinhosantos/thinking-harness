@@ -1,54 +1,57 @@
 ---
 id: doc-0002
-title: Plan inicial
+title: "Initial plan"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 ---
 
-# Plan inicial
+# Initial plan
 
-## Objetivo del primer ciclo
-Disponer de una base verificable y comprender el mecanismo de STOP, contrastando
-tempranamente el alcance con Self-Harness. Duración propuesta: dos semanas,
-con alcance revisable y fechas académicas aún por confirmar. No se convierte la disponibilidad
-en una cuota de horas; el modelo de seguimiento por avances queda pendiente de elección.
 
-| Hito | Entrega | Criterio de salida |
+## First-cycle objective
+Establish a verifiable foundation and understand STOP, with an early comparison against
+Self-Harness. A two-week cycle is proposed; scope remains adjustable and academic dates
+are unconfirmed. Availability is not an hours quota. Progress measurement is still open.
+
+| Milestone | Deliverable | Exit criterion |
 |---|---|---|
-| M0 Foundation | Repositorio, tablero, estándares, catálogo y CI | Enlaces y controles pasan; originales permanecen fuera |
-| M1 Literature | Primera lectura guiada y fichas de trabajos cercanos | Mecanismo explicado, incertidumbres y fuentes localizables |
-| M2 Scope and protocol | Caso seleccionado y evaluación preliminar | Tareas, baseline, métricas y costo factibles |
-| M3 Reference pilot | Ejecución mínima y manifiesto | Se mide un caso de extremo a extremo |
-| M4 Thesis plan | Documento y matriz de consistencia | Secciones respaldadas y revisión del asesor |
+| M0 Foundation | Repository, Project, standards, catalog, and CI | References and checks pass; originals stay outside |
+| M1 Literature | Guided reading and close-work reviews | Mechanisms explained; sources and uncertainties traceable |
+| M2 Scope and protocol | Selected case and evaluation plan | Tasks, baseline, measures, and cost are feasible |
+| M3 Reference pilot | Minimal execution and manifest | One case is measured end to end |
+| M4 Thesis plan | Manuscript and consistency matrix | Sections have supporting evidence and advisor review |
 
-## Orden inicial de trabajo
-1. Verificar identidad y estado de los diez papers originales; ampliar con Self-Harness,
-   GEPA y Agent Lightning como candidatos, sin dar por revisado su contenido completo.
-2. STOP: lectura parcial iniciada; estudiar ejemplo matemático y código en sesión.
-3. Self-Harness: leer para contrastar la posible contribución antes de fijar el tema.
-4. AFlow y DGM: comparar objeto mutable, búsqueda y costo de evaluación.
-5. Cribar tres familias de casos con criterios de factibilidad.
-6. Definir protocolo y construir un piloto mínimo.
-7. Actualizar plan académico y matriz de consistencia continuamente.
+## Initial sequence
+1. Verify the ten original papers and consider Self-Harness, GEPA, and Agent Lightning
+   without treating discovery as complete reading.
+2. Study STOP's mathematical example and code; its partial review has started.
+3. Review Self-Harness before fixing the candidate contribution.
+4. Compare AFlow and DGM on mutable components, search, and evaluation cost.
+5. Screen three case families for feasibility.
+6. Specify the protocol and build a minimal pilot.
+7. Keep the academic plan and consistency matrix aligned with evidence.
 
-## Línea de desarrollo agéntico
-Diseñar roles de coordinación, construcción, QA, revisión bibliográfica y experimentación.
-Después de definir criterios reproducibles, pilotar builder + QA sobre una tarea pequeña.
-Medir correcciones, defectos omitidos, costo y tiempo frente al flujo asistido actual.
-No habilitar un equipo autónomo completo antes de ese piloto.
+## Agent-assisted development
+Design coordination, construction, QA, literature-review, and experiment roles.
+After defining reproducible criteria, pilot builder plus QA on one small task.
+Measure corrections, missed defects, cost, and time against the current assisted workflow.
+Evaluate broader autonomy only after that pilot.
 
-## Decisiones abiertas
-Métrica de seguimiento, próxima entrega, caso, framework, modelo, presupuesto y contribución.
-Kubernetes, entrenamiento y adaptador privado se incorporarán solo con una necesidad demostrada.
+## Open decisions
+Progress measure, next submission, case, framework, model, budget, and contribution.
+Add Kubernetes, training, or a private adapter only for a demonstrated need.
 
-## Progreso de bootstrap
-Repositorio y Project públicos creados; catálogo, estándares, backlog y controles
-configurados. La primera ejecución de CI pasó. No hay resultados científicos propios
-ni reproducción de papers. Consultar el [tablero](project-links.md) para el estado operativo actualizado.
+## Foundation status
+The public repository and Project, catalog, standards, backlog, and initial checks exist.
+The initial CI passed. There are no scientific results or paper reproductions yet.
+The [Project](project-links.md) is the source of current operational status.
+The [branch workflow](standards/std-0003-branching-and-releases.md) separates ongoing work
+from formal baselines.
 
-## Seguimiento por acordar
-El investigador prefiere evaluar avances y poder delegar trabajo acotado entre revisiones.
-Las opciones y el flujo HITL están en [progress and HITL](designs/doc-0004-progress-and-hitl.md).
-La capacidad horaria es orientativa y no determina compromisos automáticos.
+## Progress measurement
+The researcher prefers observable progress and bounded delegation between reviews.
+See [progress and HITL](designs/doc-0004-progress-and-hitl.md). Available hours are indicative;
+they do not create automatic commitments. The English and branch decision does not select
+a progress-measurement option.

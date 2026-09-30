@@ -1,5 +1,4 @@
 # Research proposals
 
-Cada propuesta breve explicará pregunta, trabajos cercanos, aporte candidato, caso,
-métricas, presupuesto, riesgos y criterio para continuar o descartarla.
-Aún no hay una propuesta experimental seleccionada.
+Each brief covers the question, close prior work, candidate contribution, case, metrics,
+budget, risks, and criteria to continue or discard it. No experimental proposal is selected.

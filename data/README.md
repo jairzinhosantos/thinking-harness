@@ -1,5 +1,5 @@
 # Data
 
-catalog.csv registra conjuntos publicables, procedencia, versión, licencia, particiones y hash.
-No hay datasets incorporados. Los datos externos grandes o restringidos permanecen fuera de Git.
-La ausencia de fine-tuning no elimina la necesidad de tareas de optimización y evaluación.
+catalog.csv records publishable datasets, provenance, version, license, splits, and checksums.
+No datasets are included yet. Large or restricted data stays outside Git.
+Avoiding fine-tuning does not remove the need for optimization and evaluation tasks.
