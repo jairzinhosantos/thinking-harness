@@ -33,11 +33,9 @@ The thesis will select one bounded case; the public laboratory can explore addit
 
 ```mermaid
 flowchart LR
-    L[Read and compare] --> Q[Define a question]
-    Q --> P[Specify an evaluation]
-    P --> B[Build a reference pilot]
-    B --> E[Evaluate and record evidence]
-    E --> D[Decide and document]
+    L[Literature review] --> P[Question and protocol]
+    P --> E[Pilot and evaluation]
+    E --> D[Evidence and decision]
     D --> L
 ```
 
