@@ -13,7 +13,8 @@ Este repositorio todavía no implementa un método de mejora ni reporta resultad
 3. [Catálogo de papers](research/literature/catalog.csv).
 4. [Primera lectura: STOP](research/literature/reviews/pap-0001-stop.md).
 5. [Estrategia de agentes para construir el proyecto](docs/designs/doc-0003-agentic-development-strategy.md).
-6. [Repositorio y tablero](docs/project-links.md).
+6. [Opciones de seguimiento e HITL](docs/designs/doc-0004-progress-and-hitl.md).
+7. [Repositorio y tablero](docs/project-links.md).
 
 La tesis seleccionará un caso y una pregunta concretos. El laboratorio público puede estudiar otros casos.
 Una extensión institucional privada será opcional y consumirá versiones identificadas de este núcleo.

@@ -44,8 +44,9 @@ Métrica de seguimiento, próxima entrega, caso, framework, modelo, presupuesto 
 Kubernetes, entrenamiento y adaptador privado se incorporarán solo con una necesidad demostrada.
 
 ## Progreso de bootstrap
-Se prepara infraestructura documental y de revisión. No hay resultados científicos propios
-ni reproducción de papers. Consultar el tablero para el estado operativo actualizado.
+Repositorio y Project públicos creados; catálogo, estándares, backlog y controles
+configurados. La primera ejecución de CI pasó. No hay resultados científicos propios
+ni reproducción de papers. Consultar el [tablero](project-links.md) para el estado operativo actualizado.
 
 ## Seguimiento por acordar
 El investigador prefiere evaluar avances y poder delegar trabajo acotado entre revisiones.
