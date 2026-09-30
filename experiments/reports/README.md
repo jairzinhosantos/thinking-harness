@@ -1,3 +1,3 @@
 # Reports
 
-Informes sustentados en runs identificados. No confundir resultados esperados con medidos.
+Reports supported by identified runs. Distinguish expected and measured results.

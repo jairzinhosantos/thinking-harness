@@ -1,5 +1,5 @@
 # Deliverables
 
-Solo entregas emitidas: doc-NNNN/rNNN con documento y manifest.json.
-No sobrescribir una entrega. Los materiales históricos recibidos se conservan localmente,
-fuera de esta raíz pública, hasta clasificar su publicación.
+Issued deliveries only: doc-NNNN/rNNN with the document and manifest.json.
+Do not overwrite issued deliveries. Received historical materials remain locally outside
+this public root until their publication status is established.

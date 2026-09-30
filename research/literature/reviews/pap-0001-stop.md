@@ -1,56 +1,55 @@
 ---
 id: pap-0001
-title: STOP: primera lectura
+title: "STOP: initial reading"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 ---
 
-# STOP: primera lectura
+# STOP: initial reading
 
-## Fuentes y estado
+
+## Sources and status
 [Paper v3](https://arxiv.org/abs/2310.02304v3), COLM 2024.
-[Repositorio](https://github.com/microsoft/stop).
-Lectura parcial: resumen, introducción, sección 3 y algoritmo 1.
-Código: inspección parcial de run_improver.py y eval_improver.py; no ejecutado.
-Discusión con investigador: pendiente.
+[Repository](https://github.com/microsoft/stop).
+Partial reading: abstract, introduction, section 3, and algorithm 1.
+Code: partial inspection of run_improver.py and eval_improver.py; not executed.
+Researcher discussion: pending.
 
-## Mecanismo documentado
-STOP utiliza un programa mejorador que recibe una utilidad u, una solución s y un
-modelo L. Produce una solución candidata s'. La meta-utilidad evalúa qué tan bien
-ese mejorador resuelve un conjunto de tareas. Luego el propio mejorador se aplica
-a su código usando esa meta-utilidad. El modelo permanece fijo; los autores distinguen
-este alcance de una RSI completa. Fuente: sección 3 y algoritmo 1.
+## Documented mechanism
+STOP uses an improver program I receiving a utility u, a solution s, and a model L.
+It produces a candidate s'. Meta-utility measures how well the improver solves a task set D.
+The improver then applies to its own code using that meta-utility. The model stays fixed;
+the authors distinguish this scope from complete RSI. Source: section 3 and algorithm 1.
 
-~~~text
+```text
 s' = I(u, s, L)
-meta(I) = promedio sobre (u,s) en D de u(I(u,s,L))
+meta(I) = average over (u,s) in D of u(I(u,s,L))
 I[t+1] = I[t](meta, I[t], L)
-~~~
+```
 
-I: programa mejorador; D: tareas usadas para estimarlo. La mejora es un objetivo,
-no una garantía por iteración. El algoritmo no demuestra optimalidad general.
-Resultados y apéndices siguen pendientes de lectura crítica.
+Improvement is an objective, not a guarantee at each iteration. The algorithm does not
+establish general optimality. Results and appendices still need critical reading.
 
-## Preguntas propias para la próxima sesión
-- ¿Cómo distinguiremos mejorar una solución de mejorar el constructor?
-- ¿Qué tarea pequeña permitiría medir ambas cosas?
-- ¿Cuánto costaría producir el mejorador antes de reutilizarlo?
-- ¿Qué evaluación deberá quedar fuera del alcance del código propuesto?
-- ¿Qué baseline aislaría el efecto de modificar el mejorador?
-- ¿Qué afirma exactamente cada experimento y qué no podemos generalizar?
+## Questions for the next session
+- How will we distinguish improving a solution from improving its constructor?
+- Which small task would measure both?
+- What does producing the improver cost before reuse?
+- Which evaluation must remain inaccessible to proposed code?
+- Which baseline isolates the effect of modifying the improver?
+- What does each experiment establish, and what cannot be generalized?
 
-## Guion de sesión
-Explicar el problema; dibujar ambos niveles; trabajar un ejemplo numérico propio;
-seguir una llamada en código; registrar dudas; decidir la siguiente lectura.
-No se ha ejecutado código de terceros ni se reportan resultados propios.
+## Session outline
+Explain the problem, draw both levels, work through an original numerical example,
+trace one code call, record questions, and select the next reading.
+No third-party code has been executed and no original results are reported.
 
-## Recorrido inicial del código
-Commit verificado: 0d6780c54306b2486dd36e9c4ae9b49aceb27ea4.
+## Initial code trace
+Verified commit: 0d6780c54306b2486dd36e9c4ae9b49aceb27ea4.
 - [run_improver.py](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py):
-  inspección de inicialización y recuperación del mejorador.
+  partial inspection of improver initialization and recovery.
 - [eval_improver.py](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/eval_improver.py):
-  localizar el recorrido de evaluación antes de preparar una reproducción.
-- Pendiente: dependencias, utilidades de tareas, aislamiento, costos y correspondencia
-  completa entre versión publicada y repositorio.
+  locate the evaluation path before preparing reproduction.
+- Pending: dependencies, task utilities, isolation, costs, and full correspondence
+  between the publication version and repository.

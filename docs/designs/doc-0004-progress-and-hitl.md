@@ -1,63 +1,62 @@
 ---
 id: doc-0004
-title: Opciones de seguimiento y revisión humana
+title: "Progress measurement and human review"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 ---
 
-# Opciones de seguimiento y revisión humana
+# Progress measurement and human review
 
-## Decisión pendiente
-El investigador puede orientar el trabajo por conversación, dejar ejecutar tareas acotadas
-y revisar al volver. La disponibilidad es una referencia, no una métrica de progreso.
-Este documento propone opciones; no fija cuotas, calendario ni agentes en ejecución.
 
-| Opción | Unidad de avance | Ventaja | Límite |
+## Pending decision
+The researcher can guide work conversationally, delegate bounded tasks, and review later.
+Availability is a reference, not a progress measure. This proposal sets no quotas,
+calendar commitments, or running agents.
+
+| Option | Unit of progress | Benefit | Limitation |
 |---|---|---|---|
-| A. Evidencia y decisión semanal | Pregunta resuelta con ficha, prueba o comparación y decisión registrada | Adecuada para incertidumbre científica | Requiere acordar qué evidencia basta |
-| B. Hitos con criterios de salida | Literature, scope, protocol, pilot y thesis plan | Visión clara de madurez | Puede ocultar avances pequeños dentro de un hito |
-| C. Flujo de trabajo aceptado | Entregas aceptadas, tiempo de ciclo y correcciones | Útil al construir software | No todas las tareas tienen dificultad equivalente |
+| A. Weekly evidence and decisions | A question resolved through a review, test, or comparison, with a recorded decision | Suits research uncertainty | Requires agreement on sufficient evidence |
+| B. Milestones with exit criteria | Literature, scope, protocol, pilot, and thesis plan | Shows overall maturity | Can hide incremental progress |
+| C. Accepted work flow | Accepted outputs, cycle time, and corrections | Useful during implementation | Tasks differ in difficulty |
 
-Propuesta: A como revisión semanal, B como mapa general y C cuando haya suficiente
-implementación para interpretar sus señales. El investigador elegirá antes de convertirlo
-en un estándar. Un resultado negativo documentado cuenta como avance si reduce incertidumbre.
-No usar número de commits, líneas de código ni papers descargados como éxito científico.
+Proposal: use A for weekly review, B as the overall map, and C once implementation provides
+meaningful signals. The researcher will choose before adoption as a standard.
+A documented negative result counts as progress when it reduces uncertainty.
+Commit count, lines of code, and downloaded papers are not scientific success measures.
 
-## Reporte semanal propuesto
-- Pregunta prioritaria y evidencia esperada.
-- Evidencia obtenida, enlace y limitaciones.
-- Decisión: continuar, ajustar, descartar o solicitar revisión.
-- Incertidumbre que sigue abierta.
-- Siguiente tarea con criterio de cierre y costo máximo acordado.
+## Proposed weekly report
+- Priority question and expected evidence.
+- Evidence obtained, link, and limitations.
+- Decision: continue, adjust, discard, or request review.
+- Remaining uncertainty.
+- Next task with a closure criterion and agreed cost limit.
 
 ## Human-in-the-loop (HITL)
-1. El investigador expresa el objetivo por voz o texto.
-2. El coordinador lo convierte en una tarea verificable: alcance, entradas, criterios,
-   permisos y presupuesto. Solo pide aclaración cuando falta una decisión necesaria.
-3. Un builder o research-reviewer prepara cambios o evidencia dentro de ese alcance.
-4. QA verifica de forma separada, deja resultados y devuelve defectos concretos.
-5. El investigador recibe un paquete breve: propuesta, diff o ficha, pruebas, límites
-   y decisión que necesita tomar. Puede aceptar, ajustar o descartar.
-6. Se integra lo aceptado y se registra lo aprendido para la siguiente tarea.
+1. The researcher states the objective by voice or text.
+2. The coordinator defines scope, inputs, criteria, permissions, and budget, asking only
+   for missing decisions that are necessary to proceed.
+3. A builder or research-reviewer prepares changes or evidence within that scope.
+4. QA checks independently, records results, and returns specific defects.
+5. The researcher receives a brief proposal, diff or review, checks, limitations, and
+   the decision needed, then accepts, adjusts, or rejects it.
+6. Integrate accepted work and record learning for the next task.
 
-Las instrucciones previamente autorizadas siguen vigentes. No pedir aprobación por cada
-paso rutinario; escalar cambios de alcance, presupuesto, exposición de información o
-conclusiones científicas que todavía no hayan sido acordados. Las credenciales de cada
-agente deben corresponder a su tarea y entorno.
+Existing authorization remains valid. Do not request approval for every routine step.
+Escalate changes to scope, budget, information exposure, or scientific conclusions not
+previously agreed. Each agent's credentials must match its task and environment.
 
-## Trabajo mientras el investigador está ausente
-Preparar lecturas, ejecutar pruebas locales autorizadas y producir cambios en una rama
-son candidatos a delegación acotada. La ejecución necesita un proceso activo y un contrato
-de tarea; no se asume que el asistente sigue trabajando después de terminar una sesión.
-Definir límites de intentos, costo, duración y recursos antes de activar un piloto.
-Al agotarlos o detectar una dependencia sin resolver, conservar evidencia y pasar a Review.
-No desplegar, publicar datos, cambiar criterios científicos ni habilitar gasto fuera del
-alcance previamente autorizado. Evitar bucles de corrección sin límite.
+## Work between human reviews
+Readings, authorized local tests, and task-branch changes are candidates for bounded delegation.
+Execution needs an active process and task contract. Do not assume work continues after a
+session ends. Define attempt, cost, duration, and resource limits before a pilot.
+At a limit or unresolved dependency, preserve evidence and move to Review.
+Do not deploy, publish data, change scientific criteria, or incur costs outside existing
+authorization. Correction loops must be bounded.
 
-## Primer piloto propuesto
-Una tarea técnica pequeña con criterios objetivos. Comparar flujo asistido con builder + QA:
-aceptación, fallos encontrados, correcciones necesarias, costo y carga de revisión humana.
-Un piloto no basta para atribuir mejoras causales ni para concluir resultados de tesis.
-La estrategia completa está en [agentic development](doc-0003-agentic-development-strategy.md).
+## First proposed pilot
+Use one small technical task with objective criteria. Compare assisted work with builder
+plus QA on acceptance, detected faults, corrections, cost, and human-review effort.
+One pilot does not establish causality or thesis results.
+See the [agentic development strategy](doc-0003-agentic-development-strategy.md).

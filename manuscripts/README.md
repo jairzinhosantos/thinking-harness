@@ -1,10 +1,11 @@
 # Manuscripts
 
-El plan seguirá cinco capítulos: problema; objetivos; marco teórico; diseño metodológico;
-administración. Incluir referencias y matriz de consistencia.
-La guía de Semana 2 corresponde a un avance de pipeline, no al plan completo.
-La estructura se deriva de la referencia proporcionada por el investigador.
-Los originales del curso permanecen fuera del repositorio; no se publican sus PDFs ni logos.
+The plan follows five chapters: problem, objectives, theoretical framework, methodology,
+and administration. Include references and a consistency matrix. The Week 2 guide concerns
+a pipeline progress report, not the entire plan. This structure comes from the reference
+provided by the researcher. Course originals remain outside this repository, including PDFs
+and logos. Project-authored manuscripts use English unless an academic submission exception
+is explicitly approved.
 
-[Requisitos académicos](academic-requirements.csv).
-El futuro formato completo de tesis se incorporará cuando sea recibido.
+See [academic requirements](academic-requirements.csv). Incorporate the complete thesis
+format when it becomes available.

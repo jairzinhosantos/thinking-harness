@@ -1,36 +1,47 @@
-# Modelo operativo
+# Operating model
 
-## Flujo
-Backlog → Ready → In Progress → Review → Done.
-Un bloqueo lleva causa y siguiente acción. WIP inicial: una lectura profunda y una tarea técnica.
-Done indica evidencia y criterios cumplidos; un resultado negativo puede cerrar una tarea.
-No se requiere PRD para toda lectura o prueba pequeña.
+## Work flow
 
-## Cadencia
-Ciclos propuestos de dos semanas, revisión semanal y retrospectiva al cierre.
-Las fechas se asignarán según entregas académicas y alcance acordado. El seguimiento
-por evidencia, hitos o flujo está pendiente de elección; no se mide productividad por horas de conexión.
-Las sesiones de lectura avanzan al ritmo del investigador.
-No hay recordatorios ni agentes programados habilitados.
+```mermaid
+flowchart LR
+    B[Backlog] --> R[Ready]
+    R --> P[In Progress]
+    P --> V[Review]
+    V --> D[Done]
+    V -->|Changes needed| P
+```
 
-## Cierre de ciclo
-Pregunta → lectura o prueba acotada → evidencia → adoptar, ajustar, pivotar o cerrar.
-Establecer antes tiempo/costo máximo y qué permitiría decidir.
-Una nueva publicación puede actualizar el análisis o cambiar la dirección; registrar el motivo.
-Las condiciones confirmatorias se fijan por experimento. Una modificación material crea revisión.
+A blocked task records its cause and next action. Initial work in progress is one deep
+reading task and one technical task. Done requires evidence and satisfied criteria;
+a negative result can close a task. Small readings and tests do not each need a PRD.
 
-## Responsabilidades
-El investigador decide alcance, prioridades y conclusiones con su asesor.
-El asistente prepara evidencia, propuestas, cambios y verificaciones.
-Un futuro QA revisará criterios de forma separada de la construcción.
-La ayuda de agentes en desarrollo no se considerará evidencia científica del método.
+## Cadence
+Two-week cycles, weekly reviews, and an end-of-cycle retrospective are proposed.
+Dates follow academic requirements and agreed scope. Progress measurement by evidence,
+milestones, or flow is still pending; online hours are not a productivity measure.
+Readings proceed at the researcher's pace. No scheduled reminders or agents are enabled.
 
-## GitHub
-Issues para unidades de trabajo; milestones para hitos; Project para estado, tipo y prioridad.
-Cambios sustantivos en ramas cortas y PRs después del commit inicial.
-La CI verifica estructura y pruebas locales sin modelos ni credenciales.
-La revisión humana de afirmaciones científicas permanece explícita.
+## Research decisions
+Question → bounded reading or test → evidence → adopt, adjust, pivot, or close.
+Set cost/time limits and the decision criterion before execution.
+A new publication may change direction; record why. Fix confirmatory conditions per
+experiment, and create a revision for material changes.
 
-## Fuentes
-- [PRINCE2 adaptable](https://www.peoplecert.org/news-and-announcements/2023/PRINCE2%207%20-%20A%20Process%20of%20Evolution)
+## Responsibilities
+The researcher decides priorities, scope, and conclusions with the advisor.
+The assistant prepares evidence, changes, and checks. A future QA agent verifies criteria
+separately from construction. Development assistance is not scientific evidence for the method.
+
+## GitHub and integration
+Issues define work; milestones group outcomes; the Project tracks status, type, and priority.
+Task branches start from develop and return through PRs. main receives separately accepted
+promotions. Follow the [branch standard](standards/std-0003-branching-and-releases.md).
+Close a task after acceptance into develop when its criteria are met; formal publication
+is a separate milestone. A task PR uses `Refs #N`; close its issue explicitly on acceptance,
+since develop is not the default branch.
+CI validates documentation and local tooling without model calls or cloud credentials.
+Human review of scientific claims remains explicit.
+
+## References
+- [PRINCE2 adaptation](https://www.peoplecert.org/news-and-announcements/2023/PRINCE2%207%20-%20A%20Process%20of%20Evolution)
 - [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/best-practices-for-projects)

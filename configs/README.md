@@ -1,3 +1,3 @@
 # Configuration
 
-Configuración experimental resuelta y publicable. No almacenar secretos.
+Resolved, shareable experiment configuration. Do not store credentials.

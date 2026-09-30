@@ -13,3 +13,5 @@ data/raw/
 data/private/
 data/cache/
 *.log
+
+node_modules/

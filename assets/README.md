@@ -1,3 +1,3 @@
 # Assets
 
-Solo recursos originales o publicables. Registrar procedencia de nuevos recursos.
+Original or licensed publishable resources. Record provenance for each addition.

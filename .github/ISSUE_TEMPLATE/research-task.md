@@ -1,16 +1,16 @@
 ---
 name: Research task
-about: Lectura, síntesis o decisión de investigación
+about: Read, synthesize, or decide a research question
 title: ""
 labels: research
 ---
 
-## Pregunta
+## Question
 
-## Entrega esperada
+## Expected output
 
-## Criterios de cierre
+## Closure criteria
 
-## Fuentes y dependencias
+## Sources and dependencies
 
-## Presupuesto o tiempo acotado
+## Budget or time limit

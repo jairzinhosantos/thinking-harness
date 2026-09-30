@@ -1,20 +1,22 @@
-# Inicio del proyecto
+# Project bootstrap
 
-## Decisiones vigentes
-Nombre: thinking-harness. Núcleo público; extensión privada cuando sea necesaria.
-Nombres en inglés y contenido en español. Correlativos por tipo, archivo selectivo,
-Git para historial y manifiestos para reproducibilidad.
+## Decisions at the time
+Name: thinking-harness. Public core; private extension only when needed.
+The initial convention used English names and Spanish prose. It was replaced by the
+[English-only decision](../decisions/dec-0002-branching-and-english-standard.md) on 2026-09-30.
+Use per-type sequences, selective archiving, Git history, and reproducibility manifests.
 
-## Aprendizaje
-El catálogo inicial se conserva con sus diez trabajos originales.
-Self-Harness es un trabajo cercano que debe entrar al diagnóstico antes de afirmar novedad.
-La revisión inicial previa de STOP, AFlow y DGM no equivale a lectura completa o reproducción.
+## Learning
+The catalog preserves the ten original papers. Self-Harness is close work that must
+inform the diagnosis before claiming novelty. Initial reviews of STOP, AFlow, and DGM
+do not imply complete reading or reproduction.
 
-## Siguiente sesión
-STOP: explicar utilidad y meta-utilidad con un ejemplo propio, revisar el flujo y las
-dudas del código. Después contrastar con Self-Harness.
+## Next reading
+Explain STOP's utility and meta-utility with an original example; inspect the flow and
+code questions. Then compare with Self-Harness.
 
-## Pendientes de calendario
-Siguiente entrega académica y elección del modelo de seguimiento.
-El investigador prefiere avances verificables y delegación acotada con revisión humana;
-la disponibilidad horaria es solo una referencia.
+## Calendar and workflow
+The next academic deadline and progress model are pending. The researcher prefers
+verifiable progress and bounded delegation with human review. Hours are only indicative.
+
+This note was translated on 2026-09-30 without changing the historical decisions.
