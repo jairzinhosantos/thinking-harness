@@ -1,0 +1,4 @@
+* text=auto
+*.drawio text
+*.pdf binary
+*.docx binary

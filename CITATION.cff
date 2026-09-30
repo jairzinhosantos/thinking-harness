@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Cite the specific commit or release used; this is a research project in development."
+title: "Thinking Harness"
+type: software
+authors:
+  - family-names: Santos
+    given-names: Jairzinho
+repository-code: "https://github.com/jairzinhosantos/thinking-harness"
+license: MIT
+abstract: "Applied research on the construction, adaptation and improvement of agentic harnesses."

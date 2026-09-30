@@ -1,0 +1,9 @@
+id,title,status,revision,created,updated,path
+dec-0001,Núcleo público y extensión privada,accepted,1,2026-09-29,2026-09-29,docs/decisions/dec-0001-public-research-core.md
+doc-0001,Propósito de la investigación,draft,1,2026-09-29,2026-09-29,docs/doc-0001-research-charter.md
+doc-0002,Plan inicial,draft,1,2026-09-29,2026-09-29,docs/doc-0002-initial-plan.md
+doc-0003,Estrategia de agentes para desarrollar el proyecto,draft,1,2026-09-29,2026-09-29,docs/designs/doc-0003-agentic-development-strategy.md
+doc-0004,Opciones de seguimiento y revisión humana,draft,1,2026-09-29,2026-09-29,docs/designs/doc-0004-progress-and-hitl.md
+pap-0001,STOP: primera lectura,draft,1,2026-09-29,2026-09-29,research/literature/reviews/pap-0001-stop.md
+std-0001,Nomenclatura y ciclo de vida,accepted,1,2026-09-29,2026-09-29,docs/standards/std-0001-naming-and-lifecycle.md
+std-0002,Versionamiento y recursos,accepted,1,2026-09-29,2026-09-29,docs/standards/std-0002-experiment-versioning.md
