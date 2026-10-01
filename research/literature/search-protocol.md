@@ -27,9 +27,10 @@ availability from a previous conversation.
 - Reading: not-started/initial-review/partial/complete.
 - Code: not-inspected/partial-inspection/inspected/not-applicable.
 - Execution: not-run/smoke-tested/partial-reproduction/reproduced.
-- Researcher discussion: pending/discussed.
+- Guided discussion: pending/discussed.
 
-An initial review does not imply complete reading by the researcher.
+An initial source inspection does not establish complete personal reading or discussion.
+Record assisted source inspection and guided discussion separately.
 Verified bibliography establishes the source record; venue and code verification may remain pending.
 
 ## Search record

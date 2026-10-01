@@ -16,7 +16,7 @@ Explain STOP's utility and meta-utility with an original example; inspect the fl
 code questions. Then compare with Self-Harness.
 
 ## Calendar and workflow
-The next academic deadline and progress model are pending. The researcher prefers
-verifiable progress and bounded delegation with human review. Hours are only indicative.
+The next academic deadline and progress model are pending. Progress tracking should use
+verifiable evidence and bounded delegation with human review. Hours are only indicative.
 
 This note was translated on 2026-09-30 without changing the historical decisions.

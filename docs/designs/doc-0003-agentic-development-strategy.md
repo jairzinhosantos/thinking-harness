@@ -4,7 +4,7 @@ title: "Agentic development strategy"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Agentic development strategy
@@ -38,7 +38,7 @@ The diagram describes a proposed workflow, not currently running agents.
 1. Define role contracts and a handoff template.
 2. Select one deterministic task without additional external-model calls; builder prepares it.
 3. QA checks original criteria and designs a plausible failure test.
-4. The coordinator assembles evidence; the researcher resolves material disagreements.
+4. The coordinator assembles evidence; material disagreements require human review.
 5. Measure rework, time, cost, and defects against the reference workflow.
 6. Then evaluate parallelism and orchestration tools.
 

@@ -24,3 +24,4 @@ without duplicating states that could become stale.
 - [Choose a progress model and HITL review points](https://github.com/jairzinhosantos/thinking-harness/issues/11)
 
 - [Adopt develop workflow and English-only documentation](https://github.com/jairzinhosantos/thinking-harness/issues/12)
+- [Adopt a consistent project-author voice](https://github.com/jairzinhosantos/thinking-harness/issues/14)

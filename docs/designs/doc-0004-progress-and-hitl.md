@@ -4,16 +4,16 @@ title: "Progress measurement and human review"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Progress measurement and human review
 
 
 ## Pending decision
-The researcher can guide work conversationally, delegate bounded tasks, and review later.
-Availability is a reference, not a progress measure. This proposal sets no quotas,
-calendar commitments, or running agents.
+Work can be initiated through voice or text instructions, delegated within defined limits,
+and reviewed at agreed checkpoints. Availability is a reference, not a progress measure.
+This proposal sets no quotas, calendar commitments, or running agents.
 
 | Option | Unit of progress | Benefit | Limitation |
 |---|---|---|---|
@@ -22,7 +22,7 @@ calendar commitments, or running agents.
 | C. Accepted work flow | Accepted outputs, cycle time, and corrections | Useful during implementation | Tasks differ in difficulty |
 
 Proposal: use A for weekly review, B as the overall map, and C once implementation provides
-meaningful signals. The researcher will choose before adoption as a standard.
+meaningful signals. A progress-measurement model must be selected before adoption as a standard.
 A documented negative result counts as progress when it reduces uncertainty.
 Commit count, lines of code, and downloaded papers are not scientific success measures.
 
@@ -34,13 +34,13 @@ Commit count, lines of code, and downloaded papers are not scientific success me
 - Next task with a closure criterion and agreed cost limit.
 
 ## Human-in-the-loop (HITL)
-1. The researcher states the objective by voice or text.
+1. Define the objective through voice or text instructions.
 2. The coordinator defines scope, inputs, criteria, permissions, and budget, asking only
    for missing decisions that are necessary to proceed.
 3. A builder or research-reviewer prepares changes or evidence within that scope.
 4. QA checks independently, records results, and returns specific defects.
-5. The researcher receives a brief proposal, diff or review, checks, limitations, and
-   the decision needed, then accepts, adjusts, or rejects it.
+5. Review the proposal, diff or reading note, supporting checks, limitations, and required
+   decision. Human review determines whether to accept, adjust, or reject the result.
 6. Integrate accepted work and record learning for the next task.
 
 Existing authorization remains valid. Do not request approval for every routine step.

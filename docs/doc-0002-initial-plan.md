@@ -4,7 +4,7 @@ title: "Initial plan"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Initial plan
@@ -51,7 +51,7 @@ The [branch workflow](standards/std-0003-branching-and-releases.md) separates on
 from formal baselines.
 
 ## Progress measurement
-The researcher prefers observable progress and bounded delegation between reviews.
-See [progress and HITL](designs/doc-0004-progress-and-hitl.md). Available hours are indicative;
-they do not create automatic commitments. The English and branch decision does not select
-a progress-measurement option.
+Progress will be tracked through observable evidence, with bounded delegation between
+review points. Available hours are indicative and do not create automatic commitments.
+The specific progress-measurement model remains open; see
+[progress and HITL](designs/doc-0004-progress-and-hitl.md).

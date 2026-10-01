@@ -4,7 +4,7 @@ title: "Branching and formal baselines"
 status: accepted
 revision: 1
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Branching and formal baselines
@@ -14,7 +14,7 @@ updated: 2026-09-30
 
 | Branch | Purpose | Entry condition |
 |---|---|---|
-| main | Reviewed baselines for presentation, submission, or release | Promotion PR, passing CI, and explicit researcher acceptance |
+| main | Reviewed baselines for presentation, submission, or release | Promotion PR, passing CI, and explicit human acceptance |
 | develop | Integrated research and implementation work | Task PR, passing CI, and review of its criteria |
 
 main remains the repository default. Select develop explicitly when opening a task PR.
@@ -26,7 +26,7 @@ flowchart LR
     T --> Q[Task PR and checks]
     Q --> D
     D --> P[Promotion PR]
-    P --> A[Researcher acceptance]
+    P --> A[Human acceptance]
     A --> M[main]
     M --> S[Sync PR to develop]
     S --> D
@@ -61,14 +61,14 @@ main and develop require PRs, passing Repository checks (job: validate), up-to-d
 branches, and resolved conversations. Disable force pushes and deletion; apply protection
 to administrators too. Initially require zero GitHub approval reviews to avoid a sole
 maintainer being unable to approve their own PR. This does not remove human review:
-record explicit researcher acceptance in the promotion PR before merging it.
+record explicit human acceptance in the promotion PR before merging it.
 Branch protection enforces checks and PR use; it cannot establish scientific validity
 or verify that a conversational acceptance occurred.
 
 ## Formal promotion
 1. Select a coherent snapshot of develop; its criteria must pass on the exact proposed head.
 2. Open a promotion PR to main with scope, validation, known limits, and deliverable references.
-3. Obtain explicit researcher acceptance for that snapshot. Material changes invalidate it.
+3. Obtain explicit human acceptance for that snapshot. Material changes invalidate it.
 4. Merge using a merge commit and tag the accepted main commit.
 5. Synchronize main back into develop through a PR, also using a merge commit.
 

@@ -45,6 +45,27 @@ class RepositoryChecksTests(unittest.TestCase):
         (self.root / 'README.md').write_text('~~~text\nI[t](meta, I[t], L)\n~~~\n`I[t](meta)`')
         self.assertEqual(checks.local_links(self.root), [])
 
+    def test_external_narration_is_rejected_across_line_breaks(self):
+        (self.root / 'README.md').write_text('The researcher\nprefers observable progress.')
+        self.assertTrue(any('external narration' in error for error in checks.editorial_checks(self.root)))
+
+    def test_direct_voice_and_attributed_sources_are_preserved(self):
+        (self.root / 'README.md').write_text(
+            'Progress will be tracked through evidence.\n'
+            'Human acceptance is required.\n'
+            '> The researcher prefers a different method. [Source](https://example.org)\n'
+            '`The user requested` is a code example.\n'
+            '```text\nThe researcher prefers\n```\n')
+        self.assertEqual(checks.editorial_checks(self.root), [])
+
+    def test_external_narration_in_metadata_and_diagram_labels_is_rejected(self):
+        (self.root / 'catalog.csv').write_text('id,notes\ndoc-0001,The user requested this layout.\n')
+        (self.root / 'example.drawio').write_text(
+            '<mxfile><diagram><mxGraphModel><root>'
+            '<mxCell id="x" value="The researcher&amp;lt;br&amp;gt;prefers this"/>'
+            '</root></mxGraphModel></diagram></mxfile>'.replace('&amp;', '&'))
+        self.assertEqual(len(checks.editorial_checks(self.root)), 2)
+
     def test_dangling_diagram_edge_is_rejected(self):
         (self.root / 'example.drawio').write_text('<mxfile><diagram><mxGraphModel><root>'
             '<mxCell id="0"/><mxCell id="1" parent="0"/>'

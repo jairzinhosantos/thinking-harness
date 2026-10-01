@@ -153,6 +153,47 @@ def diagram_checks(root):
     return errors
 
 
+# Focused regression patterns, not a general authorship or language classifier.
+EXTERNAL_NARRATION = re.compile(
+    r"\b(?:the (?:researcher|user|project owner)(?:['’]s)?\s+"
+    r"(?:prefers?|wants?|requests?|requested|asks?|asked|approved|agreed|provided|"
+    r"can guide|will choose|states?|receives?|decides?|resolves?|pace|approval)\b"
+    r"|provided by the (?:researcher|user|project owner)\b"
+    r"|as (?:you|the researcher|the user) requested\b)",
+    re.IGNORECASE,
+)
+
+
+def editorial_checks(root):
+    errors = []
+    for path in source_files(root):
+        segments = []
+        if path.suffix == '.md':
+            prose = prose_only(path.read_text(encoding='utf-8'))
+            # Attributed block quotations retain the source's wording.
+            segments = ['\n'.join(line for line in prose.splitlines()
+                                   if not line.lstrip().startswith('>'))]
+        elif path.suffix == '.drawio':
+            try:
+                segments = [re.sub(r'<[^>]+>', ' ', cell.get('value', ''))
+                            for cell in ET.parse(path).findall('.//mxCell')]
+            except ET.ParseError:
+                continue  # diagram_checks reports malformed XML.
+        elif path.suffix == '.csv':
+            with path.open(encoding='utf-8', newline='') as handle:
+                for row in csv.DictReader(handle):
+                    # Preserve exact bibliographic titles; documentation titles are checked in Markdown.
+                    segments.extend(value for key, value in row.items()
+                                    if isinstance(value, str) and key not in {'title', 'short_name', 'query'})
+        for segment in segments:
+            match = EXTERNAL_NARRATION.search(segment)
+            if match:
+                phrase = ' '.join(match.group(0).split())
+                errors.append(f'{path.relative_to(root)}: external narration "{phrase}"; '
+                              'state the project objective, decision, or rule directly')
+    return errors
+
+
 def render_catalog(rows):
     buffer = io.StringIO(newline='')
     writer = csv.DictWriter(buffer, fieldnames=FIELDS, lineterminator='\n')
@@ -169,6 +210,7 @@ def main(argv=None):
     root = args.root.resolve()
     rows, errors = controlled_documents(root)
     errors.extend(local_links(root))
+    errors.extend(editorial_checks(root))
     errors.extend(literature_checks(root))
     errors.extend(diagram_checks(root))
     from check_diagrams import preview_checks
