@@ -1,7 +1,7 @@
 # Branching and English migration
 
 ## Accepted direction
-The researcher approved main for formal baselines, develop for integration, task branches,
+The approved workflow uses main for formal baselines, develop for integration, task branches,
 English-only project content, sober prose, and Mermaid with Draw.io where appropriate.
 [Decision](../decisions/dec-0002-branching-and-english-standard.md).
 

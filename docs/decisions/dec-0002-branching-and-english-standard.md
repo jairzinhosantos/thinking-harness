@@ -4,18 +4,18 @@ title: "Branching and English-only project content"
 status: accepted
 revision: 1
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Branching and English-only project content
 
 
 ## Decision
-The researcher approved this policy on 2026-09-30, tracked in
+This policy was adopted on 2026-09-30 and is tracked in
 [issue 12](https://github.com/jairzinhosantos/thinking-harness/issues/12).
 Use main for reviewed formal baselines and develop for integration. Task branches start
 from develop and return through PRs. Keep main as the default public entry point.
-Require explicit researcher acceptance before a promotion into main.
+Require explicit human acceptance before a promotion into main.
 
 Use English for all project-authored content, including GitHub planning metadata.
 Use sober, concrete prose, with detail where it improves understanding.

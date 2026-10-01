@@ -19,7 +19,7 @@ a negative result can close a task. Small readings and tests do not each need a 
 Two-week cycles, weekly reviews, and an end-of-cycle retrospective are proposed.
 Dates follow academic requirements and agreed scope. Progress measurement by evidence,
 milestones, or flow is still pending; online hours are not a productivity measure.
-Readings proceed at the researcher's pace. No scheduled reminders or agents are enabled.
+Reading scope is adjusted at each review point. No scheduled reminders or agents are enabled.
 
 ## Research decisions
 Question → bounded reading or test → evidence → adopt, adjust, pivot, or close.
@@ -28,9 +28,9 @@ A new publication may change direction; record why. Fix confirmatory conditions 
 experiment, and create a revision for material changes.
 
 ## Responsibilities
-The researcher decides priorities, scope, and conclusions with the advisor.
-The assistant prepares evidence, changes, and checks. A future QA agent verifies criteria
-separately from construction. Development assistance is not scientific evidence for the method.
+Priorities, scope, and conclusions require human decisions, with academic-advisor review
+where appropriate. Agent-assisted work prepares evidence, changes, and checks within
+authorized tasks. A future QA agent verifies criteria separately from construction. Development assistance is not scientific evidence for the method.
 
 ## GitHub and integration
 Issues define work; milestones group outcomes; the Project tracks status, type, and priority.

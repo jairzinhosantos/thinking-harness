@@ -5,7 +5,7 @@ improvement of agentic harnesses. This repository brings together literature rev
 experimental protocols, reference implementations, and thesis materials.
 
 A harness is the application layer around a model: instructions, tools, execution flow,
-memory, controls, and evaluation. We are studying how to construct or improve that layer
+memory, controls, and evaluation. The project studies how to construct or improve that layer
 under measurable quality, cost, and human-review constraints.
 
 ## Current status
@@ -81,8 +81,8 @@ npm run check:diagrams
 ```
 
 CI runs these checks for `main`, `develop`, and PRs targeting either branch. It validates
-local references, document metadata, catalogs, Draw.io structure and previews, and Mermaid
-rendering. It does not run models or consume cloud resources.
+local references, document metadata, catalogs, recurring external-narration phrases,
+Draw.io structure and previews, and Mermaid rendering. It does not run models or consume cloud resources.
 
 ## Working with agents
 

@@ -2,9 +2,9 @@
 id: std-0004
 title: "Writing and diagram conventions"
 status: accepted
-revision: 1
+revision: 2
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Writing and diagram conventions
@@ -13,12 +13,39 @@ updated: 2026-09-30
 ## Language and tone
 Use English for prose, README files, code comments, docstrings, configuration descriptions,
 diagram labels, commits, PRs, issue bodies, and Project metadata.
-Keep exact bibliographic titles and attributed quotations. Explicit researcher approval
+Keep exact bibliographic titles and attributed quotations. Explicit approval
 is required for an academic submission in another language.
 Use plain words, concrete verbs, and short paragraphs. Avoid emojis, em dashes, marketing
 claims, repetition, and filler. Add detail when explaining a mechanism, assumption, or result.
 Define concepts and symbols before equations. Separate author claims, interpretations,
 and reproduced evidence. Translation must not change evidence or completion states.
+
+## Authorial voice
+Write from the project author's perspective. State the research and project content directly,
+using impersonal or project-centered sentences by default. First-person language may be used
+when a document's format calls for it, but must remain consistent within that document.
+Do not describe personal preferences, requests, or conversations through an assistant's
+external narration. Remove conversational explanations that do not belong in the artifact.
+
+Examples of the intended voice:
+
+- Progress will be tracked through observable evidence.
+- The evaluation will compare candidate harnesses against a fixed baseline.
+- This policy was adopted on 2026-09-30.
+- The progress-measurement model remains open.
+- Promotion into main requires explicit human acceptance.
+
+Apply this convention to every project-authored document, README, review, summary, decision,
+iteration note, template, metadata field, issue, PR, and diagram label. Operational roles
+such as builder, QA, and human review remain explicit where they explain responsibility.
+Preserve third-party attribution and exact quotations. Authorship voice must not imply that
+assisted inspection equals completed personal reading, validation, or reproduction.
+
+Repository validation rejects selected recurring external-narration phrases in Markdown
+prose, CSV fields, and Draw.io labels. It is a regression check, not a semantic guarantee.
+Attributed block quotations, inline code, and fenced code are excluded from Markdown lint;
+review diagram labels and other excluded content manually. PR review must check authorial
+voice throughout the actual artifact, including formats the lint does not cover.
 
 ## README structure
 The root README welcomes readers, defines the project and harness concept, states current
@@ -65,3 +92,7 @@ Language and tone are reviewed editorially; CI does not pretend to prove English
 
 ## Reference
 [GitHub Markdown diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams)
+
+## Revision history
+Revision 2 adopts the project-author voice convention on 2026-10-01.
+See [dec-0003](../decisions/dec-0003-project-author-voice.md).

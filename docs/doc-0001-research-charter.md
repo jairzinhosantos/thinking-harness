@@ -4,7 +4,7 @@ title: "Research charter"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Research charter
@@ -12,7 +12,7 @@ updated: 2026-09-30
 
 ## Motivation
 Building agentic solutions requires designing and adjusting instructions, tools, workflows,
-memory, controls, and evaluation. We aim to study how to automate part of this work and
+memory, controls, and evaluation. The objective is to study how to automate part of this work and
 measure its relationship with quality, cost, and human intervention.
 
 ## Provisional question
@@ -36,7 +36,7 @@ Define these operationally before confirmatory comparisons.
 
 ## Proposed method
 Use DSRM for construction and evaluation, FEDS for evaluation planning, and selected
-PRINCE2 and Kanban practices for management. This combination is our adaptation,
+PRINCE2 and Kanban practices for management. This combination is an adaptation for this project,
 not a single certified standard.
 
 ## Methodological references

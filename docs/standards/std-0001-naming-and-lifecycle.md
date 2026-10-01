@@ -4,7 +4,7 @@ title: "Naming and document lifecycle"
 status: accepted
 revision: 2
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Naming and document lifecycle
@@ -41,7 +41,7 @@ Run `python3 scripts/check_repository.py --write-catalog` to generate docs/catal
 Do not use nested YAML structures in these fields. Quote titles containing a colon.
 
 ## Revision history
-Revision 2 adopts English-only content following the researcher's approval on 2026-09-30.
+Revision 2 adopts the English-only convention approved on 2026-09-30.
 The former Spanish-content allowance is superseded by
 [dec-0002](../decisions/dec-0002-branching-and-english-standard.md).
 Stable identities, paths, and retention rules are unchanged.

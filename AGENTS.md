@@ -3,9 +3,16 @@
 - Use English for all project-authored content: prose, code, comments, docstrings,
   configuration descriptions, diagrams, commits, issues, and PRs.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
-  submission in another language needs an explicit exception from the researcher.
+  submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.
   Explain concepts and symbols before using equations; add detail when it aids understanding.
+- Write in the project author's voice. State objectives, methods, decisions, and rules
+  directly, normally using impersonal or project-centered English. Do not narrate personal
+  preferences, conversations, or assistant activity as an external observer.
+- Retain operational human/agent roles and source attribution where necessary, without
+  implying that AI assistance constitutes completed personal reading or scientific validation.
+- Apply this voice consistently to documents, summaries, metadata, templates, and diagrams;
+  review it manually even when the focused editorial lint passes.
 - Read docs/doc-0002-initial-plan.md and the relevant issue before changing scope.
 - Follow docs/standards/std-0003-branching-and-releases.md. Create short task branches
   from develop, open PRs into develop, and reserve main for explicitly accepted promotions.
@@ -27,6 +34,6 @@
   docs/decisions; preserve history and explain revisions to accepted standards.
 - The multi-agent design is a later pilot. These agreements do not authorize delegation,
   persistent agents, schedules, external messages, model spend, or publication beyond
-  the user's current task authorization.
+  the current explicit task authorization.
 - Scientific experiments require a protocol, execution budget, stop condition, and evidence path.
   Agent-assisted development is separate from the scientific method being evaluated.

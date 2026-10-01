@@ -4,7 +4,7 @@ title: "STOP: initial reading"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # STOP: initial reading
@@ -15,7 +15,7 @@ updated: 2026-09-30
 [Repository](https://github.com/microsoft/stop).
 Partial reading: abstract, introduction, section 3, and algorithm 1.
 Code: partial inspection of run_improver.py and eval_improver.py; not executed.
-Researcher discussion: pending.
+Guided discussion: pending. Source inspection does not establish completed personal reading.
 
 ## Documented mechanism
 STOP uses an improver program I receiving a utility u, a solution s, and a model L.
@@ -33,7 +33,7 @@ Improvement is an objective, not a guarantee at each iteration. The algorithm do
 establish general optimality. Results and appendices still need critical reading.
 
 ## Questions for the next session
-- How will we distinguish improving a solution from improving its constructor?
+- How can improvement of a solution be distinguished from improvement of its constructor?
 - Which small task would measure both?
 - What does producing the improver cost before reuse?
 - Which evaluation must remain inaccessible to proposed code?

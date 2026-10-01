@@ -4,7 +4,7 @@ title: "Public research core and private extension"
 status: accepted
 revision: 1
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 
 # Public research core and private extension
@@ -28,5 +28,5 @@ Use MIT for original material created in the repository during bootstrap.
 External sources and dependencies retain their own licenses.
 
 ## Status
-The researcher agreed to the name and separation. The method, framework, case, and final
-title remain undecided. This English translation preserves the accepted decision.
+The repository name and public/private separation are accepted decisions. The method,
+framework, case, and final title remain undecided.
