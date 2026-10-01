@@ -94,7 +94,9 @@ remain open for a separate decision.
 
 ## Public scope
 
-Project-authored content is in English. Private data, credentials, institutional source
+English is the primary project language. Each paper review also has a linked Spanish
+translation for study; see the [paired-review convention](docs/standards/std-0004-writing-and-diagrams.md#paper-review-translations).
+Private data, credentials, institutional source
 files, and working conversations stay outside this repository. A private extension may
 later consume an identified version of this public core.
 
