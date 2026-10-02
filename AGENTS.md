@@ -2,6 +2,11 @@
 
 - Use English for all project-authored content: prose, code, comments, docstrings,
   configuration descriptions, diagrams, commits, issues, and PRs.
+- Every paper review has a primary English file and a linked Spanish `.es.md` translation,
+  including translated explanatory diagram labels. Maintain both in the same PR and preserve
+  the shared paper identity, source revision, evidence, and completion states. This exception
+  is limited to paper reviews; filenames, metadata keys, code, and other project content stay
+  in English. Follow the paired-review rules in std-0004.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
   submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.

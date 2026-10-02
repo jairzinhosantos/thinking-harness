@@ -43,3 +43,8 @@ is a separate step. Until integration, main and develop retain their previous co
 ## Standards
 - [Branching and releases](../standards/std-0003-branching-and-releases.md)
 - [Writing and diagrams](../standards/std-0004-writing-and-diagrams.md)
+
+## Later amendment
+On 2026-10-01, [dec-0004](dec-0004-bilingual-paper-reviews.md) adds Spanish translations
+for paper reviews while retaining English as the primary language. The branch workflow
+and language rules for other project content remain in effect.

@@ -9,6 +9,8 @@ updated: 2026-10-01
 
 # STOP: mechanism, code trace, and evaluation
 
+English (primary) | [Español](pap-0001-stop.es.md)
+
 STOP is a useful reference for separating a task solution from the program that improves it.
 For thinking-harness, the immediate question is which component should be allowed to change
 and how its improvement can be measured independently of the search that produced it.

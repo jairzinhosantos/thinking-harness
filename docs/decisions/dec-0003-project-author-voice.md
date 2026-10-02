@@ -26,4 +26,6 @@ The [writing standard](../standards/std-0004-writing-and-diagrams.md), agent ins
 and PR template define the rule. A focused CI check catches recurring phrases; editorial
 review remains necessary for meaning and consistency across every document format.
 
-The progress-measurement and bilingual-documentation choices remain open.
+At adoption, the progress-measurement and bilingual-documentation choices remained open.
+The later [paper-review translation decision](dec-0004-bilingual-paper-reviews.md) resolves
+the language choice for reviews only. The progress-measurement choice remains open.
