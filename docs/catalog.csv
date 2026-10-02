@@ -7,7 +7,7 @@ doc-0001,Research charter,draft,1,2026-09-29,2026-10-01,docs/doc-0001-research-c
 doc-0002,Initial plan,draft,1,2026-09-29,2026-10-01,docs/doc-0002-initial-plan.md
 doc-0003,Agentic development strategy,draft,1,2026-09-29,2026-10-01,docs/designs/doc-0003-agentic-development-strategy.md
 doc-0004,Progress measurement and human review,draft,1,2026-09-29,2026-10-01,docs/designs/doc-0004-progress-and-hitl.md
-pap-0001,"STOP: mechanism, code trace, and evaluation",in-review,2,2026-09-29,2026-10-01,research/literature/reviews/pap-0001-stop.md
+pap-0001,"STOP: mechanism, code trace, and evaluation",in-review,3,2026-09-29,2026-10-02,research/literature/reviews/pap-0001-stop.md
 std-0001,Naming and document lifecycle,accepted,3,2026-09-29,2026-10-01,docs/standards/std-0001-naming-and-lifecycle.md
 std-0002,Experiment versioning and resources,accepted,1,2026-09-29,2026-09-30,docs/standards/std-0002-experiment-versioning.md
 std-0003,Branching and formal baselines,accepted,1,2026-09-30,2026-10-01,docs/standards/std-0003-branching-and-releases.md

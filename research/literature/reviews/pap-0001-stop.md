@@ -2,9 +2,9 @@
 id: pap-0001
 title: "STOP: mechanism, code trace, and evaluation"
 status: in-review
-revision: 2
+revision: 3
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-02
 ---
 
 # STOP: mechanism, code trace, and evaluation
@@ -23,6 +23,19 @@ This review prepares that discussion; it does not select the thesis method.
 [Version 3, 16 August 2024, COLM 2024](https://arxiv.org/abs/2310.02304v3).
 The bibliographic key is `zelikman2023stop`, retaining the initial preprint year.
 
+**Affiliations printed on page 1 of v3:**
+
+| Author | Listed affiliation | Institution type / note |
+|---|---|---|
+| Eric Zelikman | Stanford University | University; starred note: work done at Microsoft Research New England |
+| Eliana Lorch | Not stated in the paper header | No affiliation inferred from the repository owner |
+| Lester Mackey | Microsoft Research | Industrial research organization |
+| Adam Kalai | OpenAI | AI research company; starred note: work done at Microsoft Research New England |
+
+These are the affiliations in this paper version, not a claim about current employment.
+The repository's `microsoft` namespace does not make every author a Microsoft employee.
+Source: [v3 title page and affiliation footnote](https://arxiv.org/pdf/2310.02304v3#page=1).
+
 **Code:** [microsoft/stop](https://github.com/microsoft/stop/tree/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4),
 commit `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4`. All code links below use this snapshot.
 
@@ -31,7 +44,7 @@ commit `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4`. All code links below use this
 | Assisted source inspection | Abstract, introduction, sections 3-8, Algorithm 1, Figures 2 and 4, Table 1, and Appendix K; partial inspection of A.1-A.2 |
 | Complete paper reading | Partial; related work, proofs, and remaining appendices need further study |
 | Static code inspection | Runner, seed improvers, meta-utility, parity utility, model wrapper, loader, configuration, and transfer entry point |
-| Execution | Not run; no third-party imports, model calls, or scientific experiments |
+| Execution | Upstream code not run; no third-party imports, model calls, or scientific experiments. Only the original deterministic teaching snippets in section 4 were executed to check their values |
 | Guided discussion | Pending; document preparation does not establish completed personal reading |
 | Reproduction | No reproduced results |
 
@@ -41,21 +54,46 @@ which remains unverified at runtime. `reproduced-result` is reserved for measure
 
 ## 2. Published contribution and evidence
 
-**Author-claim.** STOP recursively revises an improver while keeping the LM fixed
-(sections 3-4). In section 5.1, GPT-4 improves mean performance on noisy parity across five
-runs; individual trajectories need not improve monotonically. Evaluation uses 20 development
-instances, five repetitions, and 50 held-out instances. These repetitions are not five task
-families. Comparators include the seed improver, chain-of-thought, and a greedy improver.
+**Author-claim.** The central contribution is to use an improver to revise its own code,
+while keeping the language model fixed. The paper builds the argument in three parts:
 
-Section 5.2 reports transfer of one selected improver to five tasks, not a distribution over
-all evolved improvers. Section 5.3 reports weaker-model failures. Historical models are
-`gpt-4-0314`, `gpt-3.5-turbo-0613`, and `Mixtral-8x7B-Instruct-v0.1`.
-Sections 6-7 discuss evaluator exploitation, constraint circumvention, expense, and dependence
-on an efficiently computable utility. Appendix A studies generalization under assumptions,
-including bounded programs and independently sampled tasks; it does not guarantee that each
-recursive update improves performance. Appendix K reports roughly 3,000 GPT-4 calls per
-iteration per run. Their meaning must be reconciled with wrapper calls before estimating costs.
-Source: [paper v3](https://arxiv.org/pdf/2310.02304v3).
+- **Mechanism, sections 3-4:** define a task utility, an improver, and a meta-utility that
+  scores the solutions produced by that improver. Use this meta-utility to search for a
+  better improver. The editable object is software, not the model's weights.
+- **Empirical evidence, section 5:** examine improvement on one task family, transfer to
+  other tasks, and dependence on the underlying model. These answer different questions.
+- **Limits, sections 6-7 and appendices A/K:** examine evaluator exploitation, constraint
+  circumvention, generalization assumptions, and computational cost. Observed improvement
+  is not a guarantee that every recursive update succeeds.
+
+```mermaid
+flowchart TD
+    Q[Can an improver improve its own code?] --> M[Sections 3-4: define the mechanism]
+    M --> E[Section 5: test the resulting improvers]
+    E --> A[5.1: same task family]
+    E --> B[5.2: transfer to new tasks]
+    E --> C[5.3: weaker models]
+    M --> L[Sections 6-7 and appendices: limits and cost]
+```
+
+The evidence should be read at its reported scope:
+
+| Evidence | What is evaluated | What it does not establish |
+|---|---|---|
+| Section 5.1: noisy parity with GPT-4 | Mean performance over five independent STOP runs; comparison with the seed, chain-of-thought, and greedy improvers | Every individual trajectory improves monotonically |
+| Section 5.2: transfer | One selected evolved improver on five new tasks | The distribution of transfer performance across all evolved improvers |
+| Section 5.3: model dependence | Failures with weaker models | Any model can reliably improve its scaffolding |
+| Appendix A: theory | Generalization under assumptions including bounded programs and independently sampled tasks | Unconditional guarantees for practical recursive updates |
+| Appendix K: cost | Roughly 3,000 GPT-4 calls per iteration per run | A current monetary estimate or an equivalence between wrapper calls and API requests |
+
+In section 5.1, the task utility averages **20 development instances** of noisy parity.
+The meta-utility uses **five repeated copies of the same task/starting-solution pair** because
+model calls are stochastic. Generalization is evaluated on **50 held-out instances**.
+Separately, the plot aggregates **five independent STOP runs**. These are distinct levels of
+repetition, not five task families. Section 6 below describes the implementation's inner data.
+
+Historical models are `gpt-4-0314`, `gpt-3.5-turbo-0613`, and
+`Mixtral-8x7B-Instruct-v0.1`. Source: [paper v3](https://arxiv.org/pdf/2310.02304v3).
 
 ## 3. The two improvement levels
 
@@ -93,78 +131,285 @@ Fixed for a controlled comparison: model, evaluator, task split, and resource li
 Mutable: candidate solution code inside an evaluation, and improver code across outer rounds.
 A changed prompt or search strategy does not by itself imply updated model weights.
 
-## 4. Mathematical reading and original example
+## 4. Worked example: from a test result to a new improver
 
-The following notation describes the inspected interfaces and is consistent with section 3
-and Algorithm 1. It distinguishes executable programs from their source strings explicitly.
+**Interpretation: original teaching example, not STOP measurements.** Addition,
+multiplication, and maximum replace the paper's harder tasks so that every score can be
+traced. The functions and model responses below are written in advance. There are no model
+calls, learning, or reproduced STOP results in this example.
 
-| Symbol | Meaning |
-|---|---|
-| `s`, `s'` | Starting and returned solution source |
-| `u` | Task scoring function, with a description available to the improver |
-| `L` | Fixed model interface |
-| `I_t` | Executable improver at outer round `t` |
-| `code(I_t)` | Source representation supplied as an editable candidate |
-| `D` | Finite collection of task/evaluator and starting-solution pairs |
-| `n` | Number of entries in `D`, counting repetitions |
-| `hat u_D` | Empirical score assigned to an improver |
+### 4.1. Separate the three objects
 
-A task-level call returns a solution:
+| Object | Role | Output |
+|---|---|---|
+| Solution `s_A` | Code that attempts task A, such as adding two numbers | A number, for example `5` |
+| Task evaluator `u_A` | Runs that solution on fixed cases and assigns a score | A score, for example `0.6` |
+| Improver `I_0` | Uses model `L` to propose solution code, scores candidates, and returns one | A program, not its score |
+
+`A` in `u_A` identifies **task A**. It is not a recursive call or an iteration number.
+`0` in `I_0` identifies the **initial improver**. Candidate improvers `I_A` and `I_B` below
+are alternative programs, not the evaluators `u_A` and `u_B`.
+The evaluator stays fixed while the candidate code changes.
+
+### 4.2. What exactly produces a score of 0.6?
+
+Task A is to add two integers. Start with a faulty solution that ignores the second input.
+A proposed revision handles non-negative second inputs but still fails on negative ones:
+
+```python
+# Original teaching code. No generated code or external dependencies.
+def add_start(a, b):
+    return a
+
+
+def add_nonnegative_b(a, b):
+    return a + max(b, 0)
+
+
+def add_exact(a, b):
+    return a + b
+
+
+cases_A = [(2, b, 2 + b) for b in range(-4, 6)]
+
+
+def score_cases(solution, cases):
+    passed = 0
+    for a, b, expected in cases:
+        actual = solution(a, b)
+        if actual == expected:
+            passed += 1
+    return passed / len(cases)
+
+
+def u_A(solution):
+    return score_cases(solution, cases_A)
+
+
+print(u_A(add_start))          # 0.1
+print(u_A(add_nonnegative_b))  # 0.6
+print(u_A(add_exact))          # 1.0
+```
+
+`range(-4, 6)` supplies ten values: -4 through 5. The evaluator passes each input to
+`add_nonnegative_b`, compares its return value with the fixed expected sum, and counts:
+
+| Case | Inputs `(a, b)` | Expected | Actual | Credit |
+|---|---|---:|---:|---:|
+| 1 | `(2, -4)` | -2 | 2 | 0 |
+| 2 | `(2, -3)` | -1 | 2 | 0 |
+| 3 | `(2, -2)` | 0 | 2 | 0 |
+| 4 | `(2, -1)` | 1 | 2 | 0 |
+| 5 | `(2, 0)` | 2 | 2 | 1 |
+| 6 | `(2, 1)` | 3 | 3 | 1 |
+| 7 | `(2, 2)` | 4 | 4 | 1 |
+| 8 | `(2, 3)` | 5 | 5 | 1 |
+| 9 | `(2, 4)` | 6 | 6 | 1 |
+| 10 | `(2, 5)` | 7 | 7 | 1 |
+| Total | Ten fixed cases | | | 6 |
+
+Therefore `u_A(add_nonnegative_b) = 6 / 10 = 0.6`. This means **six of these ten cases pass**.
+It does not mean the model is 60% confident, each answer is 60% correct, or an arbitrary future
+input has a proven 60% success probability. Here, each case is binary but the aggregate score
+has intermediate values. A different evaluator could award partial credit per case.
+
+**Connection to the paper, section 3.** STOP allows a bounded real-valued utility, potentially
+stochastic; it does not require a binary pass/fail function. For example, an independently
+chosen partial-credit rule could be `max(0, 1 - abs(actual - expected) / 10)`: expected `5`
+and actual `3` would earn `0.8`. This rule is an alternative illustration, not the rule used
+in the table or a STOP result. Noisy parity in section 5.1 uses prediction accuracy, so its
+aggregate utility can also lie between zero and one. The evaluator must be specified before
+comparing candidates; changing it mid-comparison would change what the score means.
+
+### 4.3. Open the nested expression, one operation at a time
+
+A small improver can choose between two proposed programs. `demo_model` supplies fixed
+responses only to make this example deterministic; a real `L` would generate code from a
+prompt containing the initial solution and the utility description.
+
+```python
+def demo_model(initial_solution):
+    return [initial_solution, add_nonnegative_b]
+
+
+def I_0(utility, initial_solution, model):
+    candidates = model(initial_solution)
+    return max(candidates, key=utility)
+
+
+solution_after = I_0(u_A, add_start, demo_model)
+score_after = u_A(solution_after)
+print(solution_after.__name__)  # add_nonnegative_b
+print(score_after)              # 0.6
+```
+
+Read this execution in order:
+
+1. Supply `u_A`, the starting program `add_start`, and the model interface.
+2. Receive two candidates: `add_start` and `add_nonnegative_b`.
+3. Evaluate both with `u_A`: their scores are `0.1` and `0.6`.
+4. `max(..., key=utility)` returns the **program** with the larger score, `add_nonnegative_b`.
+5. The outer `u_A(solution_after)` evaluates the returned program and obtains `0.6` again.
+   This last call scores the improver's output; it does not generate another revision.
+
+Thus the compact expression has two operations, not a recursive evaluator:
 
 $$
-s' = I_t(u,s,L).
+s'_A=I_0(u_A,s_A,L),\qquad u_A(s'_A)=6/10=0.6.
 $$
 
-The outer evaluator scores an improver by what it produces on the selected tasks:
+Writing `u_A(I_0(u_A,s_A,L)) = 0.6` simply nests those two operations. `I_0` **receives**
+`u_A` to compare candidates; the surrounding `u_A` **scores** its returned solution.
+
+```mermaid
+flowchart TD
+    S[Starting addition program] --> I[Improver I0 with fixed model]
+    I --> C[Two candidate programs]
+    C --> U[Evaluator u_A: ten fixed cases each]
+    U --> P[Select program scoring 0.6 over 0.1]
+    P --> R[Return add_nonnegative_b]
+    R --> F[Score returned program: 6 of 10 = 0.6]
+```
+
+This toy uses Python callables for readability; STOP passes solution source strings and loads
+programs through its implementation. It also retains the starting solution among the toy
+candidates. The inspected STOP seed selects only among generated candidates, so preserving
+the starting program is not a guarantee of that seed. The toy does not model exceptions,
+timeouts, resource accounting, or isolation and is not a runner for untrusted code.
+
+### 4.4. Where does the mean `(0.6 + 0.7 + 0.5) / 3` come from?
+
+Repeat task-level improvement for tasks B and C. Suppose the returned programs are
+`multiply_magnitude` and `maximum_left`. Their results can also be calculated directly:
+
+```python
+def multiply_magnitude(a, b):
+    return abs(a * b)
+
+
+def maximum_left(a, b):
+    return a
+
+
+cases_B = [(a, 2, a * 2) for a in range(-3, 7)]
+cases_C = [(a, 5, max(a, 5)) for a in range(10)]
+
+
+def u_B(solution):
+    return score_cases(solution, cases_B)
+
+
+def u_C(solution):
+    return score_cases(solution, cases_C)
+
+
+task_scores = [
+    u_A(solution_after),
+    u_B(multiply_magnitude),
+    u_C(maximum_left),
+]
+meta_score = sum(task_scores) / len(task_scores)
+print(task_scores)        # [0.6, 0.7, 0.5]
+print(round(meta_score, 3))  # 0.6
+```
+
+| Task | What its returned solution does | Why it gets that score |
+|---|---|---|
+| A: addition | Ignores negative `b` | Six non-negative `b` cases pass: `6/10 = 0.6` |
+| B: multiplication | Removes the product's sign | Inputs `a=0,...,6` pass; `a=-3,-2,-1` fail: `7/10 = 0.7` |
+| C: maximum | Always returns the left input | Inputs `a=5,...,9` pass; `a=0,...,4` fail: `5/10 = 0.5` |
+
+The resulting mean is `(0.6 + 0.7 + 0.5) / 3 = 1.8 / 3 = 0.6`. It assigns a score to the
+**improver**, based on the three solutions it returned. The code above supplies the B/C
+outputs explicitly; it does not simulate their model calls. In a full evaluator, those outputs
+would come from calling the same candidate improver on each task:
+
+```python
+def meta_utility(improver, tasks, model):
+    scores = []
+    for utility, initial_solution in tasks:
+        solution_after = improver(utility, initial_solution, model)
+        scores.append(utility(solution_after))
+    return sum(scores) / len(scores)
+```
+
+This definition shows the loop; it needs actual task pairs and a matching model interface to
+be invoked. `D` denotes that task collection, `n` its number of entries, and
+`hat u_D` denotes this empirical mean:
 
 $$
 \widehat{u}_D(I)=\frac{1}{n}\sum_{j=1}^{n}u_j\bigl(I(u_j,s_j,L)\bigr).
 $$
 
-The recursive update uses the same program in two roles: executor and editable input.
-`load` denotes interpreting the returned source as a callable program, not a proposed
-implementation of isolation:
+There are two different divisions: **ten cases** to score each solution, then **three tasks**
+to score the improver. The mean happens to equal `18/30` because the tasks have equal case
+counts; unequal counts would distinguish an equal-task mean from a pooled-case fraction.
+Likewise, scores `3/10`, `5/10`, and `8/10` would give a meta-score of approximately `0.5333`,
+not `0.6`. Those are a different set of example outcomes.
+
+### 4.5. Where does recursive self-improvement happen?
+
+So far, a fixed improver has produced task solutions. The **outer round** changes the
+improver itself. Instead of supplying addition code as the editable input, supply the code of
+`I_0`. Instead of using `u_A` to judge addition, use `hat u_D` to judge candidate improvers by
+running them on downstream tasks. Keep the model and comparison budget fixed.
+
+For illustration, suppose `I_0` uses `L` to propose two alternative improver programs:
+
+- `I_A`: a feedback-based repair strategy.
+- `I_B`: a strategy that explores alternative repair paths.
+
+These names denote programs, not scores. The following are **hypothetical returned-solution
+scores**, not outputs generated by the toy model and not guaranteed effects of those strategies:
+
+| Improver being evaluated | Task A | Task B | Task C | Meta-score |
+|---|---:|---:|---:|---:|
+| Current `I_0` | 0.6 | 0.7 | 0.5 | 0.6000 |
+| Candidate `I_A` | 1.0 | 0.7 | 0.5 | 0.7333 |
+| Candidate `I_B` | 1.0 | 1.0 | 0.5 | 0.8333 |
+
+For A, the exact addition function shown above illustrates a score of `1.0`. For B, replacing
+`abs(a * b)` with `a * b` would pass all ten cases. C remains incorrect on half the cases.
+Evaluating a candidate improver means running it to produce these task solutions, not running
+the improver itself as the addition function. The current program is shown as a reference;
+the inspected seed does not automatically include it in candidate selection.
+
+```mermaid
+flowchart TD
+    I0[Current improver I0] --> P[Use fixed model to propose improver code]
+    P --> IA[Candidate IA]
+    P --> IB[Candidate IB]
+    IA --> EA[Run on A, B, C: mean 0.7333]
+    IB --> EB[Run on A, B, C: mean 0.8333]
+    EA --> S[Select IB and load it as I1]
+    EB --> S
+    S --> N[Next round: I1 proposes edits to its own code]
+```
+
+Select `I_B` in this illustration and call it `I_1`: `B` identifies the candidate; `1` identifies
+the next round. At that point the optimizer used in the next round has changed. The recursive
+update can now be read as:
 
 $$
 I_{t+1}=\operatorname{load}\left(I_t\left(\widehat{u}_D,\operatorname{code}(I_t),L\right)\right).
 $$
 
-In the Python implementation the argument order is `(initial_solution, utility,
-language_model)`. Follow parameter names when tracing the mathematical notation into code.
+- `code(I_t)` is the current improver's source, supplied as editable input.
+- `I_t(...)` uses the model and the meta-utility to return proposed improver source.
+- `load(...)` makes the selected source the executable next improver; it is not a sandbox design.
+- The next round uses `I_{t+1}` to perform the search. A loop can implement this; no recursive
+  self-call inside `u_A` is required. Repeatedly repairing addition with unchanged `I_0` would
+  remain task-level optimization, not improvement of the improver.
 
-**Interpretation: invented example, not STOP measurements.** Suppose three coding tasks each
-have ten development checks. A task score is the fraction passed. The model and budget are
-held constant. `I_0` samples alternatives; candidate `I_A` adds repair feedback; candidate
-`I_B` explores two repair paths. These strategies and numbers only illustrate the arithmetic.
+The mathematical argument order is `(utility, solution, model)`. The upstream Python
+implementation uses `(initial_solution, utility, language_model)`; follow names when mapping
+between them. These small, deterministic examples explain the interfaces. The published
+noisy-parity experiment has the additional instance/repetition levels described in section 2.
 
-| Task | Starting solution | Returned by `I_0` | Returned by `I_A` | Returned by `I_B` |
-|---|---:|---:|---:|---:|
-| A | 0.4 | 0.6 | 0.8 | 0.9 |
-| B | 0.5 | 0.7 | 0.8 | 0.8 |
-| C | 0.3 | 0.5 | 0.6 | 0.7 |
-| Mean | 0.4 | 0.6 | 0.733 | 0.8 |
-
-For task A, `u_A(I_0(u_A,s_A,L)) = 0.6`. Across tasks,
-`hat u_D(I_0) = (0.6 + 0.7 + 0.5) / 3 = 0.6`.
-If `I_0` proposes both candidates and selects the larger observed meta-score, `I_B` becomes
-`I_1`. The next outer round runs `I_B` to propose changes to its own source. Merely using
-`I_B` to repair another task would remain task-level improvement.
-
-```mermaid
-flowchart LR
-    I0[Current improver I0] --> IA[Candidate IA]
-    I0 --> IB[Candidate IB]
-    IA --> SA[Three-task mean: 0.733]
-    IB --> SB[Three-task mean: 0.800]
-    SA --> Pick[Select IB as I1]
-    SB --> Pick
-    Pick --> Next[I1 proposes changes to its own source]
-```
-
-A score of 0.8 here does not establish future-task performance. If `I_0` scores 0.7 and `I_B`
-scores 0.6 on an untouched test set, the development ranking reverses. Repeatedly selecting
-against those test scores would make that set part of development. A thesis protocol therefore
-needs a separate selection set and a final test set, plus repeated independent runs.
+A meta-score of `0.8333` here does not establish future-task performance. An untouched test set
+can reverse the ranking. Selecting repeatedly against that test set would turn it into search
+data. A thesis protocol therefore needs separate selection and final-test evidence, repeated
+independent runs, and resource limits.
 
 ## 5. Algorithm-to-code map
 
@@ -252,7 +497,7 @@ leak or evidence that the published experiments were compromised.
 - Pinned source inspection supports the call map and the identified transfer-path inconsistency.
 - Static parsing of the downloaded Python files found no syntax errors. It does not establish
   importability, dependency compatibility, runtime correctness, or numerical reproduction.
-- The example's means are elementary arithmetic over invented scores.
+- The original Python teaching snippets in section 4 were executed locally: addition scores 0.1, 0.6, and 1.0; task scores 0.6, 0.7, and 0.5; their mean is 0.6. The outer candidate table remains hypothetical, with its arithmetic checked. This validates the explanation, not STOP.
 - The article's performance claims remain attributed claims. No measured project result exists.
 
 The review is ready for discussion. Complete reading, runtime inspection, proof checking,
