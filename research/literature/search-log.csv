@@ -1,3 +1,4 @@
 search_id,date,source,query,candidates_retained,scope
 search-0001,2026-09-29,arXiv and author source,Exact-title verification of original seed set,10,Seed verification only; not an exhaustive screening
 search-0002,2026-09-29,arXiv and official repositories,Self-Harness GEPA Agent Lightning,3,Targeted expansion for harness optimization and RL
+search-0003,2026-10-01,arXiv v3 and author repository,Self-Harness exact-version review and pinned public implementation,1,Targeted verification for pap-0011; not an exhaustive search or reproduction
