@@ -307,7 +307,7 @@ sequenceDiagram
     U-->>I: 0.1
     I->>U: Puntuar add_nonnegative_b en diez casos
     U-->>I: 0.6
-    Note over I: max elige el programa con 0.6
+    Note over I,M: Elegir mayor puntuación: 0.6
     I-->>C: Devolver add_nonnegative_b como solution_after
     C->>U: Puntuar solution_after
     U-->>C: 0.6

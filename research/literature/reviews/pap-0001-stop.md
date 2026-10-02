@@ -290,7 +290,7 @@ sequenceDiagram
     U-->>I: 0.1
     I->>U: Score add_nonnegative_b on ten cases
     U-->>I: 0.6
-    Note over I: max selects the program scoring 0.6
+    Note over I,M: Select higher score: 0.6
     I-->>C: Return add_nonnegative_b as solution_after
     C->>U: Score solution_after
     U-->>C: 0.6
