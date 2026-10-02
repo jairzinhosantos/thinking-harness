@@ -166,8 +166,40 @@ La tarea A consiste en sumar dos enteros. Se parte de una solución incorrecta q
 segunda entrada. Una modificación propuesta resuelve las entradas con segundo operando no
 negativo, pero sigue fallando cuando es negativo:
 
+**`add_start` sí se utiliza.** Es la solución inicial deliberadamente incorrecta:
+`add_start(2, 3)` devuelve `2`, aunque la suma requerida es `5`. Una sentencia `def` solo
+define la función; no ejecuta su cuerpo. Más adelante, `u_A(add_start)` entrega esa función
+al evaluador. Dentro de `score_cases`, `solution(a, b)` la invoca realmente una vez por
+caso, diez veces.
+
+Las tres definiciones son versiones distintas escritas a mano, no cambios automáticos de
+una misma función:
+
+| Función | Propósito aquí | Dónde se utiliza |
+|---|---|---|
+| `add_start` | Programa inicial incorrecto: ignora `b` | Se puntúa abajo y luego se entrega a `I_0` en la sección 4.3 |
+| `add_nonnegative_b` | Candidato parcialmente correcto | Se puntúa abajo y se incluye entre las respuestas de `demo_model` |
+| `add_exact` | Comparación totalmente correcta para estos casos | Se puntúa abajo; **no** se ofrece en `demo_model` en la sección 4.3 |
+
+El comentario del código identifica un ejemplo didáctico escrito a mano. No desactiva las
+funciones ni significa que no se utilicen. Las tres se evalúan en las tres líneas `print`
+del final:
+
+```mermaid
+flowchart TD
+    D[Definir tres programas separados] --> S[add_start]
+    D --> P[add_nonnegative_b]
+    D --> E[add_exact]
+    S --> US[u_A llama a add_start con diez casos]
+    P --> UP[u_A llama a add_nonnegative_b con diez casos]
+    E --> UE[u_A llama a add_exact con diez casos]
+    US --> RS[1 acierto de 10: 0.1]
+    UP --> RP[6 aciertos de 10: 0.6]
+    UE --> RE[10 aciertos de 10: 1.0]
+```
+
 ```python
-# Original teaching code. No generated code or external dependencies.
+# Three handwritten solution versions, evaluated by the print calls below.
 def add_start(a, b):
     return a
 
@@ -200,6 +232,24 @@ print(u_A(add_start))          # 0.1
 print(u_A(add_nonnegative_b))  # 0.6
 print(u_A(add_exact))          # 1.0
 ```
+
+El candidato parcial funciona cuando `b` es **no negativo, incluido el cero**. Su decisión
+interna puede leerse sin ejecutar todo el evaluador:
+
+```mermaid
+flowchart TD
+    X[Recibir a y b] --> Q{Es b mayor o igual a cero?}
+    Q -->|Sí| P[El máximo entre b y cero es b]
+    Q -->|No| N[El máximo entre b y cero es cero]
+    P --> A[Devolver a más b: suma correcta]
+    N --> B[Devolver a: ignora b negativo]
+    A --> C[Se superan seis de los diez casos]
+    B --> F[Fallan cuatro de los diez casos]
+```
+
+Para `(2, 3)`, el candidato parcial devuelve `2 + 3 = 5`. Para `(2, -3)`, devuelve
+`2 + 0 = 2`, en lugar de `-1`. Los conteos seis/cuatro corresponden al conjunto de prueba
+elegido; no son proporciones universales de todas las entradas posibles.
 
 `range(-4, 6)` produce diez valores: desde -4 hasta 5. El evaluador entrega cada entrada a
 `add_nonnegative_b`, compara su resultado con la suma esperada fija y cuenta:
@@ -240,6 +290,33 @@ Un mejorador pequeño puede elegir entre dos programas propuestos. `demo_model` 
 respuestas fijas únicamente para que el ejemplo sea determinista; un `L` real generaría código
 a partir de un prompt con la solución inicial y la descripción de la utilidad.
 
+Este diagrama sigue únicamente la llamada de suma. Quien invoca recibe primero un programa
+y después solicita su puntuación. El evaluador se utiliza durante la selección y nuevamente
+tras devolver el resultado:
+
+```mermaid
+sequenceDiagram
+    participant C as Quien invoca
+    participant I as Mejorador I_0
+    participant M as demo_model
+    participant U as Evaluador u_A
+    C->>I: Entregar u_A, add_start, demo_model
+    I->>M: Pedir candidatos para add_start
+    M-->>I: add_start y add_nonnegative_b
+    I->>U: Puntuar add_start en diez casos
+    U-->>I: 0.1
+    I->>U: Puntuar add_nonnegative_b en diez casos
+    U-->>I: 0.6
+    Note over I: max elige el programa con 0.6
+    I-->>C: Devolver add_nonnegative_b como solution_after
+    C->>U: Puntuar solution_after
+    U-->>C: 0.6
+```
+
+`add_exact` no está entre estas propuestas, por lo que no puede ganar la selección aunque
+la sección 4.2 muestre su puntuación de `1.0`. El mejorador solo compara los candidatos
+que recibe.
+
 ```python
 def demo_model(initial_solution):
     return [initial_solution, add_nonnegative_b]
@@ -273,16 +350,6 @@ $$
 
 Escribir `u_A(I_0(u_A,s_A,L)) = 0.6` simplemente anida esas dos operaciones. `I_0`
 **recibe** `u_A` para comparar candidatos; el `u_A` exterior **puntúa** la solución devuelta.
-
-```mermaid
-flowchart TD
-    S[Programa inicial de suma] --> I[Mejorador I0 con modelo fijo]
-    I --> C[Dos programas candidatos]
-    C --> U[Evaluador u_A: diez casos fijos para cada uno]
-    U --> P[Elegir programa con 0.6 frente a 0.1]
-    P --> R[Devolver add_nonnegative_b]
-    R --> F[Puntuar programa devuelto: 6 de 10 = 0.6]
-```
 
 Para facilitar la lectura, este ejemplo utiliza funciones de Python; STOP pasa cadenas de
 código fuente y carga programas mediante su implementación. Además, el ejemplo conserva la
@@ -409,7 +476,7 @@ En esta ilustración se selecciona `I_B` y se denomina `I_1`: `B` identifica al 
 Ahora puede leerse la actualización recursiva:
 
 $$
-I_{t+1}=\operatorname{load}\left(I_t\left(\widehat{u}_D,\operatorname{code}(I_t),L\right)\right).
+I_{t+1}=\mathrm{load}\left(I_t\left(\widehat{u}_D,\mathrm{code}(I_t),L\right)\right).
 $$
 
 - `code(I_t)` es el código fuente del mejorador actual, entregado como entrada editable.
@@ -473,21 +540,78 @@ respuestas por llamada, 25 llamadas a la utilidad, 25 llamadas a la metautilidad
 repeticiones de metaevaluación. Son presupuestos separados, no un único límite global de gasto.
 Fuente: [configuración](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/config.py#L1-L20).
 
-**Interpretación: modelo de contabilidad para un protocolo futuro.** Sean `T` las rondas
-externas, `K` los mejoradores candidatos puntuados por ronda, `n` las tareas o repeticiones
-por candidato y `B` las llamadas internas a la interfaz. `B_o` cuenta las llamadas para
-proponer candidatos en cada ronda externa. Si se utiliza toda la asignación, el presupuesto
-de llamadas de la búsqueda es:
+**Interpretación: presupuesto inventado y más pequeño para explicar el cálculo.** Una llamada
+al wrapper es una invocación a la interfaz de software que rodea al modelo de lenguaje.
+No equivale a una prueba unitaria, un token ni necesariamente una solicitud API. Los valores
+siguientes describen un protocolo propuesto, no la configuración anterior ni una reconstrucción
+del gasto de STOP.
+
+| Símbolo | Qué cuenta | Asignación del ejemplo |
+|---|---|---:|
+| `T` | Rondas externas de mejora | 2 rondas |
+| `B_o` | Llamadas a la interfaz del modelo para proponer mejoradores en una ronda externa | 1 llamada por ronda |
+| `K` | Mejoradores candidatos evaluados en esa ronda | 2 candidatos |
+| `n` | Invocaciones de mejora de tareas por candidato, incluidas las repeticiones asignadas | 3 invocaciones por candidato |
+| `B` | Llamadas a la interfaz del modelo dentro de cada invocación de mejora de tarea | 2 llamadas por invocación |
+| `N_wrapper` | Presupuesto total de llamadas para estas dos actividades en todas las rondas | 26 llamadas |
+
+El subíndice de `B_o` es la letra **o**, por las propuestas de la ronda externa, no el número
+cero. La `n` minúscula cuenta invocaciones de mejora, no los diez casos de prueba utilizados
+por `u_A`. Esas diez comprobaciones aritméticas ejecutan Python; no necesitan una llamada
+al modelo por cada caso.
+
+### 7.1. Seguir el presupuesto de una ronda
+
+```mermaid
+flowchart TD
+    R[Una ronda externa] --> P[Proponer mejoradores: B_o = 1 llamada]
+    P --> K[Evaluar K = 2 mejoradores candidatos]
+    K --> A[Candidato IA: n = 3 invocaciones de tareas]
+    K --> B[Candidato IB: n = 3 invocaciones de tareas]
+    A --> CA[3 invocaciones por 2 llamadas = 6]
+    B --> CB[3 invocaciones por 2 llamadas = 6]
+    CA --> E[Evaluación de candidatos: 6 más 6 = 12 llamadas]
+    CB --> E
+    E --> S[Total de ronda: 1 llamada de propuesta más 12 = 13]
+    S --> T[T = 2 rondas: 2 por 13 = 26 llamadas]
+```
+
+Los presupuestos anidados se leen desde dentro hacia fuera:
+
+1. Un candidato mejora una tarea: presupuesto de **2** llamadas a la interfaz del modelo (`B`).
+2. Ese candidato se evalúa mediante tres invocaciones de tareas: **3 × 2 = 6** llamadas (`nB`).
+3. Se evalúan dos candidatos: **2 × 6 = 12** llamadas (`KnB`).
+4. Se añade la llamada externa que los propuso: **1 + 12 = 13** llamadas (`B_o + KnB`).
+5. Se repite la asignación en dos rondas externas: **2 × 13 = 26** llamadas.
+
+Por tanto, el presupuesto general es:
 
 $$
 N_{\mathrm{wrapper}} = T(B_o + KnB).
 $$
 
-Con una asignación inventada de `T=2`, `K=2`, `n=3`, `B=2`, `B_o=1`, se obtienen 26 llamadas
-a la interfaz, sin contar la evaluación de la referencia, las comprobaciones del mejorador
-vigente, las ejecuciones repetidas ni la evaluación final. Con un máximo de cuatro respuestas
-por llamada, el presupuesto correspondiente es de 104 respuestas. No es una estimación de
-tokens, de precio ni una reconstrucción del experimento publicado.
+En el ejemplo, se sustituyen los valores después de identificar sus unidades:
+
+$$
+N_{\mathrm{wrapper}} = 2(1 + 2\cdot3\cdot2)=2(13)=26.
+$$
+
+La suma separa **proponer mejoradores** de **evaluarlos mediante la mejora de tareas**.
+Las multiplicaciones cuentan trabajo repetido. El consumo real puede ser menor si un
+candidato termina antes o no utiliza toda su asignación.
+
+### 7.2. Qué incluye este total y qué deja fuera
+
+Las 26 llamadas cubren únicamente las dos actividades anteriores. Se añaden por separado la
+evaluación de la referencia, las comprobaciones del mejorador vigente, las repeticiones
+adicionales a las incluidas en `n` y la evaluación final. Si el propio evaluador llama a un
+modelo, también deben contabilizarse esas llamadas por separado. El evaluador aritmético
+de la sección 4 no hace ninguna llamada a modelos.
+
+Con un máximo de cuatro respuestas por llamada a la interfaz, el presupuesto sería de
+**26 × 4 = 104 respuestas**. Las respuestas todavía no equivalen a tokens ni a dinero.
+El consumo de tokens depende de la longitud de entradas y salidas; el tiempo transcurrido
+incluye también la ejecución del código y la evaluación.
 
 En la interfaz inspeccionada pueden agruparse prompts idénticos, solicitarse respuestas
 conjuntamente y reintentarse solicitudes fallidas. Por ello, las llamadas a la interfaz,

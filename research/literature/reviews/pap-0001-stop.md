@@ -156,8 +156,37 @@ The evaluator stays fixed while the candidate code changes.
 Task A is to add two integers. Start with a faulty solution that ignores the second input.
 A proposed revision handles non-negative second inputs but still fails on negative ones:
 
+**`add_start` is used.** It is the deliberately incorrect starting solution: `add_start(2, 3)`
+returns `2`, although the required sum is `5`. A `def` statement only defines a function;
+it does not run its body. Later, `u_A(add_start)` passes that function to the evaluator.
+Inside `score_cases`, `solution(a, b)` actually calls it once per case, ten times.
+
+The three definitions are separate handwritten versions, not automatic changes to one function:
+
+| Function | Purpose here | Where it is used |
+|---|---|---|
+| `add_start` | Faulty starting program: ignores `b` | Scored below, then supplied to `I_0` in section 4.3 |
+| `add_nonnegative_b` | Partially correct candidate | Scored below and included among `demo_model` responses |
+| `add_exact` | Fully correct comparison for these cases | Scored below; **not** offered by `demo_model` in section 4.3 |
+
+The comment in the code identifies a handwritten teaching example. It does not disable the
+functions or mean they are unused. All three are evaluated by the final three `print` lines:
+
+```mermaid
+flowchart TD
+    D[Define three separate programs] --> S[add_start]
+    D --> P[add_nonnegative_b]
+    D --> E[add_exact]
+    S --> US[u_A calls add_start on ten cases]
+    P --> UP[u_A calls add_nonnegative_b on ten cases]
+    E --> UE[u_A calls add_exact on ten cases]
+    US --> RS[1 pass out of 10: 0.1]
+    UP --> RP[6 passes out of 10: 0.6]
+    UE --> RE[10 passes out of 10: 1.0]
+```
+
 ```python
-# Original teaching code. No generated code or external dependencies.
+# Three handwritten solution versions, evaluated by the print calls below.
 def add_start(a, b):
     return a
 
@@ -190,6 +219,24 @@ print(u_A(add_start))          # 0.1
 print(u_A(add_nonnegative_b))  # 0.6
 print(u_A(add_exact))          # 1.0
 ```
+
+The partial candidate succeeds when `b` is **non-negative, including zero**. Its internal
+branch can be read without executing the whole evaluator:
+
+```mermaid
+flowchart TD
+    X[Receive a and b] --> Q{Is b at least zero?}
+    Q -->|Yes| P[max of b and zero is b]
+    Q -->|No| N[max of b and zero is zero]
+    P --> A[Return a plus b: correct sum]
+    N --> B[Return a: ignores negative b]
+    A --> C[Six of the ten cases pass]
+    B --> F[Four of the ten cases fail]
+```
+
+For `(2, 3)`, the partial candidate returns `2 + 3 = 5`. For `(2, -3)`, it returns
+`2 + 0 = 2`, instead of `-1`. The six/four counts belong to the chosen test set; they are
+not universal proportions of possible inputs.
 
 `range(-4, 6)` supplies ten values: -4 through 5. The evaluator passes each input to
 `add_nonnegative_b`, compares its return value with the fixed expected sum, and counts:
@@ -227,6 +274,31 @@ A small improver can choose between two proposed programs. `demo_model` supplies
 responses only to make this example deterministic; a real `L` would generate code from a
 prompt containing the initial solution and the utility description.
 
+This diagram follows only the addition call. The caller receives a program first, then
+asks for its score. The evaluator is used during selection and again after the return:
+
+```mermaid
+sequenceDiagram
+    participant C as Caller
+    participant I as Improver I_0
+    participant M as demo_model
+    participant U as Evaluator u_A
+    C->>I: Supply u_A, add_start, demo_model
+    I->>M: Request candidates for add_start
+    M-->>I: add_start and add_nonnegative_b
+    I->>U: Score add_start on ten cases
+    U-->>I: 0.1
+    I->>U: Score add_nonnegative_b on ten cases
+    U-->>I: 0.6
+    Note over I: max selects the program scoring 0.6
+    I-->>C: Return add_nonnegative_b as solution_after
+    C->>U: Score solution_after
+    U-->>C: 0.6
+```
+
+`add_exact` is absent from these proposals, so it cannot win this selection even though
+section 4.2 showed its score of `1.0`. The improver only compares the candidates it receives.
+
 ```python
 def demo_model(initial_solution):
     return [initial_solution, add_nonnegative_b]
@@ -260,16 +332,6 @@ $$
 
 Writing `u_A(I_0(u_A,s_A,L)) = 0.6` simply nests those two operations. `I_0` **receives**
 `u_A` to compare candidates; the surrounding `u_A` **scores** its returned solution.
-
-```mermaid
-flowchart TD
-    S[Starting addition program] --> I[Improver I0 with fixed model]
-    I --> C[Two candidate programs]
-    C --> U[Evaluator u_A: ten fixed cases each]
-    U --> P[Select program scoring 0.6 over 0.1]
-    P --> R[Return add_nonnegative_b]
-    R --> F[Score returned program: 6 of 10 = 0.6]
-```
 
 This toy uses Python callables for readability; STOP passes solution source strings and loads
 programs through its implementation. It also retains the starting solution among the toy
@@ -391,7 +453,7 @@ the next round. At that point the optimizer used in the next round has changed. 
 update can now be read as:
 
 $$
-I_{t+1}=\operatorname{load}\left(I_t\left(\widehat{u}_D,\operatorname{code}(I_t),L\right)\right).
+I_{t+1}=\mathrm{load}\left(I_t\left(\widehat{u}_D,\mathrm{code}(I_t),L\right)\right).
 $$
 
 - `code(I_t)` is the current improver's source, supplied as editable input.
@@ -449,19 +511,74 @@ improver invocation, six responses per call, 25 utility calls, 25 meta-utility c
 meta-evaluation repetitions. These are separate budgets, not one global spending cap.
 Source: [configuration](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/config.py#L1-L20).
 
-**Interpretation: accounting model for a future protocol.** Let `T` be outer rounds, `K`
-scored candidate improvers per round, `n` tasks or repetitions per candidate, and `B` inner
-wrapper calls. Let `B_o` count outer proposal calls per round. If every allocation is used,
-the search allowance is:
+**Interpretation: a smaller, invented budget to explain the arithmetic.** A wrapper call is
+an invocation of the software interface around the language model. It is not one unit test,
+one token, or necessarily one API request. The numbers below describe a prospective protocol,
+not the defaults above or a reconstruction of STOP's spending.
+
+| Symbol | What it counts | Example allowance |
+|---|---|---:|
+| `T` | Outer improvement rounds | 2 rounds |
+| `B_o` | Model-wrapper calls to propose improvers in one outer round | 1 call per round |
+| `K` | Candidate improvers evaluated in that round | 2 candidates |
+| `n` | Downstream task-improvement invocations per candidate, including any allocated repetitions | 3 invocations per candidate |
+| `B` | Model-wrapper calls within each downstream improvement invocation | 2 calls per invocation |
+| `N_wrapper` | Total wrapper-call allowance for these two activities across all rounds | 26 calls |
+
+The subscript in `B_o` is the letter **o**, for outer proposals, not the number zero.
+Lowercase `n` counts improvement invocations, not the ten test cases used by `u_A`.
+Those ten arithmetic checks execute Python; they do not each require a model call.
+
+### 7.1. Follow the budget for one round
+
+```mermaid
+flowchart TD
+    R[One outer round] --> P[Propose improvers: B_o = 1 call]
+    P --> K[Evaluate K = 2 candidate improvers]
+    K --> A[Candidate IA: n = 3 task invocations]
+    K --> B[Candidate IB: n = 3 task invocations]
+    A --> CA[3 invocations times 2 calls = 6]
+    B --> CB[3 invocations times 2 calls = 6]
+    CA --> E[Candidate evaluation: 6 plus 6 = 12 calls]
+    CB --> E
+    E --> S[Round total: 1 proposal call plus 12 = 13]
+    S --> T[T = 2 rounds: 2 times 13 = 26 calls]
+```
+
+Read the nested budgets from the inside out:
+
+1. One candidate improves one task: allowance of **2** model-wrapper calls (`B`).
+2. That candidate is evaluated through three task invocations: **3 × 2 = 6** calls (`nB`).
+3. Evaluate two candidates: **2 × 6 = 12** calls (`KnB`).
+4. Add the outer call that proposed them: **1 + 12 = 13** calls (`B_o + KnB`).
+5. Repeat the allocation for two outer rounds: **2 × 13 = 26** calls.
+
+Thus the general allowance is:
 
 $$
 N_{\mathrm{wrapper}} = T(B_o + KnB).
 $$
 
-For an invented allocation `T=2`, `K=2`, `n=3`, `B=2`, `B_o=1`, this gives 26 wrapper calls,
-before baseline scoring, incumbent checks, repeated runs, or final evaluation. With at most
-four responses per call, the corresponding response allowance is 104. This is not a token
-estimate, a price estimate, or a reconstruction of the published experiment.
+For the example, substitute values only after identifying their units:
+
+$$
+N_{\mathrm{wrapper}} = 2(1 + 2\cdot3\cdot2)=2(13)=26.
+$$
+
+The sum separates **proposing improvers** from **evaluating them by running downstream
+improvements**. The products count repeated work. Actual usage can be smaller if a candidate
+stops early or does not use its full allocation.
+
+### 7.2. What this total includes and leaves out
+
+The 26 calls cover only the two activities specified above. Add baseline scoring, incumbent
+checks, additional repetitions beyond `n`, and final evaluation separately. If an evaluator
+itself calls a model, account for those calls separately too. There is no such model call in
+the arithmetic evaluator used in section 4.
+
+At most four responses per wrapper call would yield an allowance of **26 × 4 = 104
+responses**. Responses are still not tokens or money. Token usage depends on the length of
+inputs and outputs; elapsed time also includes code execution and evaluation.
 
 In the inspected wrapper, identical prompts can be grouped, responses requested together,
 and failed requests retried. Therefore wrapper calls, API requests, generated responses, and
