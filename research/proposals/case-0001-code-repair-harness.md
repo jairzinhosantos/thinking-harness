@@ -9,6 +9,8 @@ updated: 2026-10-02
 
 # Code repair harness
 
+English | [Español](case-0001-code-repair-harness.es.md)
+
 ## 1. Purpose and current scope
 
 Explore whether a bounded change to a coding agent's repair loop can improve its ability

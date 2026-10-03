@@ -9,6 +9,14 @@ The following Markdown specifications support case selection. They contain ficti
 examples, three complexity levels, proposed EDA, and evaluation boundaries. No case has
 been implemented or selected as the thesis contribution.
 
+Both case specifications have complete Spanish reading versions:
+[case-0001](case-0001-code-repair-harness.es.md) and
+[case-0002](case-0002-service-workflow-harness.es.md).
+English remains primary. This scoped language exception covers these two cases.
+Each translation shares the source identity, revision, status, and evidence boundaries;
+its `translation_of` metadata avoids a duplicate catalog record. Keep paired content and
+diagrams synchronized in the same PR. It does not establish translations for all documents.
+
 | Case | Proposed focus | Main feasibility tradeoff |
 |---|---|---|
 | [case-0001: Code repair harness](case-0001-code-repair-harness.md) | Feedback selection within a bounded coding repair loop | A small local setup, but task and test quality need careful control |

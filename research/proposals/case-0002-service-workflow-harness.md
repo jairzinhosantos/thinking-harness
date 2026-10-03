@@ -9,6 +9,8 @@ updated: 2026-10-02
 
 # Simulated service workflow harness
 
+English | [Español](case-0002-service-workflow-harness.es.md)
+
 ## 1. Purpose and current scope
 
 Explore whether a bounded change to an agent's recovery policy can improve completion
