@@ -1,4 +1,6 @@
 id,title,status,revision,created,updated,path
+case-0001,Code repair harness,draft,1,2026-10-02,2026-10-02,research/proposals/case-0001-code-repair-harness.md
+case-0002,Simulated service workflow harness,draft,1,2026-10-02,2026-10-02,research/proposals/case-0002-service-workflow-harness.md
 dec-0001,Public research core and private extension,accepted,1,2026-09-29,2026-10-01,docs/decisions/dec-0001-public-research-core.md
 dec-0002,Branching and English-only project content,accepted,1,2026-09-30,2026-10-01,docs/decisions/dec-0002-branching-and-english-standard.md
 dec-0003,Project-author voice,accepted,1,2026-10-01,2026-10-01,docs/decisions/dec-0003-project-author-voice.md
