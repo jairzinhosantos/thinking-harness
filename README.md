@@ -15,6 +15,8 @@ and final contribution remain open. No improvement method or scientific reproduc
 has been implemented yet. Existing code validates the repository itself.
 
 `main` holds reviewed baselines. `develop` integrates ongoing work through task PRs.
+Both task integration and baseline promotion require human review and a merge performed
+by the human maintainer; passing CI does not merge a PR.
 The initial bootstrap predates this workflow; it is not a formal research release.
 See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 
