@@ -4,7 +4,7 @@ title: "Progress measurement and human review"
 status: draft
 revision: 1
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-02
 ---
 
 # Progress measurement and human review
@@ -41,7 +41,17 @@ Commit count, lines of code, and downloaded papers are not scientific success me
 4. QA checks independently, records results, and returns specific defects.
 5. Review the proposal, diff or reading note, supporting checks, limitations, and required
    decision. Human review determines whether to accept, adjust, or reject the result.
-6. Integrate accepted work and record learning for the next task.
+6. For repository changes, the human maintainer performs the squash merge into develop
+   after acceptance and passing checks. Record learning and close the task only when all
+   criteria are met; passing checks alone is not acceptance.
+7. Separately review readiness for a baseline approximately every one or two weeks.
+   Promotion requires a human decision, a promotion PR, passing checks, explicit baseline
+   acceptance, and a maintainer-performed merge commit into main. This cadence is indicative.
+
+The two integration gates are defined in the
+[branch standard](../standards/std-0003-branching-and-releases.md) and
+[dec-0005](../decisions/dec-0005-human-integration-and-promotion.md).
+This decision does not select one of the progress-measurement options above.
 
 Existing authorization remains valid. Do not request approval for every routine step.
 Escalate changes to scope, budget, information exposure, or scientific conclusions not
