@@ -2,14 +2,16 @@
 id: case-0001
 title: "Code repair harness"
 status: draft
-revision: 1
+revision: 2
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-09
 ---
 
 # Code repair harness
 
 English | [Español](case-0001-code-repair-harness.es.md)
+
+[Scenario matrix and EDA plan](doc-0005-code-repair-scenarios-and-eda.md)
 
 ## 1. Purpose and current scope
 
@@ -100,10 +102,12 @@ flowchart TD
     E --> V[Quality and resource record]
 ```
 
-L2 would add a rule such as applying a ten-percent discount to a 1,000-cent subtotal
-before a twenty-percent tax: 900 cents before tax and 1,080 cents after tax. This is an
-invented arithmetic rule, not jurisdictional tax guidance. Rounding and invalid-input
-rules would need explicit definitions before generating instances.
+L2 would add a fixed 100-cent discount to a 1,000-cent subtotal before a twenty-percent
+tax: 900 cents before tax and 1,080 cents after tax. Reversing these operations produces
+1,100 cents, so this example can detect an ordering error. Two proportional adjustments
+alone would not distinguish their order. This is an invented arithmetic rule, not
+jurisdictional tax guidance. Rounding and invalid-input rules must be defined or explicitly
+excluded before generating instances; the linked matrix specifies the initial restrictions.
 
 ## 5. Tasks, reference evidence, and EDA
 

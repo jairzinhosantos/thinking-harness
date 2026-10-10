@@ -6,12 +6,14 @@ source_revision: 1
 title: "Simulated service workflow harness"
 status: draft
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-09
 ---
 
 # Harness de un flujo de servicio simulado
 
 [English](case-0002-service-workflow-harness.md) | Español
+
+[Matriz de escenarios y plan de EDA](doc-0006-service-workflow-scenarios-and-eda.es.md)
 
 ## 1. Propósito y alcance actual
 

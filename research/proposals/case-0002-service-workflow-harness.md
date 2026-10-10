@@ -4,12 +4,14 @@ title: "Simulated service workflow harness"
 status: draft
 revision: 1
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-09
 ---
 
 # Simulated service workflow harness
 
 English | [Español](case-0002-service-workflow-harness.es.md)
+
+[Scenario matrix and EDA plan](doc-0006-service-workflow-scenarios-and-eda.md)
 
 ## 1. Purpose and current scope
 

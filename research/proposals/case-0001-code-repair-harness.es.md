@@ -2,16 +2,18 @@
 translation_of: case-0001
 language: es
 source: case-0001-code-repair-harness.md
-source_revision: 1
+source_revision: 2
 title: "Code repair harness"
 status: draft
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-09
 ---
 
 # Harness de corrección de código
 
 [English](case-0001-code-repair-harness.md) | Español
+
+[Matriz de escenarios y plan de EDA](doc-0005-code-repair-scenarios-and-eda.es.md)
 
 ## 1. Propósito y alcance actual
 
@@ -106,11 +108,13 @@ flowchart TD
     E --> V[Registro de calidad y recursos]
 ```
 
-L2 añadiría una regla como aplicar un descuento del diez por ciento a un subtotal de
-1.000 céntimos antes de un impuesto del veinte por ciento: 900 céntimos antes del impuesto
-y 1.080 después. Es una regla aritmética inventada, no una indicación tributaria de alguna
-jurisdicción. Las reglas de redondeo y de entradas no válidas tendrían que definirse
-explícitamente antes de generar instancias.
+L2 añadiría un descuento fijo de 100 céntimos a un subtotal de 1.000 céntimos antes de
+un impuesto del veinte por ciento: 900 céntimos antes del impuesto y 1.080 después.
+Invertir estas operaciones produce 1.100 céntimos, por lo que este ejemplo permite detectar
+un error de orden. Dos ajustes proporcionales por sí solos no distinguirían su orden.
+Es una regla aritmética inventada, no una indicación tributaria de alguna jurisdicción.
+El redondeo y las entradas no válidas deben definirse o excluirse explícitamente antes
+de generar instancias; la matriz enlazada especifica las restricciones iniciales.
 
 ## 5. Tareas, evidencia de referencia y EDA
 
