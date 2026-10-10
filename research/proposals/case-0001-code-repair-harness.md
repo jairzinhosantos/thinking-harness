@@ -196,5 +196,5 @@ Task families, model, search method, and budget remain open. Implementation and 
 require a separate [protocol](../../templates/experiment-protocol.md). Future locations:
 `benchmarks/case-0001/` for tasks/evaluators, `data/` for provenance, `experiments/` for evidence.
 
-Method reference: [STOP](../literature/reviews/pap-0001-stop.md).
+Method reference: [STOP](../literature/reviews/pap-0001-stop/README.md).
 Other directions: [research options](../synthesis/research-options.md).

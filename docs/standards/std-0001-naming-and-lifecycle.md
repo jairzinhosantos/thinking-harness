@@ -1,10 +1,10 @@
 ---
 id: std-0001
 title: "Naming and document lifecycle"
-status: accepted
-revision: 3
+status: in-review
+revision: 4
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-10
 ---
 
 # Naming and document lifecycle
@@ -22,8 +22,8 @@ Check docs/catalog.csv and research/literature/catalog.csv before allocating an 
 
 ## Paper review pairs
 Keep the English primary path `<pap-id>-<description>.md` and place its Spanish translation
-beside it as `<pap-id>-<description>.es.md`. For example, pap-0001-stop.md and
-pap-0001-stop.es.md are two language versions of one review, not separate paper records.
+beside it as `<pap-id>-<description>.es.md`. For example, pap-0011-self-harness.md and
+pap-0011-self-harness.es.md are two language versions of one review, not separate paper records.
 English remains implicit in the primary filename so existing links stay stable.
 
 Only the primary file carries `id` and appears in docs/catalog.csv. The translation uses
@@ -35,6 +35,19 @@ The translation has no independent document ID or revision sequence. Literature 
 records, bibliographic keys, and reading states remain shared.
 
 See the [translation workflow](std-0004-writing-and-diagrams.md#paper-review-translations).
+
+## STOP study-folder pilot
+STOP uses `research/literature/reviews/pap-0001-stop/README.md` and `README.es.md` as a
+scoped pilot. The primary README retains `id: pap-0001`; the directory carries the ID and
+English description. Its translation uses `source: README.md`. The catalog points to the
+primary README, with no duplicate document identity. Code excerpts, mathematical explanations,
+and local inspection guidance share this review. Its downloaded original source stays in
+`_local/upstream/`, excluded from Git; pinned upstream links remain usable on GitHub.
+
+Only STOP is migrated. Other reviews and the general template retain the existing layout
+until the pilot is reviewed. No notebook or execution environment is required for source
+inspection. Future paper-folder READMEs must have an ID matching their immediate directory;
+ordinary controlled documents still require the ID in their filename.
 
 ## Revisions
 Keep paths stable during editing; Git records changes. A formal revision increments
@@ -58,6 +71,9 @@ Run `python3 scripts/check_repository.py --write-catalog` to generate docs/catal
 Do not use nested YAML structures in these fields. Quote titles containing a colon.
 
 ## Revision history
+Revision 4 records the authorized STOP-only folder pilot on 2026-10-10. Generalizing the
+layout and narrative template remains pending review.
+
 Revision 3 adds paired English and Spanish paper-review filenames and derived translation
 metadata on 2026-10-01; see [dec-0004](../decisions/dec-0004-bilingual-paper-reviews.md).
 

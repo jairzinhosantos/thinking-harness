@@ -47,8 +47,14 @@ def controlled_documents(root):
         if identifier in seen:
             errors.append(f'{relative}: duplicate id {identifier}')
         seen.add(identifier)
-        if not path.name.startswith(identifier + '-'):
-            errors.append(f'{relative}: filename must start with its id')
+        paper_readme = (
+            path.name == 'README.md'
+            and identifier.startswith('pap-')
+            and path.parent.parent == root / 'research/literature/reviews'
+            and path.parent.name.startswith(identifier + '-')
+        )
+        if not path.name.startswith(identifier + '-') and not paper_readme:
+            errors.append(f'{relative}: filename must start with its id or be a paper-folder README')
         for field in FIELDS[:-1]:
             if not meta.get(field):
                 errors.append(f'{relative}: missing {field}')

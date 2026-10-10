@@ -21,7 +21,7 @@ See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 ## Start here
 
 - Read the [research charter](docs/doc-0001-research-charter.md) and [initial plan](docs/doc-0002-initial-plan.md).
-- Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop.md).
+- Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
 - Follow work in the [Project](https://github.com/users/jairzinhosantos/projects/2).
 - Before contributing, read [AGENTS.md](AGENTS.md), the [operating model](docs/operating-model.md),
   and the [writing and diagram standard](docs/standards/std-0004-writing-and-diagrams.md).

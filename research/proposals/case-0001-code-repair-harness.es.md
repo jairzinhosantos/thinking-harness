@@ -199,5 +199,5 @@ Siguen pendientes las familias de tareas, modelo, método de búsqueda y presupu
 ejecutar requiere un [protocolo](../../templates/experiment-protocol.md) separado. Ubicaciones futuras:
 `benchmarks/case-0001/` para tareas/evaluadores, `data/` para procedencia, `experiments/` para evidencia.
 
-Referencia de método: [STOP](../literature/reviews/pap-0001-stop.es.md).
+Referencia de método: [STOP](../literature/reviews/pap-0001-stop/README.es.md).
 Otras líneas: [opciones de investigación](../synthesis/research-options.md).

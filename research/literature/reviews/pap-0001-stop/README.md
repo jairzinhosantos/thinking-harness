@@ -2,19 +2,31 @@
 id: pap-0001
 title: "STOP: mechanism, code trace, and evaluation"
 status: in-review
-revision: 3
+revision: 4
 created: 2026-09-29
-updated: 2026-10-02
+updated: 2026-10-10
 ---
 
 # STOP: mechanism, code trace, and evaluation
 
-English (primary) | [Español](pap-0001-stop.es.md)
+English (primary) | [Español](README.es.md)
 
 STOP is a useful reference for separating a task solution from the program that improves it.
 For thinking-harness, the immediate question is which component should be allowed to change
 and how its improvement can be measured independently of the search that produced it.
 This review prepares that discussion; it does not select the thesis method.
+
+**Study path:**
+
+1. [Sources and review state](#1-sources-and-review-state)
+2. [Contribution and evidence](#2-contribution-and-evidence)
+3. [Mechanism step by step](#3-mechanism-step-by-step)
+4. [Original code walkthrough](#4-original-code-walkthrough)
+5. [Local inspection and execution](#5-local-inspection-and-execution)
+6. [Critical reading and application](#6-critical-reading-and-application)
+
+STOP-only layout pilot: the review and code analysis share this README. Other papers
+and the general review template retain their current structure.
 
 ## 1. Sources and review state
 
@@ -44,7 +56,7 @@ commit `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4`. All code links below use this
 | Assisted source inspection | Abstract, introduction, sections 3-8, Algorithm 1, Figures 2 and 4, Table 1, and Appendix K; partial inspection of A.1-A.2 |
 | Complete paper reading | Partial; related work, proofs, and remaining appendices need further study |
 | Static code inspection | Runner, seed improvers, meta-utility, parity utility, model wrapper, loader, configuration, and transfer entry point |
-| Execution | Upstream code not run; no third-party imports, model calls, or scientific experiments. Only the original deterministic teaching snippets in section 4 were executed to check their values |
+| Execution | Upstream code not run; no third-party imports, model calls, or scientific experiments. Only the original deterministic teaching snippets in section 3.2 were executed to check their values |
 | Guided discussion | Pending; document preparation does not establish completed personal reading |
 | Reproduction | No reproduced results |
 
@@ -52,7 +64,7 @@ commit `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4`. All code links below use this
 an illustrative proposal. `static-inspection` denotes directly inspected source behavior,
 which remains unverified at runtime. `reproduced-result` is reserved for measured evidence.
 
-## 2. Published contribution and evidence
+## 2. Contribution and evidence
 
 **Author-claim.** The central contribution is to use an improver to revise its own code,
 while keeping the language model fixed. The paper builds the argument in three parts:
@@ -90,12 +102,14 @@ In section 5.1, the task utility averages **20 development instances** of noisy 
 The meta-utility uses **five repeated copies of the same task/starting-solution pair** because
 model calls are stochastic. Generalization is evaluated on **50 held-out instances**.
 Separately, the plot aggregates **five independent STOP runs**. These are distinct levels of
-repetition, not five task families. Section 6 below describes the implementation's inner data.
+repetition, not five task families. Section 3.3 below describes the implementation's inner data.
 
 Historical models are `gpt-4-0314`, `gpt-3.5-turbo-0613`, and
 `Mixtral-8x7B-Instruct-v0.1`. Source: [paper v3](https://arxiv.org/pdf/2310.02304v3).
 
-## 3. The two improvement levels
+## 3. Mechanism step by step
+
+### 3.1. The two improvement levels
 
 **Static-inspection and interpretation.** The seed function receives code, an evaluator,
 and a model interface. It generates alternatives and selects by score. At the task level,
@@ -131,14 +145,14 @@ Fixed for a controlled comparison: model, evaluator, task split, and resource li
 Mutable: candidate solution code inside an evaluation, and improver code across outer rounds.
 A changed prompt or search strategy does not by itself imply updated model weights.
 
-## 4. Worked example: from a test result to a new improver
+### 3.2. Concrete example
 
 **Interpretation: original teaching example, not STOP measurements.** Addition,
 multiplication, and maximum replace the paper's harder tasks so that every score can be
 traced. The functions and model responses below are written in advance. There are no model
 calls, learning, or reproduced STOP results in this example.
 
-### 4.1. Separate the three objects
+#### 3.2.1. Separate the three objects
 
 | Object | Role | Output |
 |---|---|---|
@@ -151,7 +165,7 @@ calls, learning, or reproduced STOP results in this example.
 are alternative programs, not the evaluators `u_A` and `u_B`.
 The evaluator stays fixed while the candidate code changes.
 
-### 4.2. What exactly produces a score of 0.6?
+#### 3.2.2. What exactly produces a score of 0.6?
 
 Task A is to add two integers. Start with a faulty solution that ignores the second input.
 A proposed revision handles non-negative second inputs but still fails on negative ones:
@@ -165,9 +179,9 @@ The three definitions are separate handwritten versions, not automatic changes t
 
 | Function | Purpose here | Where it is used |
 |---|---|---|
-| `add_start` | Faulty starting program: ignores `b` | Scored below, then supplied to `I_0` in section 4.3 |
+| `add_start` | Faulty starting program: ignores `b` | Scored below, then supplied to `I_0` in section 3.2.3 |
 | `add_nonnegative_b` | Partially correct candidate | Scored below and included among `demo_model` responses |
-| `add_exact` | Fully correct comparison for these cases | Scored below; **not** offered by `demo_model` in section 4.3 |
+| `add_exact` | Fully correct comparison for these cases | Scored below; **not** offered by `demo_model` in section 3.2.3 |
 
 The comment in the code identifies a handwritten teaching example. It does not disable the
 functions or mean they are unused. All three are evaluated by the final three `print` lines:
@@ -268,7 +282,7 @@ in the table or a STOP result. Noisy parity in section 5.1 uses prediction accur
 aggregate utility can also lie between zero and one. The evaluator must be specified before
 comparing candidates; changing it mid-comparison would change what the score means.
 
-### 4.3. Open the nested expression, one operation at a time
+#### 3.2.3. Open the nested expression, one operation at a time
 
 A small improver can choose between two proposed programs. `demo_model` supplies fixed
 responses only to make this example deterministic; a real `L` would generate code from a
@@ -297,7 +311,7 @@ sequenceDiagram
 ```
 
 `add_exact` is absent from these proposals, so it cannot win this selection even though
-section 4.2 showed its score of `1.0`. The improver only compares the candidates it receives.
+section 3.2.2 showed its score of `1.0`. The improver only compares the candidates it receives.
 
 ```python
 def demo_model(initial_solution):
@@ -324,6 +338,10 @@ Read this execution in order:
 5. The outer `u_A(solution_after)` evaluates the returned program and obtains `0.6` again.
    This last call scores the improver's output; it does not generate another revision.
 
+In the formula below, `s_A` names the starting source and `s'_A` names the returned
+solution. The prime means "after improvement", not a derivative. Parentheses mean a
+function call: first obtain a program, then score it.
+
 Thus the compact expression has two operations, not a recursive evaluator:
 
 $$
@@ -339,7 +357,7 @@ candidates. The inspected STOP seed selects only among generated candidates, so 
 the starting program is not a guarantee of that seed. The toy does not model exceptions,
 timeouts, resource accounting, or isolation and is not a runner for untrusted code.
 
-### 4.4. Where does the mean `(0.6 + 0.7 + 0.5) / 3` come from?
+#### 3.2.4. Where does the mean `(0.6 + 0.7 + 0.5) / 3` come from?
 
 Repeat task-level improvement for tasks B and C. Suppose the returned programs are
 `multiply_magnitude` and `maximum_left`. Their results can also be calculated directly:
@@ -403,13 +421,49 @@ $$
 \widehat{u}_D(I)=\frac{1}{n}\sum_{j=1}^{n}u_j\bigl(I(u_j,s_j,L)\bigr).
 $$
 
+**Read the symbols before substituting values.** This is the review's explanatory notation
+for the empirical meta-utility, not a claim that every symbol is transcribed from the paper.
+
+| Symbol | Read as | Object or operation |
+|---|---|---|
+| `I` | Improver | A program that returns solution code |
+| `L` | Language model interface | Used to propose code; weights stay fixed |
+| `D` | Evaluation collection | Entries consisting of a utility and starting solution |
+| `j` | Entry index | Selects one pair; not a power or derivative |
+| `u_j`, `s_j` | Utility and starting solution for entry j | A scoring function and program source |
+| `n` | Number of entries | The denominator of the mean; not cases inside one utility |
+| `hat u_D` | Estimated utility on D | The hat marks an empirical estimate, not exact future performance |
+| `sum`, written as Σ | Sum | Add the scores from entry 1 through entry n |
+
+Read the expression **inside out**:
+
+1. `I(u_j, s_j, L)` returns an improved solution for entry `j`.
+2. `u_j(...)` scores that returned solution.
+3. `sum` adds the scores: `0.6 + 0.7 + 0.5 = 1.8`.
+4. Divide by `n = 3`: `1.8 / 3 = 0.6`, the score assigned to the improver.
+
+```mermaid
+flowchart TD
+    I[Evaluate the same improver I] --> A[Entry A: return solution and score 0.6]
+    I --> B[Entry B: return solution and score 0.7]
+    I --> C[Entry C: return solution and score 0.5]
+    A --> S[Sum scores: 1.8]
+    B --> S
+    C --> S
+    S --> M[Divide by three entries: 0.6]
+```
+
+The diagram uses the fictional three-task example. The inspected STOP configuration repeats
+the same noisy-parity improvement problem five times, with model sampling, rather than using
+these three arithmetic tasks. Section 3.3 explains the data inside that problem.
+
 There are two different divisions: **ten cases** to score each solution, then **three tasks**
 to score the improver. The mean happens to equal `18/30` because the tasks have equal case
 counts; unequal counts would distinguish an equal-task mean from a pooled-case fraction.
 Likewise, scores `3/10`, `5/10`, and `8/10` would give a meta-score of approximately `0.5333`,
 not `0.6`. Those are a different set of example outcomes.
 
-### 4.5. Where does recursive self-improvement happen?
+#### 3.2.5. Where does recursive self-improvement happen?
 
 So far, a fixed improver has produced task solutions. The **outer round** changes the
 improver itself. Instead of supplying addition code as the editable input, supply the code of
@@ -456,6 +510,19 @@ $$
 I_{t+1}=\mathrm{load}\left(I_t\left(\widehat{u}_D,\mathrm{code}(I_t),L\right)\right).
 $$
 
+**Read the update as four operations.** `t` is a round index; `t + 1` is the next round.
+The subscript is not multiplication. `code` and `load` name conceptual operations in this
+review; the Python implementation uses source strings and `temp_override`.
+
+| Operation | Input | Output in the hypothetical example |
+|---|---|---|
+| `code(I_t)` | Running improver I0 | Its source text |
+| `I_t(hat u_D, code(I_t), L)` | Source, meta-evaluator, fixed model | Selected candidate IB as source text |
+| `load(...)` | Selected source text | An executable improver |
+| Assign `I_{t+1}` | That executable | I1, used to construct the following candidate |
+
+The equality defines the next program; it does not state that its score necessarily increases.
+
 - `code(I_t)` is the current improver's source, supplied as editable input.
 - `I_t(...)` uses the model and the meta-utility to return proposed improver source.
 - `load(...)` makes the selected source the executable next improver; it is not a sandbox design.
@@ -473,23 +540,7 @@ can reverse the ranking. Selecting repeatedly against that test set would turn i
 data. A thesis protocol therefore needs separate selection and final-test evidence, repeated
 independent runs, and resource limits.
 
-## 5. Algorithm-to-code map
-
-**Static-inspection.** This is a dependency trace, not a verified execution trace.
-The descriptive `utility.py` files supplied to generated code differ from the evaluators
-implemented in `secret_utility.py`.
-
-| Responsibility | Pinned source | Observation |
-|---|---|---|
-| Initial proposals | [Seed, lines 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23) | One batch; extraction; candidate selection with `max` |
-| Outer iteration | [Runner, lines 122-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L122-L179) | Invokes the current improver; evaluates its result; saves and reloads returned code |
-| Meta-evaluation | [Meta-utility, lines 65-143](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L65-L143) | Repeats downstream improvement; returns mean validation score; optionally logs test scores |
-| Task evaluation | [Parity utility, lines 9-95](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/parity_noise/secret_utility.py#L9-L95) | Generates instances, invokes the solution, and scores predictions |
-| Model budget | [Wrapper, lines 226-250](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/language_model.py#L226-L250) | Counts wrapper invocations and limits responses per invocation |
-| Loading generated code | [Helpers, lines 52-77 and 154-192](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/helpers.py#L52-L192) | Writes source to a temporary module and imports it |
-| Transfer entry point | [Transfer evaluation, lines 207-214](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/transfer_eval.py#L207-L214) | Chooses a stored improver and invokes the task evaluator |
-
-## 6. Data and evaluation in the inspected implementation
+### 3.3. Data and evaluation
 
 **Static-inspection.** The parity task generates synthetic data: 10 bits, 100 labeled training
 examples, and 20 test inputs per instance. Noise affects training labels. Development utility
@@ -504,7 +555,7 @@ fine-tuning dataset. Public coding tasks, generated game instances, or simulated
 cases could provide that evidence. The selected case must support repeatable scoring and
 separation between search feedback and final evaluation.
 
-## 7. Cost accounting
+### 3.4. Cost accounting
 
 **Static-inspection.** Defaults specify six outer iterations, four model-wrapper calls per
 improver invocation, six responses per call, 25 utility calls, 25 meta-utility calls, and five
@@ -529,7 +580,7 @@ The subscript in `B_o` is the letter **o**, for outer proposals, not the number 
 Lowercase `n` counts improvement invocations, not the ten test cases used by `u_A`.
 Those ten arithmetic checks execute Python; they do not each require a model call.
 
-### 7.1. Follow the budget for one round
+#### 3.4.1. Follow the budget for one round
 
 ```mermaid
 flowchart TD
@@ -569,12 +620,12 @@ The sum separates **proposing improvers** from **evaluating them by running down
 improvements**. The products count repeated work. Actual usage can be smaller if a candidate
 stops early or does not use its full allocation.
 
-### 7.2. What this total includes and leaves out
+#### 3.4.2. What this total includes and leaves out
 
 The 26 calls cover only the two activities specified above. Add baseline scoring, incumbent
 checks, additional repetitions beyond `n`, and final evaluation separately. If an evaluator
 itself calls a model, account for those calls separately too. There is no such model call in
-the arithmetic evaluator used in section 4.
+the arithmetic evaluator used in section 3.2.
 
 At most four responses per wrapper call would yield an allowance of **26 × 4 = 104
 responses**. Responses are still not tokens or money. Token usage depends on the length of
@@ -589,7 +640,155 @@ For reuse, compare total search cost plus deployment cost across `m` tasks again
 `m` tasks with a fixed improver. Include human review effort separately. A higher task score
 alone cannot establish lower development cost.
 
-## 8. Reproduction gaps and validity risks
+## 4. Original code walkthrough
+
+**Static-inspection.** This is a dependency trace, not a verified execution trace.
+The descriptive `utility.py` files supplied to generated code differ from the evaluators
+implemented in `secret_utility.py`.
+
+| Responsibility | Pinned source | Observation |
+|---|---|---|
+| Initial proposals | [Seed, lines 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23) | One batch; extraction; candidate selection with `max` |
+| Outer iteration | [Runner, lines 122-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L122-L179) | Invokes the current improver; evaluates its result; saves and reloads returned code |
+| Meta-evaluation | [Meta-utility, lines 65-143](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L65-L143) | Repeats downstream improvement; returns mean validation score; optionally logs test scores |
+| Task evaluation | [Parity utility, lines 9-95](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/parity_noise/secret_utility.py#L9-L95) | Generates instances, invokes the solution, and scores predictions |
+| Model budget | [Wrapper, lines 226-250](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/language_model.py#L226-L250) | Counts wrapper invocations and limits responses per invocation |
+| Loading generated code | [Helpers, lines 52-77 and 154-192](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/helpers.py#L52-L192) | Writes source to a temporary module and imports it |
+| Transfer entry point | [Transfer evaluation, lines 207-214](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/transfer_eval.py#L207-L214) | Chooses a stored improver and invokes the task evaluator |
+
+
+### 4.1. Follow the original code in four steps
+
+**Original excerpts**, with indentation adjusted for reading; omitted surrounding code remains
+in the linked files. These are not standalone scripts. Code: Microsoft and contributors,
+[MIT license](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/LICENSE). The arithmetic examples in section 3.2 are **illustrative code**,
+not excerpts from this repository.
+
+**A. Propose and select solution source.**
+[Seed, lines 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23):
+
+```python
+n_messages = min(language_model.max_responses_per_call, utility.budget)
+new_solutions = language_model.batch_prompt(expertise, [message] * n_messages, temperature=0.7)
+new_solutions = extract_code(new_solutions)
+print("new_solutions:", new_solutions)
+best_solution = max(new_solutions, key=utility)
+return best_solution
+```
+
+- **Input:** `initial_solution` is source text; the preceding prompt includes it and `utility.str`.
+- **Operation:** bound the number of responses, ask the model for candidates, extract code,
+  then call `utility` on each candidate through `max(..., key=utility)`.
+- **Output:** `best_solution` is source text, not its score. It may be task code or improver
+  code depending on the input and evaluator. The original seed does not retain the starting
+  source among its candidates automatically.
+
+**B. Test a candidate improver by asking it to improve a downstream solution.**
+[`get_improver`, lines 33-35](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L33-L35):
+
+```python
+new_improve_algorithm = temp_override(improve_str, "improve_algorithm")
+improved_algorithm_str = new_improve_algorithm(base_algorithm_str, utility, language_model)
+return improved_algorithm_str
+```
+
+- **Input:** `improve_str` is candidate improver source.
+- **Operation:** load its `improve_algorithm` function and call it on `base_algorithm_str`,
+  the downstream starting program, with that task's utility and model interface.
+- **Output:** `improved_algorithm_str` is the resulting task solution. This name does not
+  mean it is another improver: its role depends on this call's inputs.
+
+**C. Turn returned solutions into a score for the candidate improver.**
+Two separate original lines from [`meta_utility`](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L123-L138):
+
+```python
+new_utility_val = utility_wrapped(improved_algorithm_str, mode="val")
+```
+
+```python
+expected_utility_val += new_utility_val / n_tests
+```
+
+The first line scores a returned task solution. The second adds its contribution to the
+mean. For the teaching values `0.6`, `0.7`, `0.5` with `n_tests = 3`, the contributions are
+`0.2`, about `0.2333`, and about `0.1667`, totaling `0.6`. These are illustrative values;
+the inspected default is five repeated improvements. `meta_utility` returns that mean.
+
+**D. Load the returned improver for the next round.**
+[Runner, lines 175-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L175-L179), inside its successful-return branch:
+
+```python
+if config["iterative"]:
+    improver_str = new_algorithm_str
+algorithm_to_improve = new_algorithm_str
+previous_improve_algorithm = improve_algorithm
+improve_algorithm = temp_override(improver_str, "improve_algorithm")
+```
+
+With `config["iterative"] = True`, the returned source becomes the next active improver.
+The runner's success check rejects a zero score, but does not require beating the incumbent.
+This is why **loading a new version is not evidence of improvement**.
+
+```mermaid
+flowchart TD
+    A[Current improver proposes source for candidate J] --> B[meta_utility receives source J]
+    B --> C[get_improver loads J]
+    C --> D[J returns downstream solution source]
+    D --> E[Task utility scores the solution]
+    E --> F[meta_utility averages repeated scores]
+    F --> G[Current improver selects source by that score]
+    G --> H[Runner checks return and loads next improver]
+```
+
+This is a static reading path. It omits error paths and resource wrappers; the source map
+above and the limitations in section 5.2 locate those details.
+
+## 5. Local inspection and execution
+
+### 5.1. Open the unchanged source
+
+| Field | Inspected snapshot |
+|---|---|
+| Repository | [microsoft/stop](https://github.com/microsoft/stop) |
+| Commit | `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4` |
+| Downloaded | 2026-10-10 |
+| Local path, relative to this README | `_local/upstream/` |
+| Scope | All 37 tracked files, including 31 Python files; 100,939 bytes excluding Git history |
+| Integrity | Detached at the pinned commit; clean checkout, no source changes |
+| Paper correspondence | Public implementation associated with STOP; exact historical execution environment is not established |
+| Execution | Not run or imported; no dependencies installed and no model calls |
+
+The original repository is local only and excluded from Git. It is not included when another
+reader clones thinking-harness; the pinned web links remain available. Its own README and
+license remain inside `_local/upstream/`. Preserve this folder before deleting or archiving
+a worktree, or download the same commit again.
+
+**Reading order:** open `config.py`, then the seed, meta-utility, runner, and model wrapper
+listed in section 4. Read the text in the editor; opening a file does not require Python.
+
+To obtain the same source in a fresh checkout, run these Git commands **from this paper's
+folder**, only when `_local/upstream/` does not already exist. They download code, not dependencies:
+
+```sh
+git clone --no-checkout https://github.com/microsoft/stop.git _local/upstream
+git -C _local/upstream checkout --detach 0d6780c54306b2486dd36e9c4ae9b49aceb27ea4
+git -C _local/upstream rev-parse HEAD
+git -C _local/upstream status --short
+```
+
+The hash should match the table; a pristine checkout produces no status entries.
+
+**Execution prerequisites, inspected but not installed:** imports reference `numpy`, `pebble`,
+`tqdm`, `openai`, and `jsonlines`. The wrapper also imports a local `api_key.py` configuration
+and uses historical API conventions. The snapshot contains no requirements file, project
+manifest, dependency lock, or declared supported Python version. This is an import inventory,
+not a tested installation recipe.
+
+No notebook or repaired version is included yet. A later execution decision would specify
+compatible dependencies/model, isolation, budget, and deviations in a separate working copy.
+Downloading and understanding the source does not require making it run.
+
+### 5.2. Reproduction gaps and validity risks
 
 These observations concern the pinned snapshot. No runtime failures or exploits were executed.
 
@@ -609,18 +808,20 @@ is available through the same Python evaluator interface, so a trusted orchestra
 would be needed to restrict access. This is an architectural observation, not a demonstrated
 leak or evidence that the published experiments were compromised.
 
-## 9. What is independently established
+## 6. Critical reading and application
+
+### 6.1. What is independently established
 
 - Pinned source inspection supports the call map and the identified transfer-path inconsistency.
 - Static parsing of the downloaded Python files found no syntax errors. It does not establish
   importability, dependency compatibility, runtime correctness, or numerical reproduction.
-- The original Python teaching snippets in section 4 were executed locally: addition scores 0.1, 0.6, and 1.0; task scores 0.6, 0.7, and 0.5; their mean is 0.6. The outer candidate table remains hypothetical, with its arithmetic checked. This validates the explanation, not STOP.
+- The original Python teaching snippets in section 3.2 were executed locally: addition scores 0.1, 0.6, and 1.0; task scores 0.6, 0.7, and 0.5; their mean is 0.6. The outer candidate table remains hypothetical, with its arithmetic checked. This validates the explanation, not STOP.
 - The article's performance claims remain attributed claims. No measured project result exists.
 
 The review is ready for discussion. Complete reading, runtime inspection, proof checking,
 and reproduction remain separate activities.
 
-## 10. Thesis implications and next discussion
+### 6.2. Implications and next discussion
 
 **Interpretation.** Compare three possible scopes before selecting a method:
 
