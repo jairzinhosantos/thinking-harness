@@ -2,7 +2,7 @@
 id: doc-0005
 title: "Code repair scenario matrix and EDA plan"
 status: draft
-revision: 2
+revision: 3
 created: 2026-10-09
 updated: 2026-10-09
 ---
@@ -11,24 +11,16 @@ updated: 2026-10-09
 
 English | [Español](doc-0005-code-repair-scenarios-and-eda.es.md)
 
-## 1. Purpose and evidence boundary
+## 1. Objective
 
-Operationalize [case-0001](case-0001-code-repair-harness.md) as a proposed scenario
-matrix and exploratory data analysis (EDA) plan. The case specification defines the
-research boundary; this document defines candidate observations and acceptance rules.
-No scenario has been implemented, validated, or executed. All numeric examples are
-invented reference calculations, not measurements or a finished golden set.
-
-The EDA will characterize tasks and a fixed baseline before selecting a harness
-intervention. It will not establish improvement, causality, or recursive self-improvement.
-The [service workflow plan](doc-0006-service-workflow-scenarios-and-eda.md) is a separate
-candidate; their task success rates must not be pooled as one benchmark score.
+For [case-0001](case-0001-code-repair-harness.md), identify valid tasks, baseline failures,
+and an affordable harness intervention through exploratory data analysis (EDA).
+**Planned only:** no code, runs, validated golden set, or results. EDA supports feasibility,
+not causal, improvement, or economic claims. Analyze the [service case](doc-0006-service-workflow-scenarios-and-eda.md) separately.
 
 ## 2. Scenario matrix
 
-Scenario IDs are local to case-0001. Each row is a scenario template; concrete inputs
-will receive instance IDs before execution. All rows currently have status **planned**.
-L0 validates the measurement instrument and is excluded from agent-performance scores.
+Each row is a planned template with future instance IDs. L0 checks the evaluator and is excluded from performance scores.
 
 | ID | Level and condition | Illustrative input or fault | Required result and acceptance evidence |
 |---|---|---|---|
@@ -41,30 +33,36 @@ L0 validates the measurement instrument and is excluded from agent-performance s
 | CR-03A | L3: cross-module contract | A correct total of 1,080 is serialized as text, or a zero total is omitted | The pricing result and serialized numeric total agree; zero is retained; unrelated fields stay unchanged |
 | CR-03B | L3: failure-context selection | A CR-03A-family task includes relevant integration failures mixed with unrelated diagnostic lines | Repair the contract within the same limits and pass the same acceptance rules; trace which diagnostic context was supplied |
 
-Use nonnegative integer cents and quantities. For this initial matrix, pricing inputs
-must make the twenty-percent tax an integer number of cents; rounding and invalid-input
-handling are outside scope. The fixed-discount rule is fictional, not tax guidance.
-For CR-03B, keep paired clean and noisy diagnostic variants in the same data partition.
-Additional text is a designed condition, not assumed proof of greater difficulty.
+- Use nonnegative integer cents and quantities, with integer-cent tax results. Rounding and invalid inputs are excluded; pricing rules are fictional.
+- Specify requirements, editable files, development checks, and protected acceptance checks per instance.
+- Keep clean/noisy variants in the same partition. Added text is not assumed to be harder.
+- Published examples are development data, never unseen final tests.
 
-Each concrete instance must identify every editable file, complete requirements, available
-development checks, and the independent acceptance checks. Public examples are development
-illustrations; they cannot later be treated as unseen final tests.
+## 3. Acceptance
 
-## 3. Acceptance at three levels
+| Level | Required evidence |
+|---|---|
+| Evaluator | Reviewed solvable references; correct and faulty solutions distinguished; forbidden edits rejected; consistent verdicts after reset; version and ambiguity log |
+| Run | All functional/regression checks pass, allowed files only, inputs/unrelated behavior preserved, budget respected; patch, test outcomes, status, and resource record retained |
+| Improvement claim | Separate protocol, fixed baseline, independent final tasks, matched constraints, and uncertainty analysis; outside EDA |
 
-| Level | Acceptance criteria | Evidence required |
-|---|---|---|
-| Scenario and evaluator | Requirements determine acceptable behavior; a reviewed solution exists; known wrong outputs and prohibited edits are rejected; clean resets give consistent deterministic verdicts | Reference calculations, control results, evaluator version, and an ambiguity log |
-| Individual execution | All required functional and regression checks pass; only allowed files change; inputs and unrelated behavior are preserved; the declared runtime budget is respected | Patch, file diff, full test outcomes, terminal status, and resource record |
-| Later harness-improvement claim | A selected candidate is compared with a fixed baseline under a predeclared protocol, independent final tasks, matched constraints, and a stated uncertainty analysis | Separate comparison report; outside this EDA |
+Partial correctness and budget exhaustion count as failure. Partial test scores are diagnostic.
+Keep infrastructure incidents separate and justify exclusions/reruns; passing tests never override forbidden edits.
 
-A partially correct patch is a task failure in the primary metric. The fraction of checks
-passed is retained only as a diagnostic. A budget-exhausted run is a failure, not a missing
-observation. Infrastructure failures have a separate status; retain their records and
-justify any rerun or exclusion. No passing test count overrides a prohibited modification.
+## 4. Baseline and sample
 
-## 4. Progression and fixed baseline
+**Baseline:** fixed prompt and feedback format; at most three patch attempts, one model request
+per attempt, no memory across runs. The execution protocol must set model/settings, context
+truncation, retry accounting, token/time caps, and total budget. No candidate optimization during EDA.
+
+**Provisional sample:** 6 non-L0 templates × 2 instances × 3 repetitions = **36 runs**.
+L0 and documented reruns are additional. This estimates feasibility, not statistical power.
+Group related generators, program families, and variants when splitting development/validation/final data.
+All inspected pilot data become development data; final tasks stay untouched. Repetitions are not independent tasks.
+
+Advance only with valid measurement and affordable cost. Keep earlier strata for regression;
+freeze comparison cohorts and report additions separately. If L1 is saturated, retain it as
+an instrument check and examine predeclared harder strata. Do not remove tasks to improve a score.
 
 ```mermaid
 flowchart TD
@@ -79,23 +77,7 @@ flowchart TD
     H --> I[EDA and bounded hypothesis]
 ```
 
-Progression is gated by measurement quality and affordability, not a promised success-rate
-threshold. Retain earlier tasks as regression strata when adding a level. Freeze a cohort
-for each comparison; report added instances separately. Do not change the model and task
-collection simultaneously and attribute the resulting difference to the harness.
-
-The proposed baseline is one fixed prompt and repair loop that receives development-test
-output and can make at most three patch attempts per run. Each attempt permits one model
-request returning one patch. No persistent memory crosses runs. Model identity, parameters,
-context truncation, test feedback format, request retry accounting, token limits, and
-wall-clock limits must be recorded in the approved execution protocol. The candidate
-intervention is deliberately not implemented during baseline EDA.
-
-The one-function examples may be too easy for a useful scientific comparison. If the
-baseline saturates them, retain them as measurement checks and examine harder, predeclared
-strata. Do not remove easy or hard tasks merely to improve a headline score.
-
-## 5. Proposed observations and sampling
+## 5. Records and EDA
 
 | Record | Fields to collect |
 |---|---|
@@ -104,47 +86,19 @@ strata. Do not remove easy or hard tasks merely to improve a headline score.
 | Attempt | Attempt index, patch reference, context supplied, development-test outcomes, model calls, input/output tokens, test duration, and reason for retry or stop |
 | Final evaluation | Acceptance checks, prohibited edits, success/failure category, total resources, human intervention, infrastructure incidents, and links to retained evidence |
 
-A provisional feasibility sample is **two development instances for each of CR-01A through
-CR-03B**, giving 12 instances, with three baseline repetitions each: **36 planned runs**.
-L0 controls and any documented reruns are additional. These counts support instrument and
-cost exploration, not a powered efficacy study or broad generalization. Repetition of one
-task does not create a new independent task.
+| When | Inspect | Output and decision |
+|---|---|---|
+| Before runs | Coverage, ambiguity, duplicates, references, L0 verdicts | Coverage/verdict tables; repair the collection or evaluator |
+| After baseline | Success and failure stage by level/family | Counts and heatmap; identify a bounded feedback problem |
+| After baseline | Repetitions, attempt trajectories, paired clean/noisy diagnostics | Per-instance outcomes; assess variability and form a hypothesis, not a causal claim |
+| After baseline | Tokens, calls, attempts, duration, cost versus outcome | Individual values and distributions; assess budget |
 
-Sample deliberately across the matrix and report the selection rule. Related generators,
-program families, and diagnostic variants stay grouped when later creating development,
-validation, and final partitions. All pilot instances are development data once inspected.
-No final partition is consumed for EDA or manual tuning. Final sample size and repetitions
-must be chosen later from budget, observed variability, and the intended claim.
+Use equal task weights, including when repetition counts differ. Show numerators, denominators,
+missing runs, attempted/valid totals, and exclusion reasons. Any uncertainty analysis must account
+for task/family dependence; small samples favor tables and ranges over fitted trends.
 
-## 6. EDA questions and planned outputs
-
-| Stage | Question | Analysis or visual | Decision supported |
-|---|---|---|---|
-| Before runs | Does each intended condition have valid instances? | Scenario-by-condition coverage matrix; counts of ambiguous, invalid, and near-duplicate instances | Repair the collection or narrow the scope |
-| Before runs | Does the evaluator detect meaningful faults? | Reference-versus-verdict table for L0 controls | Accept or revise the instrument |
-| After baseline | Which strata fail and where? | Success counts with denominators by level/family; failure-stage heatmap | Identify a bounded feedback or context problem |
-| After baseline | Is performance consistent across repetitions? | Per-instance success fraction and repeated-run table | Assess variability before choosing a comparison design |
-| After baseline | What consumes resources? | Per-run token, call, attempt, and duration distributions; cost versus outcome | Check budget and identify costly behavior |
-| After baseline | Does feedback appear to affect recovery? | Attempt trajectories and clean/noisy diagnostic comparisons, retaining family pairing | Form a hypothesis; do not infer causality from exploratory associations |
-
-For equal repetitions, average each task's success fraction with equal task weight. If
-repetition counts differ, retain equal task weight and show missing attempts rather than
-letting frequently rerun tasks dominate. Report raw numerators, denominators, and the
-number of valid versus attempted runs. Keep infrastructure failures visible alongside
-agent failures; any secondary valid-run rate must explain its exclusions.
-
-Small samples favor individual points, tables, and ranges over fitted trends. Treat
-confidence estimates, if later used, at task/family level rather than assuming all
-repetitions are independent. Do not fabricate plots before observations exist.
-
-Runtime tokens and latency describe operation. Manual edits, human review minutes, and
-search expenditure describe construction effort and must be accounted for separately.
-Monetary estimates require dated provider rates and currency; calls alone are not cost.
-Baseline EDA cannot establish that autonomous construction is cheaper.
-
-EDA has two observation sources: task definitions before execution and baseline
-records after an approved pilot. The diagram shows planned data flow, not existing
-measurements. Reserved final tasks stay outside both exploratory paths.
+Separate runtime resources from construction effort: search, manual edits, and human review.
+Monetary estimates require dated provider rates and currency. Planned charts are not results.
 
 ```mermaid
 flowchart TD
@@ -158,35 +112,19 @@ flowchart TD
     H --> P[If continued: separate comparison protocol]
 ```
 
-## 7. Execution gates and acceptance of the EDA
+## 6. Review and execution gates
 
-This document authorizes no implementation, model spend, or execution. Before a later
-pilot, approve an exp-NNNN protocol using the [template](../../templates/experiment-protocol.md).
+1. **Approve scope and instrument:** select the pilot cohort, review requirements/references/splits, pass L0, verify resets.
+2. **Approve execution:** an [exp-NNNN protocol](../../templates/experiment-protocol.md) must set model, sample,
+   monetary cap, token/time limits per run, retries/reruns, and human review budget. This plan authorizes no implementation or spend.
+3. **Stop:** at the first applicable cap; stop the batch for evaluator integrity or reset failures. Preserve partial evidence.
+4. **Review EDA:** coverage, all statuses, exclusions, metrics with denominators, failure patterns, cost, and limitations;
+   decide continue/revise/discard before one intervention and a separate comparison protocol.
 
-| Gate | Required decision or evidence |
-|---|---|
-| Scope | Select this case for a pilot; approve scenario cohort and requirements |
-| Instrument | L0 controls pass; references and partition grouping reviewed; environment reset works |
-| Budget | Approve model, total monetary cap, token and wall-clock limits per run, baseline sample, retry/rerun allowance, and a human review budget |
-| Stop conditions | Stop at the first applicable cap; stop the batch for evaluator integrity failures or unreliable resets; preserve partial evidence and exceptions |
-| EDA report | Report coverage, exclusions, all run statuses, metrics with denominators, failure categories, cost, limitations, and a continue/revise/discard recommendation |
+Accept traceable evidence and justified decisions, even for negative findings. Until execution,
+this deliverable remains a matrix and plan. Stages may become sprint goals; no dates are committed.
+Future paths: `benchmarks/case-0001/`, `data/`, `experiments/protocols/`,
+`experiments/manifests/`, and `experiments/reports/`.
 
-Acceptance of the EDA requires traceable observations and justified decisions, not a
-positive improvement. With no execution, the deliverable is only a reviewed matrix and
-analysis plan. A negative or inconclusive pilot may still resolve feasibility questions.
-
-## 8. Review sequence and artifact locations
-
-1. Review the matrix, reference rules, and measurement design in Markdown.
-2. If a pilot is selected later, define the execution protocol and implement L0 first.
-3. Review the baseline EDA before choosing one harness intervention.
-4. Define a separate comparison protocol before making improvement claims.
-
-The documents can support bounded sprint goals without committing calendar dates. Future
-tasks and evaluators belong in `benchmarks/case-0001/`, dataset provenance in `data/`,
-protocols in `experiments/protocols/`, run manifests in `experiments/manifests/`, and findings
-in `experiments/reports/`. No such execution artifacts are created by this plan.
-
-Agents prepare work through Review only. Jairzinho reviews and decides PR integration,
-manual movement to Done, issue completion, and Completed date. Passing checks or a prior
-merge do not authorize those actions. No automation is introduced for them.
+Agents stop at Review. Only Jairzinho decides integration, issue completion, Done, and Completed date;
+passing checks or a prior merge do not authorize these actions. No completion automation.

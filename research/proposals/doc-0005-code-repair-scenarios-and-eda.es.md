@@ -2,7 +2,7 @@
 translation_of: doc-0005
 language: es
 source: doc-0005-code-repair-scenarios-and-eda.md
-source_revision: 2
+source_revision: 3
 title: "Code repair scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
@@ -13,26 +13,16 @@ updated: 2026-10-09
 
 [English](doc-0005-code-repair-scenarios-and-eda.md) | Español
 
-## 1. Propósito y límites de la evidencia
+## 1. Objetivo
 
-Concretar [case-0001](case-0001-code-repair-harness.es.md) mediante una matriz de
-escenarios y un plan de análisis exploratorio de datos (EDA). La especificación del
-caso define los límites de la investigación; este documento define observaciones
-candidatas y reglas de aceptación. Ningún escenario ha sido implementado, validado ni
-ejecutado. Los ejemplos numéricos son cálculos de referencia inventados, no mediciones
-ni un golden set terminado.
-
-El EDA caracterizará las tareas y un baseline fijo antes de seleccionar una intervención
-en el harness. No demostrará mejora, causalidad ni automejora recursiva. El
-[plan del flujo de servicio](doc-0006-service-workflow-scenarios-and-eda.es.md) es otro
-candidato; sus tasas de éxito no deben combinarse en una única puntuación de benchmark.
+Para [case-0001](case-0001-code-repair-harness.es.md), identificar tareas válidas, fallos del baseline
+y una intervención viable mediante análisis exploratorio de datos (EDA).
+**Solo planificado:** sin código, ejecuciones, golden set validado ni resultados. El EDA evalúa viabilidad;
+no demuestra causalidad, mejora o beneficio económico. Analizar el [caso de servicios](doc-0006-service-workflow-scenarios-and-eda.es.md) por separado.
 
 ## 2. Matriz de escenarios
 
-Los identificadores de escenarios son locales a case-0001. Cada fila es una plantilla;
-las entradas concretas recibirán identificadores de instancia antes de la ejecución.
-Todas las filas tienen actualmente estado **planned**. L0 valida el instrumento de
-medición y se excluye de las puntuaciones de rendimiento del agente.
+Cada fila es una plantilla prevista con futuros IDs de instancia. L0 comprueba el evaluador y se excluye de las puntuaciones de rendimiento.
 
 | ID | Nivel y condición | Entrada o fallo ilustrativo | Resultado requerido y evidencia de aceptación |
 |---|---|---|---|
@@ -45,33 +35,37 @@ medición y se excluye de las puntuaciones de rendimiento del agente.
 | CR-03A | L3: contrato entre módulos | Un total correcto de 1.080 se serializa como texto, o se omite un total igual a cero | Coinciden el cálculo de precios y el total numérico serializado; se conserva el cero y los campos no relacionados no cambian |
 | CR-03B | L3: selección del contexto del fallo | Una tarea de la familia de CR-03A incluye fallos de integración relevantes mezclados con líneas de diagnóstico no relacionadas | Corregir el contrato dentro de los mismos límites y superar las mismas reglas de aceptación; registrar el contexto de diagnóstico suministrado |
 
-Se utilizan céntimos enteros y cantidades enteras no negativas. En esta matriz inicial,
-las entradas de precios deben producir un impuesto del veinte por ciento equivalente a
-un número entero de céntimos; el redondeo y las entradas no válidas quedan fuera del
-alcance. La regla de descuento fijo es ficticia, no una indicación tributaria. Para
-CR-03B, las variantes emparejadas con diagnóstico limpio y con ruido deben permanecer
-en la misma partición. Añadir texto es una condición diseñada, no una prueba de mayor dificultad.
+- Usar centavos y cantidades enteros no negativos, con impuestos de centavos enteros. Se excluyen redondeo y entradas inválidas; las reglas son ficticias.
+- Especificar requisitos, archivos editables, pruebas de desarrollo y aceptación protegida por instancia.
+- Mantener variantes con/sin ruido en la misma partición. Más texto no implica mayor dificultad.
+- Los ejemplos publicados son datos de desarrollo, nunca pruebas finales no vistas.
 
-Cada instancia concreta debe identificar todos los archivos modificables, los requisitos
-completos, las comprobaciones de desarrollo disponibles y las pruebas de aceptación
-independientes. Los ejemplos públicos son ilustraciones de desarrollo; no pueden tratarse
-después como pruebas finales desconocidas.
+## 3. Aceptación
 
-## 3. Aceptación en tres niveles
+| Nivel | Evidencia requerida |
+|---|---|
+| Evaluador | Referencias revisadas con solución; distingue soluciones correctas/defectuosas; rechaza ediciones prohibidas; veredictos consistentes tras reinicio; versión y registro de ambigüedades |
+| Ejecución | Pasan todas las pruebas funcionales/regresión, solo archivos permitidos, entradas/comportamiento ajeno preservados y presupuesto respetado; conservar parche, pruebas, estado y recursos |
+| Afirmación de mejora | Protocolo separado, baseline fijo, tareas finales independientes, restricciones equivalentes y análisis de incertidumbre; fuera del EDA |
 
-| Nivel | Criterios de aceptación | Evidencia requerida |
-|---|---|---|
-| Escenario y evaluador | Los requisitos determinan el comportamiento aceptable; existe una solución revisada; se rechazan resultados incorrectos conocidos y cambios prohibidos; los restablecimientos limpios producen veredictos deterministas consistentes | Cálculos de referencia, resultados de controles, versión del evaluador y registro de ambigüedades |
-| Ejecución individual | Pasan todas las comprobaciones funcionales y de regresión requeridas; solo cambian archivos permitidos; se conservan las entradas y el comportamiento no relacionado; se respeta el presupuesto de ejecución declarado | Parche, diferencias entre archivos, resultados completos de pruebas, estado final y registro de recursos |
-| Afirmación posterior de mejora del harness | Se compara un candidato seleccionado con un baseline fijo mediante un protocolo definido previamente, tareas finales independientes, restricciones equivalentes y un análisis de incertidumbre especificado | Informe de comparación separado; fuera de este EDA |
+La corrección parcial y el agotamiento del presupuesto cuentan como fallo. Las puntuaciones parciales son diagnósticas.
+Separar incidentes de infraestructura y justificar exclusiones/repeticiones; pasar pruebas no compensa ediciones prohibidas.
 
-Un parche parcialmente correcto es un fallo de tarea en la métrica principal. La fracción
-de comprobaciones superadas se conserva solo como diagnóstico. Una ejecución que agota
-su presupuesto es un fallo, no una observación ausente. Los fallos de infraestructura
-tienen un estado separado; se conservan sus registros y se justifica cualquier repetición
-o exclusión. Ninguna cantidad de pruebas superadas anula una modificación prohibida.
+## 4. Baseline y muestra
 
-## 4. Progresión y baseline fijo
+**Baseline:** prompt y feedback fijos; máximo tres intentos de parche, una solicitud al modelo
+por intento, sin memoria entre ejecuciones. El protocolo debe fijar modelo/configuración,
+truncado de contexto, contabilidad de reintentos, límites de tokens/tiempo y presupuesto total.
+No optimizar candidatos durante el EDA.
+
+**Muestra provisional:** 6 plantillas no L0 × 2 instancias × 3 repeticiones = **36 ejecuciones**.
+L0 y repeticiones justificadas son adicionales. Estima viabilidad, no potencia estadística.
+Agrupar generadores, familias y variantes relacionadas al separar desarrollo/validación/evaluación final.
+Todo dato del piloto inspeccionado pasa a desarrollo; las tareas finales no se tocan. Las repeticiones no son tareas independientes.
+
+Avanzar solo con medición válida y costo viable. Conservar niveles previos como regresión;
+fijar las cohortes comparadas e informar adiciones por separado. Si L1 está saturado, conservarlo
+como control y examinar niveles más difíciles predefinidos. No eliminar tareas para mejorar una puntuación.
 
 ```mermaid
 flowchart TD
@@ -86,26 +80,7 @@ flowchart TD
     H --> I[EDA e hipótesis acotada]
 ```
 
-La progresión depende de la calidad de la medición y de su costo asumible, no de una tasa
-de éxito prometida. Se conservan las tareas anteriores como estratos de regresión al
-ampliar un nivel. Se fija una colección para cada comparación y se informan por separado
-las nuevas instancias. No se cambia simultáneamente el modelo y la colección de tareas
-para después atribuir la diferencia al harness.
-
-El baseline propuesto utiliza un prompt y un ciclo de corrección fijos que reciben la
-salida de las pruebas de desarrollo y permiten como máximo tres intentos de parche por
-ejecución. Cada intento permite una solicitud al modelo que devuelve un parche. No hay
-memoria persistente entre ejecuciones. El protocolo de ejecución aprobado debe registrar
-identidad y parámetros del modelo, truncamiento de contexto, formato de retroalimentación,
-contabilidad de reintentos de solicitudes, límites de tokens y de tiempo total. La
-intervención candidata no se implementa durante el EDA del baseline.
-
-Los ejemplos de una sola función pueden ser demasiado sencillos para una comparación
-científica útil. Si el baseline los resuelve casi todos, se conservan como controles de
-medición y se examinan estratos más difíciles definidos previamente. No se eliminan
-tareas fáciles o difíciles solo para mejorar una puntuación principal.
-
-## 5. Observaciones y muestreo propuestos
+## 5. Registros y EDA
 
 | Registro | Campos que se recogerían |
 |---|---|
@@ -114,53 +89,19 @@ tareas fáciles o difíciles solo para mejorar una puntuación principal.
 | Intento | Índice de intento, referencia al parche, contexto suministrado, resultados de las pruebas de desarrollo, llamadas al modelo, tokens de entrada/salida, duración de pruebas y motivo de reintento o parada |
 | Evaluación final | Comprobaciones de aceptación, cambios prohibidos, categoría de éxito/fallo, recursos totales, intervención humana, incidentes de infraestructura y enlaces a evidencia conservada |
 
-Una muestra provisional de viabilidad sería de **dos instancias de desarrollo por cada
-escenario desde CR-01A hasta CR-03B**: 12 instancias con tres repeticiones del baseline
-cada una, para **36 ejecuciones previstas**. Los controles L0 y las repeticiones por
-incidentes documentados se contabilizan aparte. Estas cantidades sirven para explorar
-el instrumento y el costo, no constituyen un estudio de eficacia con potencia estadística
-justificada ni permiten generalizaciones amplias. Repetir una tarea no crea otra tarea independiente.
+| Cuándo | Revisar | Resultado y decisión |
+|---|---|---|
+| Antes de ejecutar | Cobertura, ambigüedad, duplicados, referencias y veredictos L0 | Tablas de cobertura/veredictos; corregir colección o evaluador |
+| Después del baseline | Éxito y etapa del fallo por nivel/familia | Conteos y mapa de calor; identificar un problema acotado de feedback |
+| Después del baseline | Repeticiones, trayectoria de intentos y pares con/sin ruido | Resultados por instancia; evaluar variabilidad y formular una hipótesis, no causalidad |
+| Después del baseline | Tokens, llamadas, intentos, duración y costo frente al resultado | Valores individuales y distribuciones; evaluar presupuesto |
 
-Se muestrea deliberadamente a través de la matriz y se informa la regla de selección.
-Generadores relacionados, familias de programas y variantes de diagnóstico permanecen
-agrupados al crear posteriormente las particiones de desarrollo, validación y evaluación
-final. Todas las instancias del piloto pasan a ser datos de desarrollo una vez inspeccionadas.
-No se utiliza la partición final para EDA ni ajustes manuales. El tamaño de muestra final
-y sus repeticiones se elegirán después según presupuesto, variabilidad observada y alcance de la afirmación.
+Usar igual peso por tarea, incluso con diferentes números de repeticiones. Mostrar numeradores,
+denominadores, ejecuciones faltantes, totales intentados/válidos y motivos de exclusión. El análisis
+de incertidumbre debe considerar dependencia por tarea/familia; con muestras pequeñas, preferir tablas y rangos a tendencias ajustadas.
 
-## 6. Preguntas de EDA y resultados previstos
-
-| Etapa | Pregunta | Análisis o visualización | Decisión que fundamenta |
-|---|---|---|---|
-| Antes de ejecutar | ¿Cada condición prevista tiene instancias válidas? | Matriz de cobertura de escenarios y condiciones; cantidades de instancias ambiguas, no válidas y casi duplicadas | Corregir la colección o acotar el alcance |
-| Antes de ejecutar | ¿El evaluador detecta fallos relevantes? | Tabla de referencias y veredictos de controles L0 | Aceptar o revisar el instrumento |
-| Después del baseline | ¿Qué estratos fallan y en qué etapa? | Conteos de éxito con denominadores por nivel/familia; mapa de calor de etapas de fallo | Identificar un problema acotado de retroalimentación o contexto |
-| Después del baseline | ¿El rendimiento es consistente entre repeticiones? | Fracción de éxito por instancia y tabla de ejecuciones repetidas | Evaluar variabilidad antes de elegir el diseño de comparación |
-| Después del baseline | ¿Qué consume recursos? | Distribuciones por ejecución de tokens, llamadas, intentos y duración; costo frente a resultado | Comprobar el presupuesto e identificar comportamientos costosos |
-| Después del baseline | ¿La retroalimentación parece afectar a la recuperación? | Trayectorias de intentos y comparaciones de diagnóstico limpio/con ruido, conservando el emparejamiento por familia | Formular una hipótesis; no inferir causalidad de asociaciones exploratorias |
-
-Con igual número de repeticiones, se promedia la fracción de éxito de cada tarea con
-igual peso por tarea. Si las cantidades difieren, se conserva el mismo peso y se muestran
-los intentos ausentes, evitando que las tareas repetidas más veces dominen. Se informan
-numeradores, denominadores y cantidades de ejecuciones válidas frente a intentadas. Los
-fallos de infraestructura permanecen visibles junto a los fallos del agente; cualquier
-tasa secundaria sobre ejecuciones válidas debe explicar sus exclusiones.
-
-Con muestras pequeñas se priorizan puntos individuales, tablas y rangos sobre tendencias
-ajustadas. Si después se estiman intervalos de confianza, se trabaja al nivel de tarea o
-familia, sin asumir que todas las repeticiones son independientes. No se inventan gráficos
-antes de contar con observaciones.
-
-Tokens y latencia durante la ejecución describen la operación. Cambios manuales, minutos
-de revisión humana y gasto de búsqueda describen el esfuerzo de construcción y se
-contabilizan por separado. Las estimaciones monetarias requieren tarifas del proveedor
-con fecha y moneda; las llamadas por sí solas no son el costo. El EDA del baseline no
-demuestra que construir autónomamente sea más económico.
-
-El EDA tiene dos fuentes de observación: las definiciones de tareas antes de ejecutar
-y los registros del baseline después de un piloto aprobado. El diagrama muestra el
-flujo de datos previsto, no mediciones existentes. Las tareas finales reservadas
-permanecen fuera de ambos caminos exploratorios.
+Separar recursos de ejecución del esfuerzo de construcción: búsqueda, ediciones manuales y revisión humana.
+Los costos monetarios requieren tarifas fechadas y moneda. Los gráficos previstos no son resultados.
 
 ```mermaid
 flowchart TD
@@ -174,38 +115,19 @@ flowchart TD
     H --> P[Si continúa: protocolo de comparación separado]
 ```
 
-## 7. Condiciones de ejecución y aceptación del EDA
+## 6. Revisión y condiciones de ejecución
 
-Este documento no autoriza implementación, gasto en modelos ni ejecución. Antes de un
-piloto posterior se aprobará un protocolo exp-NNNN mediante la
-[plantilla](../../templates/experiment-protocol.md).
+1. **Aprobar alcance e instrumento:** seleccionar cohorte, revisar requisitos/referencias/particiones, pasar L0 y verificar reinicios.
+2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../templates/experiment-protocol.md) debe fijar modelo, muestra,
+   tope monetario, tokens/tiempo por ejecución, reintentos/repeticiones y revisión humana. Este plan no autoriza implementación ni gasto.
+3. **Detener:** al primer límite aplicable; detener el lote si falla la integridad del evaluador o el reinicio. Conservar evidencia parcial.
+4. **Revisar EDA:** cobertura, todos los estados, exclusiones, métricas con denominadores, fallos, costo y limitaciones;
+   decidir continuar/ajustar/descartar antes de una intervención y un protocolo de comparación separado.
 
-| Condición | Decisión o evidencia requerida |
-|---|---|
-| Alcance | Seleccionar este caso para un piloto; aprobar la colección de escenarios y requisitos |
-| Instrumento | Pasan los controles L0; se revisan referencias y agrupación de particiones; funciona el restablecimiento del entorno |
-| Presupuesto | Aprobar modelo, límite monetario total, límites de tokens y tiempo por ejecución, muestra del baseline, margen de reintentos/repeticiones por incidentes y presupuesto de revisión humana |
-| Condiciones de parada | Detenerse al alcanzar el primer límite aplicable; detener el lote ante fallos de integridad del evaluador o restablecimientos poco fiables; conservar evidencia parcial y excepciones |
-| Informe de EDA | Informar cobertura, exclusiones, todos los estados de ejecución, métricas con denominadores, categorías de fallo, costo, limitaciones y recomendación de continuar/revisar/descartar |
+Aceptar evidencia trazable y decisiones justificadas, incluso con hallazgos negativos. Hasta ejecutar,
+el entregable sigue siendo matriz y plan. Las etapas pueden ser objetivos de sprint; no hay fechas comprometidas.
+Rutas futuras: `benchmarks/case-0001/`, `data/`, `experiments/protocols/`,
+`experiments/manifests/` y `experiments/reports/`.
 
-La aceptación del EDA requiere observaciones trazables y decisiones justificadas, no una
-mejora positiva. Sin ejecución, el entregable es únicamente una matriz y un plan de
-análisis revisados. Un piloto negativo o no concluyente también puede resolver dudas de viabilidad.
-
-## 8. Secuencia de revisión y ubicación de artefactos
-
-1. Revisar la matriz, las reglas de referencia y el diseño de medición en Markdown.
-2. Si después se selecciona un piloto, definir el protocolo de ejecución e implementar L0 primero.
-3. Revisar el EDA del baseline antes de elegir una intervención en el harness.
-4. Definir un protocolo de comparación separado antes de afirmar mejoras.
-
-Los documentos pueden apoyar objetivos acotados de sprint sin comprometer fechas. Las
-futuras tareas y evaluadores corresponden a `benchmarks/case-0001/`; la procedencia de
-datos, a `data/`; los protocolos, a `experiments/protocols/`; los manifiestos de ejecución,
-a `experiments/manifests/`; y los hallazgos, a `experiments/reports/`. Este plan no crea
-ninguno de esos artefactos de ejecución.
-
-Los agentes preparan trabajo hasta Review. Jairzinho revisa y decide la integración de
-PRs, el movimiento manual a Done, el cierre de issues como completadas y Completed date.
-Las comprobaciones aprobadas o un merge previo no autorizan esas acciones. No se introduce
-ninguna automatización para realizarlas.
+Los agentes llegan hasta Review. Solo Jairzinho decide integración, cierre de issues, Done y Completed date;
+los checks o un merge previo no autorizan estas acciones. Sin automatización de cierre.

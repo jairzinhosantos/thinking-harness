@@ -2,7 +2,7 @@
 id: doc-0006
 title: "Service workflow scenario matrix and EDA plan"
 status: draft
-revision: 2
+revision: 3
 created: 2026-10-09
 updated: 2026-10-09
 ---
@@ -11,29 +11,20 @@ updated: 2026-10-09
 
 English | [Español](doc-0006-service-workflow-scenarios-and-eda.es.md)
 
-## 1. Purpose and evidence boundary
+## 1. Objective
 
-Operationalize [case-0002](case-0002-service-workflow-harness.md) as a proposed scenario
-matrix and exploratory data analysis (EDA) plan. The case specification defines the
-research boundary; this document specifies candidate observations and acceptance rules.
-All examples are fictional. No simulator, dataset, evaluator, or experimental result has
-been produced. A listed expected state is a proposed reference, not a validated golden set.
+For [case-0002](case-0002-service-workflow-harness.md), assess scenario coverage, recovery failures,
+and baseline cost through exploratory data analysis (EDA).
+**Planned only:** fictional references, no simulator, validated golden set, or results.
+EDA does not prove improvement or production economics. The [code case](doc-0005-code-repair-scenarios-and-eda.md) remains a separate alternative.
 
-The EDA will examine a fixed agent harness before selecting a recovery intervention.
-It will not prove improvement, production representativeness, or lower construction cost.
-The [code repair plan](doc-0005-code-repair-scenarios-and-eda.md) is a separate alternative.
+## 2. Policy and scenario matrix
 
-## 2. Scenario matrix and fictional policy
+Unshipped orders can be cancelled; shipped orders cannot. An unpaid cancellation needs no refund;
+a paid cancellation needs exactly one full refund. Repeating a completed cancellation changes nothing.
+Keep backend idempotency fixed. Exclude partial refunds, multiple currencies, real payments, and private records.
 
-Scenario IDs are local to case-0002. Each row is a template, not one independent sample
-for every repetition. All rows currently have status **planned**. L0 validates the
-measurement instrument and is excluded from agent-performance scores.
-
-Proposed policy: an unshipped order can be cancelled; a shipped order cannot. Cancelling
-an unpaid order creates no refund. Cancelling a paid order requires exactly one full
-simulated refund of its paid amount. An already completed cancellation is idempotent.
-No partial refunds, multiple currencies, real payments, or private records are included.
-The backend retains the same idempotency-key behavior across all conditions.
+Each row is a planned template with future instance IDs. L0 validates measurement and is excluded from performance scores.
 
 | ID | Level and initial condition | Event or request | Required result and acceptance evidence |
 |---|---|---|---|
@@ -47,36 +38,42 @@ The backend retains the same idempotency-key behavior across all conditions.
 | SW-03B | L3: SW-02A initial state | Refund times out before any write; status lookup is available | Establish that no refund exists and complete one refund within the budget; do not assume the first call succeeded |
 | SW-03C | L3: cancellation completed, refund outcome unknown to the agent | Refund request times out and subsequent refund/status endpoints remain unavailable | Stop within limits and flag manual follow-up; report the refund as unverified, not complete; create no duplicate or unauthorized effect |
 
-For SW-03C, instantiate separate committed and uncommitted refund variants. The evaluator
-knows the injected state; the agent does not. Correct escalation is the designated expected
-behavior for these variants. For all other rows, escalation does not satisfy the expected
-resolution and must not be counted as success.
+- SW-03C needs committed/uncommitted variants: the evaluator knows the state; the agent does not.
+  Only SW-03C accepts escalation. In other rows it fails the required resolution.
+- SW-03A/B share a family; inject faults on named operations, not wall time alone.
+- Vary amounts and IDs. Different action sequences are valid if state, rules, and limits hold.
 
-SW-03A and SW-03B share a template family with different fault timing. Inject events on
-identified operations rather than elapsed wall time alone. The displayed amount is an
-example; varied amounts and order IDs are needed to avoid testing memorized outputs.
-Tool-call sequences may differ if final state, policies, and observable constraints hold.
+## 3. Acceptance
 
-## 3. Acceptance at three levels
+| Level | Required evidence |
+|---|---|
+| Evaluator | Unambiguous rules, reviewed valid/invalid states and messages, checks on affected/unrelated records, reproducible resets/fault injection, versions and ambiguity log |
+| Run | Expected outcome, no prohibited effects, truthful response, limits respected; retain before/after state, tool trace/keys, message, status, and resources |
+| Improvement claim | Separate protocol, fixed baseline/backend protections, reserved final scenarios, and matched constraints; outside EDA |
 
-| Level | Acceptance criteria | Evidence required |
-|---|---|---|
-| Scenario and evaluator | Rules are unambiguous; reviewed acceptable and unacceptable outcomes are distinguishable; all affected and unrelated records are checked; reset and fault injection reproduce the intended condition | Reviewed reference states, L0 verdicts, fault schedule, evaluator/reset versions, and ambiguity log |
-| Individual execution | The scenario-specific outcome holds; no prohibited state changes occur; the response is consistent with available evidence; runtime limits are respected | Before/after state, tool trace and keys, final message, terminal outcome, and resource record |
-| Later harness-improvement claim | A candidate recovery policy is compared with a fixed baseline under a separate protocol, fixed backend protections, reserved final scenarios, and matched constraints | Comparison report; outside this EDA |
+Keep four outcomes: **completed**, **correctly_rejected**, **correctly_escalated**, **failed**.
+Prohibited effects or a cap reached in a completion-required scenario mean failure. Partial scores
+are diagnostic. Check message claims against state and available evidence using a structured outcome;
+calibrate any semantic judge on reviewed examples, never use an unvalidated model judge alone.
 
-Use four exclusive policy outcomes: **completed**, **correctly_rejected**,
-**correctly_escalated**, and **failed**. Infrastructure-invalid runs are logged separately.
-A timeout intentionally injected by the scenario is an experimental condition, not an
-infrastructure exclusion. A simulator crash unrelated to that schedule is an infrastructure incident.
+Injected timeouts are task conditions, not infrastructure exclusions. Log unrelated simulator
+failures separately. Preserve side effects before reset and justify reruns/exclusions.
 
-A prohibited side effect makes the run failed regardless of other checks. Partial
-component scores are diagnostic only. The future response evaluator must check claims
-about cancellation, refund amount/status, and unresolved work. Specify a structured outcome
-contract and review free-text claims against the trace; calibrate any automated semantic
-judge against reviewed examples before trusting it. No sole unvalidated model judge.
+## 4. Baseline and sample
 
-## 4. Progression and fixed baseline
+**Baseline:** fixed prompt/tools and bounded recovery. After an ambiguous refund, inspect status;
+if absent, retry with the same key; if unknown, follow a fixed retry/escalation rule. Set model,
+attempt/time caps and memory restrictions in the execution protocol. No candidate optimization during EDA.
+
+**Provisional sample:** 7 non-L0 templates × 2 instances × 3 repetitions = **42 runs**.
+SW-03C includes one instance per hidden-state variant. L0 and documented reruns are additional.
+This is a feasibility sample, not statistical power or production representativeness.
+
+Keep related templates/fault variants together across development/validation/final splits.
+All inspected pilot data become development data; final scenarios stay untouched. Repetitions
+are not independent coverage. Reset relevant state and verify unrelated records before each run.
+Retain earlier levels for regression; report new cohorts separately. Fixed rules and protections
+allow progression, but the proposed levels are not measured difficulty rankings.
 
 ```mermaid
 flowchart TD
@@ -90,22 +87,7 @@ flowchart TD
     G --> H[EDA and recovery hypothesis]
 ```
 
-Keep policy and backend protections fixed as complexity increases. L1 validates the
-measurement path; L2 supplies normal workflow references; L3 changes fault conditions.
-Retain earlier strata for regression and report new cohorts separately. Designed levels
-are not established difficulty rankings until baseline observations exist.
-
-The proposed baseline uses one fixed prompt, tool interface, and bounded recovery policy.
-After an ambiguous refund result it checks status; if the refund is absent it can retry
-with the same idempotency key, and if status remains unknown it follows a fixed retry or
-escalation rule. Define exact attempt caps, persistent-memory restrictions, model settings,
-and time limits before execution. Compare future candidates against this documented
-baseline, not against a deliberately defective agent that blindly duplicates refunds.
-
-No candidate optimization runs during baseline EDA. The baseline may already handle these
-conditions well; lack of room for improvement is a valid feasibility finding.
-
-## 5. Proposed observations and sampling
+## 5. Records and EDA
 
 | Record | Fields to collect |
 |---|---|
@@ -114,50 +96,20 @@ conditions well; lack of room for improvement is a valid feasibility finding.
 | Tool event | Ordered event index, tool, relevant arguments and request key, injected fault, visible response, authoritative state transition, and elapsed time |
 | Final evaluation | Policy outcome, side effects, response consistency, autonomous resolution, interventions, calls, retries, tokens, duration, and evidence references |
 
-A provisional feasibility sample is **two development instances per scenario from SW-01A
-through SW-03C**: 14 instances, each repeated three times, for **42 planned runs**.
-For SW-03C, one initial instance covers each hidden-state variant. L0 controls and any
-recorded reruns are additional. This is a small feasibility design, not statistical
-justification for effectiveness or production-wide generalization.
+| When | Inspect | Output and decision |
+|---|---|---|
+| Before runs | State/fault coverage, references, messages, L0 verdicts | Coverage and disagreement tables; repair the measurement design |
+| After baseline | Four outcomes by scenario; completion versus escalation | Counts with denominators; locate useful autonomy or avoidance |
+| After baseline | Before/after-write fault pairs and tool traces | Paired outcome/sequence views; form a recovery hypothesis, not a causal claim |
+| After baseline | Repeated outcomes, calls, retries, tokens, duration | Per-instance values and distributions; choose an affordable comparison |
 
-Keep related template and fault variants together when creating development, validation,
-and final partitions. Repetitions share the same instance identity. All observed pilot
-instances become development data; do not reuse them as unseen final evaluation. Reset
-all relevant state before each run and verify that unrelated records match the baseline.
-Final sample sizes must be chosen later from variability, budget, and the research claim.
+Report completion on eligible scenarios, rejection on rejection scenarios, and escalation on SW-03C
+separately. An always-escalate policy fails other rows. Acceptable-outcome rate is not autonomous completion.
+Use equal instance weights unless justified; show raw counts, attempted/valid totals, and exclusion reasons.
+Group repetitions by instance; small samples favor individual outcomes/ranges. Synthetic balance is not production frequency.
 
-## 6. EDA questions and planned outputs
-
-| Stage | Question | Analysis or visual | Decision supported |
-|---|---|---|---|
-| Before runs | Are intended state and fault combinations covered? | Scenario-by-state/fault coverage matrix; missing and incompatible combinations | Add valid instances or narrow the case |
-| Before runs | Can references and messages be evaluated reliably? | Expected-versus-observed verdicts on L0 controls; ambiguity/disagreement table | Repair the measurement design |
-| After baseline | Which requests reach the expected outcome? | Counts of the four policy outcomes by scenario, with denominators | Locate policy or recovery weaknesses |
-| After baseline | Does success depend on fault timing? | Paired before-write/after-write outcome table and tool-event sequence diagrams | Identify a recovery hypothesis without claiming causality |
-| After baseline | Is apparent reliability achieved by escalation? | Autonomous resolution and escalation frequency by expected outcome | Distinguish useful autonomy from avoidance |
-| After baseline | Where are cost and variability concentrated? | Per-instance repeated outcomes; calls, retries, tokens, and duration distributions | Select an affordable comparison and repetition plan |
-
-Report acceptable-outcome rate across valid scenarios only when the required outcome for
-each scenario is explicit. Separately report completion on completion-eligible scenarios,
-correct rejection on rejection scenarios, and correct escalation on SW-03C. An always-escalate
-policy must fail scenarios that require completion or rejection. Do not describe a high
-acceptable-outcome rate as a high autonomous-completion rate.
-
-Use equal scenario-instance weights unless another weighting is justified in advance.
-Retain raw counts, valid and attempted-run totals, intended fault failures, infrastructure
-incidents, and all exclusion/rerun reasons. Group repetitions by instance; they do not
-increase independent coverage. With small samples, show individual outcomes and ranges
-rather than unsupported trend fits. Synthetic balance is not real-world request frequency.
-
-Keep runtime resource use separate from construction effort: candidate-search cost,
-manual edits, and human review time would be recorded in later construction comparisons.
-Any monetary estimate needs dated provider prices and currency. Baseline EDA does not
-establish economic benefit for a real organization.
-
-Each run links the injected condition, what the harness observed, and what actually
-changed in the simulator. EDA groups these records by scenario and fault timing. It
-must preserve the difference between an accepted escalation and autonomous completion.
-This is a planned observation flow; no traces or results exist yet.
+Separate runtime cost from construction effort: search, manual edits, and human review.
+Monetary estimates need dated rates and currency. The diagram describes planned records, not observed results.
 
 ```mermaid
 flowchart TD
@@ -171,40 +123,20 @@ flowchart TD
     A --> D[Human review and next decision]
 ```
 
-## 7. Execution gates and acceptance of the EDA
+## 6. Review and execution gates
 
-This plan authorizes no simulator construction, model calls, or execution. Before a pilot,
-approve an exp-NNNN protocol using the [template](../../templates/experiment-protocol.md).
+1. **Approve scope and instrument:** select cohort/policy/faults; review state/message evaluation; pass L0; verify resets and event-based injection.
+2. **Approve execution:** an [exp-NNNN protocol](../../templates/experiment-protocol.md) must set model, monetary cap,
+   token/tool/time limits, sample/repetitions, reruns, and human review budget. This plan authorizes no simulator construction or calls.
+3. **Stop:** at the first cap; stop the batch for evaluator leakage, bad resets, or corrupted state. Keep partial traces.
+4. **Review EDA:** coverage, all outcomes with denominators, exclusions, fault traces, cost, uncertainty, and limitations;
+   decide continue/revise/discard before one recovery intervention and a separate comparison protocol.
 
-| Gate | Required decision or evidence |
-|---|---|
-| Scope | Select this case for a pilot; approve fictional policy, fault conditions, and cohort |
-| Instrument | L0 controls pass; state and message evaluation reviewed; resets and event-based injection work |
-| Budget | Approve model, total monetary cap, token/tool-call/time limits per run, repetition and rerun allowance, and human review budget |
-| Stop conditions | Stop at the first applicable cap; stop the batch for evaluator leakage, invalid resets, or corrupted simulation state; retain partial traces |
-| EDA report | Provide coverage, outcome counts with denominators, exclusions, fault-specific traces, costs, uncertainty, limitations, and a continue/revise/discard recommendation |
+Accept traceable evidence, including negative findings. A baseline that already handles the cases
+may leave no useful intervention. Sample size remains subject to variability, budget, and the intended claim.
+Stages may become sprint goals, not fixed dates. A local simulator may suffice; Compose is optional.
+Future paths: `benchmarks/case-0002/`, `data/`, `experiments/protocols/`,
+`experiments/manifests/`, and `experiments/reports/`.
 
-A predesignated SW-03C escalation within limits can be an accepted policy outcome. A cap
-reached in a completion-required scenario is a failure. Record side effects before reset;
-never erase a failed attempt to make the next run appear successful.
-
-Accept the EDA for traceability and decision usefulness, not for a required positive
-result. Without execution, the deliverable remains a matrix and analysis plan. Do not
-present expected states, planned charts, or sample counts as observed findings.
-
-## 8. Review sequence and artifact locations
-
-1. Review the matrix, fictional policy, and criteria in Markdown.
-2. If selected later, define the execution protocol and implement L0 and state resets first.
-3. Review baseline EDA and select at most one initial recovery intervention.
-4. Define a separate comparison protocol before making improvement claims.
-
-These stages can become bounded sprint goals after scope and cadence are agreed. Future
-scenarios and evaluators belong in `benchmarks/case-0002/`, provenance in `data/`, protocols
-in `experiments/protocols/`, manifests in `experiments/manifests/`, and findings in
-`experiments/reports/`. Compose is optional if service boundaries need testing; Azure or
-Kubernetes is not required. No execution artifacts are created by this plan.
-
-Agents prepare work through Review only. Jairzinho reviews and decides PR integration,
-manual movement to Done, issue completion, and Completed date. Passing checks or a prior
-merge do not authorize those actions. No automation is introduced for them.
+Agents stop at Review. Only Jairzinho decides integration, issue completion, Done, and Completed date;
+passing checks or a prior merge do not authorize these actions. No completion automation.
