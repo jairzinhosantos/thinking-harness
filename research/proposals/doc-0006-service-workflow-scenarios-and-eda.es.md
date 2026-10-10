@@ -2,7 +2,7 @@
 translation_of: doc-0006
 language: es
 source: doc-0006-service-workflow-scenarios-and-eda.md
-source_revision: 1
+source_revision: 2
 title: "Service workflow scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
@@ -170,6 +170,23 @@ de candidatos, los cambios manuales y el tiempo de revisión humana se registrar
 comparaciones posteriores de construcción. Toda estimación monetaria necesita precios
 del proveedor con fecha y moneda. El EDA del baseline no demuestra beneficio económico
 para una organización real.
+
+Cada ejecución vincula la condición inyectada, lo que observó el harness y lo que
+realmente cambió en el simulador. El EDA agrupa estos registros por escenario y momento
+del fallo. Debe conservar la diferencia entre una escalación aceptada y la finalización
+autónoma. Este es un flujo de observación previsto; todavía no existen trazas ni resultados.
+
+```mermaid
+flowchart TD
+    S[Estado inicial y secuencia de fallos] --> B[Piloto aprobado con baseline fijo]
+    B --> T[Traza de herramientas y respuestas visibles]
+    B --> F[Estado final y mensaje final]
+    T --> E[Comprobar aceptación específica del escenario]
+    F --> E
+    E --> O[Registrar resultado, efectos secundarios y recursos]
+    O --> A[EDA por escenario y fallo]
+    A --> D[Revisión humana y siguiente decisión]
+```
 
 ## 7. Condiciones de ejecución y aceptación del EDA
 

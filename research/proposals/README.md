@@ -3,6 +3,18 @@
 Each brief covers the question, close prior work, candidate contribution, case, metrics,
 budget, risks, and criteria to continue or discard it. No experimental proposal is selected.
 
+## Reading the filenames
+
+- `case-NNNN` identifies a candidate use-case specification: the problem, research boundary,
+  worked example, and comparison to consider.
+- `doc-NNNN` identifies a supporting document. Here, doc-0005 and doc-0006 expand the two
+  cases into scenario matrices and EDA plans; they are not additional use cases.
+- `.es.md` is the complete Spanish reading version of the English `.md` source.
+
+Read the case first, then its linked scenario and EDA plan. Code repair means correcting
+faulty code; service workflow means coordinating tool actions and handling uncertain
+results. Neither name implies that an implementation or experimental result exists.
+
 ## Candidate cases
 
 The following Markdown specifications support case selection. They contain fictional

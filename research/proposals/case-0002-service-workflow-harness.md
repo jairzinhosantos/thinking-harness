@@ -2,7 +2,7 @@
 id: case-0002
 title: "Simulated service workflow harness"
 status: draft
-revision: 1
+revision: 2
 created: 2026-10-02
 updated: 2026-10-09
 ---
@@ -47,6 +47,22 @@ does not establish that the harness improved or became cheaper to construct.
 
 Backend protections remain identical across conditions. The harness cannot improve its
 score by weakening service rules, changing expected outcomes, or granting itself new tools.
+
+The harness chooses actions through fixed tool contracts. It can change its recovery
+strategy, but not service rules or the evaluator. Evaluation reads both the final state
+and the response: a correct message alone cannot establish that a refund exists.
+
+```mermaid
+flowchart TD
+    Q[Cancellation request] --> H[Harness: interpret results and choose actions]
+    H --> T[Fixed order and refund tools]
+    T --> S[Simulated order and refund state]
+    T -->|Visible tool results| H
+    H --> M[Final response]
+    S --> E[Independent state and response evaluator]
+    M --> E
+    V[Research variable: recovery policy] -.-> H
+```
 
 ## 3. Complexity levels
 
@@ -106,6 +122,27 @@ This diagram summarizes the proposed workflow, not an implementation. Recovery m
 handle persistent status failures and stop with an explicit unresolved outcome when its
 budget is exhausted. Escalation can be correct behavior in a designated scenario, but is
 reported separately from autonomous completion.
+
+This sequence expands the after-write timeout in the walkthrough (SW-03A). The
+refund exists in the service even though its response did not reach the harness.
+The status lookup supplies evidence for completion. This path does not represent
+the before-write or persistently unavailable variants.
+
+```mermaid
+sequenceDiagram
+    participant H as Harness
+    participant O as Order service
+    participant R as Refund service
+    H->>O: Cancel eligible paid order
+    O-->>H: Cancellation confirmed
+    H->>R: Request refund of 1200 cents with key K
+    Note over R: One refund<br/>is recorded
+    R-->>H: Timeout instead of confirmation
+    Note over H: Refund status<br/>is unknown
+    H->>R: Read status for key K
+    R-->>H: One refund of 1200 cents confirmed
+    Note over H: Report completion<br/>No new refund
+```
 
 ## 5. Scenarios, reference evidence, and EDA
 

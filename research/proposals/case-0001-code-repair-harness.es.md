@@ -2,7 +2,7 @@
 translation_of: case-0001
 language: es
 source: case-0001-code-repair-harness.md
-source_revision: 2
+source_revision: 3
 title: "Code repair harness"
 status: draft
 created: 2026-10-02
@@ -16,6 +16,10 @@ updated: 2026-10-09
 [Matriz de escenarios y plan de EDA](doc-0005-code-repair-scenarios-and-eda.es.md)
 
 ## 1. Propósito y alcance actual
+
+Code repair significa corregir un defecto de código existente para cumplir un requisito.
+Aquí, el resultado de la tarea es un parche de código; el objeto de investigación es
+el harness que organiza la corrección, no los pesos del modelo de lenguaje.
 
 Explorar si un cambio acotado en el ciclo de corrección de un agente de código puede
 mejorar su capacidad para corregir programas pequeños de Python con un presupuesto fijo.
@@ -55,6 +59,23 @@ demuestra una mejora del harness. Un harness candidato debe evaluarse en varias 
 El agente puede inspeccionar las pruebas de desarrollo. Un evaluador independiente controla
 las pruebas de aceptación reservadas. Más adelante, los permisos deberán hacer efectiva
 esta separación; el nombre de una carpeta no es suficiente.
+
+El parche cambia la solución de una tarea. La política de selección de feedback es la
+variable de investigación propuesta. El modelo, las pruebas y los límites permanecen
+fijos durante la comparación; la evaluación de aceptación se registra y no alimenta
+el bucle de corrección.
+
+```mermaid
+flowchart TD
+    T[Tarea: código defectuoso y requisito] --> H[Harness: seleccionar contexto y feedback]
+    H --> M[Modelo fijo]
+    M --> P[Parche sobre archivos permitidos]
+    P --> D[Pruebas de desarrollo]
+    D -->|Feedback dentro de los límites| H
+    P -->|Al terminar la ejecución| E[Evaluador de aceptación protegido]
+    E --> R[Resultado y registro de recursos]
+    V[Variable de investigación: política de feedback] -.-> H
+```
 
 ## 3. Niveles de complejidad
 
@@ -115,6 +136,22 @@ un error de orden. Dos ajustes proporcionales por sí solos no distinguirían su
 Es una regla aritmética inventada, no una indicación tributaria de alguna jurisdicción.
 El redondeo y las entradas no válidas deben definirse o excluirse explícitamente antes
 de generar instancias; la matriz enlazada especifica las restricciones iniciales.
+
+El ejemplo L2 permite ver el defecto de orden. Ambos caminos parten del mismo
+importe y las mismas reglas; solo cambia el orden. Los valores son centavos e ilustran
+un requisito ficticio, no un comportamiento observado del agente.
+
+```mermaid
+flowchart TD
+    S[Subtotal: 1000] --> D[Orden correcto: restar descuento fijo 100]
+    D --> A[Base imponible: 900]
+    A --> T[Agregar impuesto del 20 por ciento: 180]
+    T --> C[Total requerido: 1080]
+    S --> W[Orden incorrecto: agregar impuesto del 20 por ciento 200]
+    W --> B[Importe antes del descuento: 1200]
+    B --> X[Restar descuento fijo 100]
+    X --> F[Total incorrecto: 1100]
+```
 
 ## 5. Tareas, evidencia de referencia y EDA
 

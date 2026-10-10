@@ -2,7 +2,7 @@
 id: doc-0005
 title: "Code repair scenario matrix and EDA plan"
 status: draft
-revision: 1
+revision: 2
 created: 2026-10-09
 updated: 2026-10-09
 ---
@@ -141,6 +141,22 @@ Runtime tokens and latency describe operation. Manual edits, human review minute
 search expenditure describe construction effort and must be accounted for separately.
 Monetary estimates require dated provider rates and currency; calls alone are not cost.
 Baseline EDA cannot establish that autonomous construction is cheaper.
+
+EDA has two observation sources: task definitions before execution and baseline
+records after an approved pilot. The diagram shows planned data flow, not existing
+measurements. Reserved final tasks stay outside both exploratory paths.
+
+```mermaid
+flowchart TD
+    T[Development task definitions] --> C[Coverage, duplicates and reference checks]
+    T --> B[Approved fixed-baseline pilot]
+    B --> R[Per-task records: outcomes, attempts and resources]
+    R --> A[Failure patterns, variability and cost]
+    C --> D[EDA report with limitations]
+    A --> D
+    D --> H[Human review: continue, revise or discard]
+    H --> P[If continued: separate comparison protocol]
+```
 
 ## 7. Execution gates and acceptance of the EDA
 

@@ -2,7 +2,7 @@
 id: doc-0006
 title: "Service workflow scenario matrix and EDA plan"
 status: draft
-revision: 1
+revision: 2
 created: 2026-10-09
 updated: 2026-10-09
 ---
@@ -153,6 +153,23 @@ Keep runtime resource use separate from construction effort: candidate-search co
 manual edits, and human review time would be recorded in later construction comparisons.
 Any monetary estimate needs dated provider prices and currency. Baseline EDA does not
 establish economic benefit for a real organization.
+
+Each run links the injected condition, what the harness observed, and what actually
+changed in the simulator. EDA groups these records by scenario and fault timing. It
+must preserve the difference between an accepted escalation and autonomous completion.
+This is a planned observation flow; no traces or results exist yet.
+
+```mermaid
+flowchart TD
+    S[Initial state and fault schedule] --> B[Approved fixed-baseline pilot]
+    B --> T[Tool trace and visible responses]
+    B --> F[Final state and final message]
+    T --> E[Check scenario-specific acceptance]
+    F --> E
+    E --> O[Record outcome, side effects and resources]
+    O --> A[EDA by scenario and fault]
+    A --> D[Human review and next decision]
+```
 
 ## 7. Execution gates and acceptance of the EDA
 

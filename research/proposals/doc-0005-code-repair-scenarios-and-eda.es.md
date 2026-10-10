@@ -2,7 +2,7 @@
 translation_of: doc-0005
 language: es
 source: doc-0005-code-repair-scenarios-and-eda.md
-source_revision: 1
+source_revision: 2
 title: "Code repair scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
@@ -156,6 +156,23 @@ de revisión humana y gasto de búsqueda describen el esfuerzo de construcción 
 contabilizan por separado. Las estimaciones monetarias requieren tarifas del proveedor
 con fecha y moneda; las llamadas por sí solas no son el costo. El EDA del baseline no
 demuestra que construir autónomamente sea más económico.
+
+El EDA tiene dos fuentes de observación: las definiciones de tareas antes de ejecutar
+y los registros del baseline después de un piloto aprobado. El diagrama muestra el
+flujo de datos previsto, no mediciones existentes. Las tareas finales reservadas
+permanecen fuera de ambos caminos exploratorios.
+
+```mermaid
+flowchart TD
+    T[Definiciones de tareas de desarrollo] --> C[Cobertura, duplicados y revisión de referencias]
+    T --> B[Piloto aprobado con baseline fijo]
+    B --> R[Registros por tarea: resultados, intentos y recursos]
+    R --> A[Patrones de fallo, variabilidad y costo]
+    C --> D[Informe de EDA con limitaciones]
+    A --> D
+    D --> H[Revisión humana: continuar, ajustar o descartar]
+    H --> P[Si continúa: protocolo de comparación separado]
+```
 
 ## 7. Condiciones de ejecución y aceptación del EDA
 

@@ -2,7 +2,7 @@
 translation_of: case-0002
 language: es
 source: case-0002-service-workflow-harness.md
-source_revision: 1
+source_revision: 2
 title: "Simulated service workflow harness"
 status: draft
 created: 2026-10-02
@@ -50,6 +50,23 @@ correcta, por sí sola, no establece que el harness haya mejorado o se haya vuel
 Las protecciones del backend permanecen iguales entre condiciones. El harness no puede
 mejorar su puntuación debilitando las reglas del servicio, cambiando los resultados
 esperados o concediéndose nuevas herramientas.
+
+El harness elige acciones mediante contratos de herramientas fijos. Puede cambiar
+su estrategia de recuperación, pero no las reglas del servicio ni el evaluador. La
+evaluación revisa el estado final y la respuesta: un mensaje correcto por sí solo
+no demuestra que exista un reembolso.
+
+```mermaid
+flowchart TD
+    Q[Solicitud de cancelación] --> H[Harness: interpretar resultados y elegir acciones]
+    H --> T[Herramientas fijas de pedidos y reembolsos]
+    T --> S[Estado simulado de pedidos y reembolsos]
+    T -->|Resultados visibles de herramientas| H
+    H --> M[Respuesta final]
+    S --> E[Evaluador independiente de estado y respuesta]
+    M --> E
+    V[Variable de investigación: política de recuperación] -.-> H
+```
 
 ## 3. Niveles de complejidad
 
@@ -111,6 +128,27 @@ Este diagrama resume el flujo propuesto, no una implementación. La recuperació
 debe gestionar fallos persistentes de la consulta de estado y detenerse indicando
 explícitamente un resultado no resuelto cuando se agote el presupuesto. Escalar puede
 ser correcto en un escenario que lo contemple, pero se informa por separado de la resolución autónoma.
+
+Esta secuencia amplía el timeout posterior al registro del ejemplo (SW-03A). El
+reembolso existe en el servicio aunque su respuesta no haya llegado al harness.
+La consulta de estado aporta evidencia para confirmar la finalización. Este camino
+no representa las variantes de fallo previo al registro o indisponibilidad persistente.
+
+```mermaid
+sequenceDiagram
+    participant H as Harness
+    participant O as Servicio de pedidos
+    participant R as Servicio de reembolsos
+    H->>O: Cancelar pedido pagado y elegible
+    O-->>H: Cancelación confirmada
+    H->>R: Solicitar reembolso de 1200 centavos con clave K
+    Note over R: Se registra<br/>un reembolso
+    R-->>H: Timeout en lugar de confirmación
+    Note over H: Estado del reembolso<br/>desconocido
+    H->>R: Consultar estado para la clave K
+    R-->>H: Confirmado un reembolso de 1200 centavos
+    Note over H: Comunicar finalización<br/>Sin nuevo reembolso
+```
 
 ## 5. Escenarios, evidencia de referencia y EDA
 

@@ -2,7 +2,7 @@
 id: case-0001
 title: "Code repair harness"
 status: draft
-revision: 2
+revision: 3
 created: 2026-10-02
 updated: 2026-10-09
 ---
@@ -14,6 +14,10 @@ English | [Español](case-0001-code-repair-harness.es.md)
 [Scenario matrix and EDA plan](doc-0005-code-repair-scenarios-and-eda.md)
 
 ## 1. Purpose and current scope
+
+Code repair means correcting a defect in existing code to satisfy a stated requirement.
+Here, the task output is a code patch; the research target is the harness that organizes
+the repair process, not the language model weights.
 
 Explore whether a bounded change to a coding agent's repair loop can improve its ability
 to correct small Python programs under a fixed budget. The practical problem is the
@@ -50,6 +54,22 @@ demonstrate harness improvement. A candidate harness must be evaluated across ta
 The agent may inspect development tests. An independent evaluator owns the reserved
 acceptance tests. Permissions must eventually enforce this distinction; a folder name
 alone is insufficient.
+
+The patch changes one task solution. The feedback policy is the proposed research variable.
+Model settings, tests, and limits stay fixed during the comparison; acceptance results
+are recorded for evaluation and do not feed the repair loop.
+
+```mermaid
+flowchart TD
+    T[Task: faulty code and requirement] --> H[Harness: select context and feedback]
+    H --> M[Fixed model]
+    M --> P[Patch to allowed solution files]
+    P --> D[Development tests]
+    D -->|Feedback within limits| H
+    P -->|At end of run| E[Protected acceptance evaluator]
+    E --> R[Task result and resource record]
+    V[Research variable: feedback policy] -.-> H
+```
 
 ## 3. Complexity levels
 
@@ -108,6 +128,22 @@ tax: 900 cents before tax and 1,080 cents after tax. Reversing these operations 
 alone would not distinguish their order. This is an invented arithmetic rule, not
 jurisdictional tax guidance. Rounding and invalid-input rules must be defined or explicitly
 excluded before generating instances; the linked matrix specifies the initial restrictions.
+
+The L2 example makes the ordering defect visible. Both paths use the same starting
+amount and rules; only the order differs. Values are cents and illustrate a fictional
+requirement, not observed agent behavior.
+
+```mermaid
+flowchart TD
+    S[Subtotal: 1000] --> D[Correct order: subtract fixed discount 100]
+    D --> A[Taxable amount: 900]
+    A --> T[Add 20 percent tax: 180]
+    T --> C[Required total: 1080]
+    S --> W[Wrong order: add 20 percent tax 200]
+    W --> B[Amount before discount: 1200]
+    B --> X[Subtract fixed discount 100]
+    X --> F[Wrong total: 1100]
+```
 
 ## 5. Tasks, reference evidence, and EDA
 
