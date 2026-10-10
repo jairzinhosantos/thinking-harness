@@ -2,7 +2,7 @@
 translation_of: doc-0005
 language: es
 source: doc-0005-code-repair-scenarios-and-eda.md
-source_revision: 3
+source_revision: 4
 title: "Code repair scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
@@ -19,6 +19,11 @@ Para [case-0001](case-0001-code-repair-harness.es.md), identificar tareas válid
 y una intervención viable mediante análisis exploratorio de datos (EDA).
 **Solo planificado:** sin código, ejecuciones, golden set validado ni resultados. El EDA evalúa viabilidad;
 no demuestra causalidad, mejora o beneficio económico. Analizar el [caso de servicios](doc-0006-service-workflow-scenarios-and-eda.es.md) por separado.
+
+El [diseño ilustrativo](case-0001-code-repair-harness.es.md#2-un-diseño-posible) separa corregir
+código de tarea de proponer cambios al harness. El piloto de 36 ejecuciones evalúa solo un
+harness fijo; buscar cambios mediante un optimizador requiere otro protocolo y presupuesto.
+Siguen abiertos el método y su ventaja frente a un bucle simple de edición/evaluación con LLM.
 
 ## 2. Matriz de escenarios
 

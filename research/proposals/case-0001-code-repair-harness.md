@@ -2,7 +2,7 @@
 id: case-0001
 title: "Code repair harness"
 status: draft
-revision: 4
+revision: 5
 created: 2026-10-02
 updated: 2026-10-09
 ---
@@ -15,7 +15,7 @@ English | [Español](case-0001-code-repair-harness.es.md)
 
 ## 1. Question and scope
 
-Can better test-feedback selection help a coding agent repair more programs within the same budget?
+How can automatic code-repair harness changes be evaluated against a simple LLM improvement loop?
 
 **Code repair** means correcting faulty code. The patch solves one task; the **harness**
 organizes context, model calls, tests, and retries. The research compares harnesses across tasks.
@@ -24,27 +24,111 @@ Candidate case only: fictional examples, no implementation or results. Start wit
 local Python package. Full-repository development, deployment, training, and recursive
 optimizer changes are outside the first pilot. Compare with [case-0002](case-0002-service-workflow-harness.md).
 
-## 2. Research boundary
+## 2. One possible design
 
-| Can change | Must stay fixed |
-|---|---|
-| Initially: selection of test feedback; context retention and retries remain alternatives | Model/settings, task inputs, tool contracts, test runner, evaluator, and matched resource limits |
-| Task patch: permitted solution files only | Acceptance tests, references, budget enforcement, and final tasks |
+**Illustrative pseudocode, not an implementation commitment.** The filenames below describe
+roles, not existing files. Helper functions, isolation, and budget enforcement are omitted.
 
-Choose one fixed search method later. Development tests feed the repair loop; protected
-acceptance tests do not. Permissions must enforce this boundary.
+| Artifact | Role | What it may change |
+|---|---|---|
+| `task.py` | Program to repair | Permitted task code |
+| `harness.py` | Calls the model, tests patches, and prepares retries | A bounded component, such as `select_feedback` |
+| `optimizer.py` | Uses an LLM to propose harness edits | Candidate copies of the allowed harness component |
+| `evaluation.py` | Measures task outcomes and resources | Fixed in this example; candidates cannot edit it |
+
+**A. Repair a task.** A model can fix this arithmetic in one call. That changes `task.py`,
+not `harness.py`.
+
+```python
+# task.py: faulty task code
+def line_total(price, quantity):
+    return price + quantity
+
+# A task patch would replace the return with:
+# return price * quantity
+```
+
+The harness organizes that call and any retries. Passing development tests stops the
+inner loop; protected acceptance checks still determine the task result.
+
+```python
+# harness.py: illustrative task-solving loop
+def solve_task(task, model):
+    code, feedback = task.code, ""
+    for _ in range(3):
+        patch = model.propose_patch(task.requirement, code, feedback)
+        code = apply_allowed_task_patch(code, patch)
+        results = run_development_tests(task, code)
+        if results.passed:
+            break
+        feedback = select_feedback(results)  # Candidate edit target
+    return code
+```
 
 ```mermaid
 flowchart TD
-    T[Task: faulty code and requirement] --> H[Harness: select context and feedback]
-    H --> M[Fixed model]
-    M --> P[Patch to allowed solution files]
+    T[task.py: faulty program] --> H[harness.py: solve_task]
+    H --> L[LLM proposes task patch]
+    L --> P[Updated task.py]
     P --> D[Development tests]
-    D -->|Feedback within limits| H
-    P -->|At end of run| E[Protected acceptance evaluator]
-    E --> R[Task result and resource record]
-    V[Research variable: feedback policy] -.-> H
+    D -->|Failure and budget remains| F[select_feedback]
+    F --> H
+    D -->|Pass or stop| R[Return task code]
 ```
+
+**B. Propose a harness change.** A separate optimizer could ask an LLM to replace
+`select_feedback`: for example, select the failed test, expected/actual values, and relevant
+location instead of forwarding raw output. This might help or discard useful information;
+it must be measured. The solving and optimizing roles may use the same fixed model.
+
+```python
+# harness.py: initial feedback function
+def select_feedback(results):
+    return results.raw_output
+
+# Candidate replacement proposed by the optimizer
+def select_feedback(results):
+    return format_failures(results.failed_tests)
+```
+
+`format_failures` would retain the fields listed above. This replaces a harness function,
+not the arithmetic function in the task.
+
+```python
+# optimizer.py: illustrative search over harness versions
+best = initial_harness
+report = evaluate_development(best, tasks, limits)
+for _ in range(search_rounds):
+    candidate = llm.propose_harness_edit(best, report)
+    if not changes_only_allowed_harness_parts(best, candidate):
+        continue
+    candidate_report = evaluate_development(candidate, tasks, limits)
+    if meets_predeclared_rule(candidate_report, report):
+        best, report = candidate, candidate_report
+```
+
+`evaluate_development` runs a harness on multiple development tasks in isolation, checks
+returned patches with protected acceptance rules, and records success and cost. Its report
+may guide search; reserved final tasks never enter this loop. Selection must obey the same
+constraints, include search cost, and retain failed candidates in the evidence.
+
+```mermaid
+flowchart TD
+    O[optimizer.py and LLM] --> C[Candidate harness.py]
+    C --> R[Run development tasks]
+    R --> E[evaluation.py: outcomes and cost]
+    E --> S{Meets selection rule?}
+    S -->|Yes| K[Keep candidate]
+    S -->|No| D[Discard candidate]
+    K --> B[Next round within search budget]
+    D --> B
+    B --> O
+    K -->|After validation and freeze| F[Independent final evaluation]
+```
+
+The optimizer edits a copy and selects a version; the harness does not rewrite itself
+while repairing one task. No candidate edits tests, reference outcomes, or budget controls.
+If both versions fix the simple arithmetic immediately, that task shows no repair-quality gain.
 
 ## 3. Worked examples
 
@@ -56,23 +140,6 @@ Values are integer cents; these examples are not a complete test suite.
 | Price 250 cents, quantity 3 | 253 | 750 | Three units at 250 cents each |
 | Price 250 cents, quantity 0 | 250 | 0 | No units produce no charge |
 | Price 0 cents, quantity 4 | 4 | 0 | Free units remain free |
-
-The harness proposes a patch, tests it, and retries within limits. An independent evaluator
-checks the returned solution. Passing one example does not demonstrate harness improvement.
-
-```mermaid
-flowchart TD
-    T[Task and starting code] --> H[Repair harness]
-    H --> M[Fixed language model]
-    M --> P[Candidate patch]
-    P --> D[Development tests]
-    D --> R{Retry within budget?}
-    R -->|Yes| F[Select failure feedback]
-    F --> H
-    R -->|No| O[Returned patch or failure]
-    O --> E[Independent acceptance tests]
-    E --> V[Quality and resource record]
-```
 
 **L2, interacting rules:** a fixed discount before tax gives 1,080 cents; reversing the order
 gives 1,100. Two proportional adjustments would not detect this ordering defect.
@@ -96,7 +163,19 @@ These are planned complexity levels, not measured difficulty rankings.
 
 ## 4. Comparison and acceptance
 
-- **Hypothesis:** selecting relevant test feedback resolves more tasks than a fixed feedback policy.
+An LLM → edit → evaluate → retain loop is the **basic comparator**, not a novelty claim.
+Improving the mechanism that proposes changes would also require modifying `optimizer.py` and
+showing an advantage over that comparator. This is outside the first pilot; repeating a loop does not establish RSI.
+
+| Comparison | Question |
+|---|---|
+| Fixed harness versus candidate | Does task resolution improve under matched limits? |
+| Simple LLM optimizer versus another method | Does it find better harnesses under the same total search budget? Method pending |
+
+Search-guiding evaluation could evolve in another study. Evidence of progress still needs a
+stable, independent comparison reference; changing the score does not establish improvement.
+
+- **Candidate hypothesis:** selecting relevant test feedback resolves more tasks than a fixed policy; it is not yet the selected contribution.
 - **Comparison:** change feedback selection only; match model, tasks, retry limits, and budget.
 - **Success:** all acceptance checks pass, only permitted files change, and limits are respected.
   Any prohibited edit fails the task; partial test scores are diagnostic only.

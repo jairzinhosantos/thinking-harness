@@ -2,7 +2,7 @@
 id: doc-0005
 title: "Code repair scenario matrix and EDA plan"
 status: draft
-revision: 3
+revision: 4
 created: 2026-10-09
 updated: 2026-10-09
 ---
@@ -17,6 +17,11 @@ For [case-0001](case-0001-code-repair-harness.md), identify valid tasks, baselin
 and an affordable harness intervention through exploratory data analysis (EDA).
 **Planned only:** no code, runs, validated golden set, or results. EDA supports feasibility,
 not causal, improvement, or economic claims. Analyze the [service case](doc-0006-service-workflow-scenarios-and-eda.md) separately.
+
+The [illustrative design](case-0001-code-repair-harness.md#2-one-possible-design) separates
+repairing task code from proposing harness changes. The 36-run pilot below evaluates a fixed
+harness only; optimizer search would require another protocol and budget. Its method and
+advantage over a simple LLM edit/evaluate loop remain open.
 
 ## 2. Scenario matrix
 
