@@ -24,7 +24,7 @@ been implemented or selected as the thesis contribution.
 Both case specifications have complete Spanish reading versions:
 [case-0001](case-0001-code-repair-harness.es.md) and
 [case-0002](case-0002-service-workflow-harness.es.md).
-English remains primary. This scoped language exception covers these two cases and their paired scenario/EDA plans.
+English remains primary. This scoped language exception covers these two cases, their paired scenario/EDA plans, and the draft extension below.
 Each translation shares the source identity, revision, status, and evidence boundaries;
 its `translation_of` metadata avoids a duplicate catalog record. Keep paired content and
 diagrams synchronized in the same PR. It does not establish translations for all documents.
@@ -59,3 +59,11 @@ Review these Markdown plans before selecting a case or authorizing implementatio
 An exp-NNNN execution protocol and budget are required before any scientific run.
 Agents stop at Review; Jairzinho decides integration and manually handles Done, issue
 completion, and Completed date. No status or closure automation is introduced.
+
+## Draft extension
+
+[Harness participation in self-improvement](doc-0007-harness-participation-proposal.md)
+([Español](doc-0007-harness-participation-proposal.es.md)) explores using the current harness
+to construct its next version, compared with a fixed constructor. It is a separate draft,
+not a third case or a replacement for case-0001. Review whether to extend case-0001, replace
+it, or keep the proposal separate before changing existing case specifications and EDA plans.
