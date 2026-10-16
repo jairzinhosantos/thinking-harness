@@ -25,7 +25,7 @@ compara harnesses sobre varias tareas.
 
 Caso candidato: ejemplos ficticios, sin implementación ni resultados. Empezar con un paquete
 Python pequeño y local. El desarrollo de repositorios completos, despliegue, entrenamiento y
-cambios recursivos del optimizador quedan fuera del primer piloto. Comparar con [case-0002](case-0002-service-workflow-harness.es.md).
+cambios recursivos del optimizador quedan fuera del primer piloto. Comparar con [case-0003](case-0003-debt-negotiation/README.es.md).
 
 ## 2. Un diseño posible
 

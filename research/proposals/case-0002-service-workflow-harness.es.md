@@ -2,11 +2,11 @@
 translation_of: case-0002
 language: es
 source: case-0002-service-workflow-harness.md
-source_revision: 3
+source_revision: 4
 title: "Simulated service workflow harness"
-status: draft
+status: superseded
 created: 2026-10-02
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Harness de un flujo de servicio simulado
@@ -14,6 +14,10 @@ updated: 2026-10-09
 [English](case-0002-service-workflow-harness.md) | Español
 
 [Matriz de escenarios y plan de EDA](doc-0006-service-workflow-scenarios-and-eda.es.md)
+
+**Referencia sustituida.** Se conservan su identidad y supuestos originales. El trabajo activo
+del caso de negocio continúa en [case-0003: negociación de deudas](case-0003-debt-negotiation/README.es.md).
+La matriz de escenarios de servicio no se aplica a negociación; no se implica implementación ni resultados.
 
 ## 1. Pregunta y alcance
 
