@@ -1,10 +1,10 @@
 ---
 id: case-0002
 title: "Simulated service workflow harness"
-status: draft
-revision: 3
+status: superseded
+revision: 4
 created: 2026-10-02
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Simulated service workflow harness
@@ -12,6 +12,10 @@ updated: 2026-10-09
 English | [Español](case-0002-service-workflow-harness.es.md)
 
 [Scenario matrix and EDA plan](doc-0006-service-workflow-scenarios-and-eda.md)
+
+**Superseded reference.** Retained with its original identity and assumptions. Active business-case
+work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.md).
+The scenario matrix below does not apply to negotiation; no implementation or results are implied.
 
 ## 1. Question and scope
 
