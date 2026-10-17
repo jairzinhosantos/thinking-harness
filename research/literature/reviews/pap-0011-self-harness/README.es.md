@@ -340,6 +340,6 @@ más limitada. No se reprodujo de forma independiente ningún resultado reportad
 A continuación, discutir el ejemplo de aceptación y tres preguntas: qué superficie del
 harness podría delimitarse, qué debe permanecer fijo y qué evidencia justificaría un cambio.
 Registrar las dudas pendientes antes de aceptar la revisión. Continuar con AFlow y Darwin
-Gödel Machine según el [plan inicial de lectura](../../../../docs/doc-0002-initial-plan.md).
+Gödel Machine según el [plan de investigación](../../../../docs/doc-0002-research-plan.md).
 Cualquier ejecución requiere un protocolo separado, un límite de gasto, una condición de
 parada y una ruta para la evidencia.

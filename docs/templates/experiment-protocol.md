@@ -1,6 +1,10 @@
 # Experiment protocol template
 
-Assign exp-NNNN, revision, status, and date.
+For a small pilot, keep the protocol in the case guide and identify it as
+`<case-id>-<study-slug>-vN`. A separate controlled protocol document may use `exp-NNNN`
+with revision, status and date when its scope warrants a separate file.
+Run and prompt IDs follow [std-0002](../standards/std-0002-experiment-versioning.md);
+they do not replace the protocol identity.
 
 - Question and hypothesis.
 - Case, units of analysis, and instance selection.

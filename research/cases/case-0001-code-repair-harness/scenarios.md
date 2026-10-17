@@ -2,7 +2,7 @@
 id: doc-0005
 title: "Code repair scenario matrix and EDA plan"
 status: draft
-revision: 6
+revision: 7
 created: 2026-10-09
 updated: 2026-10-16
 ---
@@ -16,7 +16,7 @@ English | [Español](scenarios.es.md)
 For [case-0001](README.md), identify valid tasks, baseline failures,
 and an affordable harness intervention through exploratory data analysis (EDA).
 **Planned only:** no code, runs, validated golden set, or results. EDA supports feasibility,
-not causal, improvement, or economic claims. Analyze the [service case](../case-0002-service-workflow-harness/scenarios.md) separately.
+not causal, improvement, or economic claims.
 
 The [illustrative design](README.md#2-one-possible-design) separates
 repairing task code from proposing harness changes. The 36-run pilot below evaluates a fixed
@@ -120,7 +120,7 @@ flowchart TD
 ## 6. Review and execution gates
 
 1. **Approve scope and instrument:** select the pilot cohort, review requirements/references/splits, pass L0, verify resets.
-2. **Approve execution:** an [exp-NNNN protocol](../../../docs/templates/experiment-protocol.md) must set model, sample,
+2. **Approve execution:** an [versioned protocol](../../../docs/templates/experiment-protocol.md) must set model, sample,
    monetary cap, token/time limits per run, retries/reruns, and human review budget. This plan authorizes no implementation or spend.
 3. **Stop:** at the first applicable cap; stop the batch for evaluator integrity or reset failures. Preserve partial evidence.
 4. **Review EDA:** coverage, all statuses, exclusions, metrics with denominators, failure patterns, cost, and limitations;

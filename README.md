@@ -23,7 +23,7 @@ See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 
 ## Start here
 
-- Read the [research charter](docs/doc-0001-research-charter.md) and [initial plan](docs/doc-0002-initial-plan.md).
+- Read the [research charter](docs/doc-0001-research-charter.md) and [research plan](docs/doc-0002-research-plan.md).
 - Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
 - Use the [literature map](research/synthesis/research-options.md#literature-map) to compare research roles and choose the next reading.
 - Compare the [case index](research/cases/README.md), including the [debt negotiation model](research/cases/case-0003-debt-negotiation/README.es.md).
