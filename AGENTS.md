@@ -7,9 +7,11 @@
   the shared paper identity, source revision, evidence, and completion states. This exception
   is limited to paper reviews; filenames, metadata keys, code, and other project content stay
   in English. Follow the paired-review rules in std-0004.
-- Case specifications and supporting scenario plans have scoped Spanish counterparts as
-  documented in research/proposals/README.md. This includes case-0003 modeling and notebooks.
-  Keep both versions aligned; preserve one ID and one execution record per experiment.
+- Case-0003 uses Spanish-only Markdown with `.es.md` filenames. Consolidate its case,
+  objective, modeling, setup and results in one primary README.es.md. Keep its notebooks
+  bilingual, code/configuration keys in English, and one shared execution record.
+  Other case specifications and scenario plans retain their scoped paired versions.
+  See research/proposals/README.md; preserve existing IDs and historical run evidence.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
   submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.

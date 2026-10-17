@@ -15,7 +15,8 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 DEBTS = {"A": 200, "B": 300, "C": 600}
-PROTOCOL = "case-0003-prompt-search-v2"
+PROTOCOL = "case-0003-prompt-search-v3"
+REPLAY_PROTOCOLS = {"case-0003-prompt-search-v2", PROTOCOL}
 
 
 def schema(properties):
@@ -104,6 +105,20 @@ def visible(case):
     """Exclude evaluation labels and reference text from negotiator input."""
     return {"debts": DEBTS, "allowed_payment_counts": [1, 2],
             "history": case["history"]}
+
+
+def load_objective(path=HERE / "README.es.md"):
+    """Read only the fixed objective, excluding evaluation results and other prose."""
+    document = Path(path).read_text()
+    start, end = "<!-- objective:start -->", "<!-- objective:end -->"
+    if document.count(start) != 1 or document.count(end) != 1:
+        raise ValueError("Expected one delimited objective block")
+    if document.index(end) < document.index(start):
+        raise ValueError("Objective markers are out of order")
+    objective = document.split(start, 1)[1].split(end, 1)[0].strip()
+    if not objective:
+        raise ValueError("The objective must not be empty")
+    return objective
 
 
 def load_cases(path=HERE / "golden-set.yaml"):
@@ -288,9 +303,9 @@ def run_search(config, output_root=None, client_factory=ResponsesClient):
     root = Path(output_root) if output_root else HERE / "runs"
     run_dir = root / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8])
     run_dir.mkdir(parents=True)
-    objective = (HERE / "objective.md").read_text()
+    objective = load_objective()
     hashes = {name: hashlib.sha256((HERE / name).read_bytes()).hexdigest()
-              for name in ("objective.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "prompt_search.py")}
+              for name in ("README.es.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "prompt_search.py")}
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=HERE, text=True,
                                          stderr=subprocess.DEVNULL).strip()
@@ -298,6 +313,7 @@ def run_search(config, output_root=None, client_factory=ResponsesClient):
         commit = "unavailable"
     report = {"protocol": PROTOCOL, "config": asdict(config), "source_hashes": hashes,
               "git_commit": commit, "evidence_dir": str(run_dir), "events": [],
+              "objective_sha256": hashlib.sha256(objective.encode()).hexdigest(),
               "versions": [], "final_complete": False, "stop_reason": "running",
               "mode": "live" if client_factory is ResponsesClient else "offline_test_double"}
     client = None

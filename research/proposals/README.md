@@ -2,16 +2,16 @@
 
 Case specifications define candidate problems, mutable harness components, fixed evaluation,
 and criteria to continue or discard a direction. They do not establish implemented systems
-or select the final thesis contribution. English is primary; cases 1-3 and their paired
-scenario plans, case-0003 modeling and notebooks, plus the draft extension below, have authorized Spanish reading versions
-with shared identities and evidence states.
+or select the final thesis contribution. Cases 1-2 and their scenario plans retain English/Spanish pairs. Case-0003 uses one Spanish
+Markdown guide with bilingual notebooks and shared execution evidence. The draft extension
+below retains its paired reading versions.
 
 ## Active candidates
 
 | Case | Focus | Reading |
 |---|---|---|
 | case-0001 | Code repair: feedback and bounded task-solving loops | [English](case-0001-code-repair-harness.md) / [Español](case-0001-code-repair-harness.es.md) |
-| case-0003 | Synthetic debt negotiation: offers, consent, and bounded prompt optimization | [English](case-0003-debt-negotiation/README.md) / [Español](case-0003-debt-negotiation/README.es.md) |
+| case-0003 | Synthetic debt negotiation: offers, consent, and bounded prompt optimization | [Español](case-0003-debt-negotiation/README.es.md) |
 
 The code-repair [scenario plan](doc-0005-code-repair-scenarios-and-eda.md)
 ([Español](doc-0005-code-repair-scenarios-and-eda.es.md)) remains a proposed feasibility
@@ -28,33 +28,29 @@ original IDs. They describe cancellations and refunds, not negotiation. Their pr
 
 ## Compact case folder
 
-Case-0003 keeps its specification, examples, and first executable prototype together:
+Case-0003 keeps one [Spanish guide](case-0003-debt-negotiation/README.es.md) for its case,
+objective, modeling, setup and observed results. All Markdown in this case uses `.es.md`.
+The guide is the primary controlled document, id: case-0003, with language: es.
+It is not a translation of a separate English document.
 
 ```text
 case-0003-debt-negotiation/
-  README.md       # Primary specification, id: case-0003
-  README.es.md    # Spanish counterpart, source: README.md
-  objective.md    # Fixed negotiation objective
-  modeling.md / modeling.es.md # Definitions, features, evaluator and protocol
-  golden-set.yaml # Synthetic development, validation, and test fixtures
-  prompt.yaml     # Mutable policy seed
-  config.yaml     # Fixed run configuration and opt-in
-  .env.example    # Local credential template
-  requirements.txt # Notebook dependencies
-  prompt-search.ipynb / prompt-search.es.ipynb # Paired walkthroughs and opt-in execution
-  prompt_search.py    # Testable runtime, evaluation, and search
+  README.es.md           # Case, objective, model, setup and results
+  golden-set.yaml        # Partitioned synthetic fixtures
+  prompt.yaml            # Mutable policy seed
+  config.yaml            # Model, budget and live opt-in
+  .env.example           # Local credential template
+  requirements.txt       # Notebook dependencies
+  prompt-search.ipynb    # English notebook
+  prompt-search.es.ipynb # Spanish notebook, same evidence
+  prompt_search.py       # Testable runtime and bounded search
+  results/               # Recorded report, YAML versions, usage and provenance
 ```
 
-The [notebook](case-0003-debt-negotiation/prompt-search.ipynb) replays the first live run offline. Live calls require
-an explicit model, prices, budget, and environment API key. The prototype changes only the
-policy prompt; it does not implement full conversations or a recursive optimizer. The first live run ended at its token limit with no accepted candidate and no final comparison. Keep small fixtures and demonstration code here; shared
-infrastructure and formal experiment evidence retain their repository locations.
-
-This folder exception is scoped to case-0003. Existing case IDs and paths remain stable.
-A controlled case README must sit directly in research/proposals/case-NNNN-description/,
-with a matching ID. Only its primary README appears in docs/catalog.csv. The translation
-uses translation_of, language, source, source_revision, title, status, created, and updated.
-Keep both language versions and their Mermaid diagrams aligned in the same PR.
+The notebooks default to replaying the saved pilot without API calls. The runtime extracts
+only the marked objective section, excluding measured results. Future runs use protocol v3
+with the Spanish objective; the recorded v2 evidence is unchanged. Live calls require explicit
+opt-in, model access and a budget. No recursive improvement or completed final test is claimed.
 
 ## Review boundaries
 

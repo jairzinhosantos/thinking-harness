@@ -26,8 +26,8 @@ See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 - Read the [research charter](docs/doc-0001-research-charter.md) and [initial plan](docs/doc-0002-initial-plan.md).
 - Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
 - Use the [literature map](research/synthesis/research-options.md#literature-map) to compare research roles and choose the next reading.
-- Compare the [active cases](research/proposals/README.md), including the [debt negotiation model](research/proposals/case-0003-debt-negotiation/README.md).
-- Read the [negotiation model](research/proposals/case-0003-debt-negotiation/modeling.md), then open the notebook in [English](research/proposals/case-0003-debt-negotiation/prompt-search.ipynb) or [Spanish](research/proposals/case-0003-debt-negotiation/prompt-search.es.ipynb). Both notebooks replay the first measured run without API calls; the search stopped at its token limit with no accepted candidate.
+- Compare the [active cases](research/proposals/README.md), including the [debt negotiation model](research/proposals/case-0003-debt-negotiation/README.es.md).
+- Read the [negotiation model](research/proposals/case-0003-debt-negotiation/README.es.md#modelamiento), then open the notebook in [English](research/proposals/case-0003-debt-negotiation/prompt-search.ipynb) or [Spanish](research/proposals/case-0003-debt-negotiation/prompt-search.es.ipynb). Both notebooks replay the first measured run without API calls; the search stopped at its token limit with no accepted candidate.
 - Follow work in the [Project](https://github.com/users/jairzinhosantos/projects/2).
 - Before contributing, read [AGENTS.md](AGENTS.md), the [operating model](docs/operating-model.md),
   and the [writing and diagram standard](docs/standards/std-0004-writing-and-diagrams.md).

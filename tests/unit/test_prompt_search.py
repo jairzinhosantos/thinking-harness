@@ -330,5 +330,35 @@ class PromptSearchTests(unittest.TestCase):
         self.assertGreater(guard['projected_tokens'],guard['limit'])
         self.assertEqual(guard['consumed_tokens'],report['usage']['tokens'])
 
+    def test_objective_extraction_excludes_results_and_rejects_bad_boundaries(self):
+        objective=m.load_objective()
+        self.assertIn('mayor deuda viable',objective)
+        self.assertNotIn('83 815',objective)
+        self.assertNotIn('Resultados registrados',objective)
+        self.assertNotIn('Modelamiento',objective)
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'README.es.md'
+            path.write_text('private outcomes\n<!-- objective:start -->\nfixed objective\n<!-- objective:end -->\nvalidation failures')
+            self.assertEqual(m.load_objective(path),'fixed objective')
+            for invalid in ('missing markers', '<!-- objective:start --><!-- objective:end -->',
+                            '<!-- objective:end -->text<!-- objective:start -->',
+                            '<!-- objective:start -->a<!-- objective:start -->b<!-- objective:end -->'):
+                path.write_text(invalid)
+                with self.assertRaises(ValueError): m.load_objective(path)
+
+    def test_case_has_one_spanish_markdown_and_legacy_evidence_is_distinct(self):
+        markdown=[p.relative_to(CASE).as_posix() for p in CASE.rglob('*.md')
+                  if not {'runs','_local','.venv'} & set(p.relative_to(CASE).parts)]
+        self.assertEqual(markdown,['README.es.md'])
+        self.assertEqual(m.PROTOCOL,'case-0003-prompt-search-v3')
+        self.assertIn('case-0003-prompt-search-v2',m.REPLAY_PROTOCOLS)
+        with tempfile.TemporaryDirectory() as tmp:
+            result=m.run_search(config(),tmp,FakeClient)
+            self.assertEqual(result['protocol'],m.PROTOCOL)
+            self.assertEqual(result['objective_sha256'],m.hashlib.sha256(m.load_objective().encode()).hexdigest())
+            self.assertIn('README.es.md',result['source_hashes'])
+            for role,_,payload in FakeClient.instances[-1].requests:
+                if role=='optimizer': self.assertEqual(payload['objective'],m.load_objective())
+
 if __name__=='__main__':
     unittest.main()
