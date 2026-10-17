@@ -112,5 +112,48 @@ class RepositoryChecksTests(unittest.TestCase):
         self.assertTrue(any('unresolved target' in e for e in checks.diagram_checks(self.root)))
 
 
+    def case_readme(self, folder, identifier='case-0003'):
+        path = self.root / folder / 'README.md'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f'---\nid: {identifier}\ntitle: Example\nstatus: in-review\n'
+                        'revision: 1\ncreated: 2026-10-16\nupdated: 2026-10-16\n---\n')
+        return path
+
+    def test_paper_and_case_folder_rules_coexist(self):
+        self.case_readme('research/proposals/case-0003-example')
+        self.case_readme('research/literature/reviews/pap-0001-stop', 'pap-0001')
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual({row['id'] for row in rows}, {'case-0003', 'pap-0001'})
+
+    def test_case_folder_readme_has_one_catalog_identity(self):
+        path = self.case_readme('research/proposals/case-0003-example')
+        path.with_name('README.es.md').write_text('---\ntranslation_of: case-0003\nsource: README.md\n---\n')
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['path'], 'research/proposals/case-0003-example/README.md')
+
+    def test_case_folder_mismatched_identity_is_rejected(self):
+        self.case_readme('research/proposals/case-0002-example')
+        _, errors = checks.controlled_documents(self.root)
+        self.assertTrue(any('filename must start' in error for error in errors))
+
+    def test_case_folder_exception_does_not_allow_other_locations_or_types(self):
+        for folder, identifier in [('other/case-0003-example', 'case-0003'),
+                                   ('research/proposals/doc-0001-example', 'doc-0001')]:
+            with self.subTest(folder=folder):
+                path = self.case_readme(folder, identifier)
+                _, errors = checks.controlled_documents(self.root)
+                self.assertTrue(any('filename must start' in error for error in errors))
+                path.unlink()
+
+    def test_case_folder_does_not_hide_duplicate_document_identity(self):
+        self.case_readme('research/proposals/case-0003-first')
+        self.case_readme('research/proposals/case-0003-second')
+        _, errors = checks.controlled_documents(self.root)
+        self.assertTrue(any('duplicate id' in error for error in errors))
+
+
 if __name__ == '__main__':
     unittest.main()

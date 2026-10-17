@@ -22,7 +22,7 @@ organizes context, model calls, tests, and retries. The research compares harnes
 
 Candidate case only: fictional examples, no implementation or results. Start with a small
 local Python package. Full-repository development, deployment, training, and recursive
-optimizer changes are outside the first pilot. Compare with [case-0002](case-0002-service-workflow-harness.md).
+optimizer changes are outside the first pilot. Compare with [case-0003](case-0003-debt-negotiation/README.md).
 
 ## 2. One possible design
 

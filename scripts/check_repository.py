@@ -49,12 +49,18 @@ def controlled_documents(root):
         seen.add(identifier)
         paper_readme = (
             path.name == 'README.md'
-            and identifier.startswith('pap-')
+            and re.fullmatch(r'pap-\d{4}', identifier) is not None
+            and re.fullmatch(re.escape(identifier) + r'-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
             and path.parent.parent == root / 'research/literature/reviews'
-            and path.parent.name.startswith(identifier + '-')
         )
-        if not path.name.startswith(identifier + '-') and not paper_readme:
-            errors.append(f'{relative}: filename must start with its id or be a paper-folder README')
+        case_folder = (
+            path.name == 'README.md'
+            and re.fullmatch(r'case-\d{4}', identifier) is not None
+            and re.fullmatch(re.escape(identifier) + r'-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
+            and path.parent.parent == root / 'research/proposals'
+        )
+        if not path.name.startswith(identifier + '-') and not (case_folder or paper_readme):
+            errors.append(f'{relative}: filename must start with its id')
         for field in FIELDS[:-1]:
             if not meta.get(field):
                 errors.append(f'{relative}: missing {field}')
