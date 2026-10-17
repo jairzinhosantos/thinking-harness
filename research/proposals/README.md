@@ -3,7 +3,7 @@
 Case specifications define candidate problems, mutable harness components, fixed evaluation,
 and criteria to continue or discard a direction. They do not establish implemented systems
 or select the final thesis contribution. English is primary; cases 1-3 and their paired
-scenario plans, plus the draft extension below, have authorized Spanish reading versions
+scenario plans, case-0003 modeling and notebooks, plus the draft extension below, have authorized Spanish reading versions
 with shared identities and evidence states.
 
 ## Active candidates
@@ -35,8 +35,13 @@ case-0003-debt-negotiation/
   README.md       # Primary specification, id: case-0003
   README.es.md    # Spanish counterpart, source: README.md
   objective.md    # Fixed negotiation objective
-  scenarios.json # Synthetic development, validation, and test fixtures
-  prompt-search.ipynb # Offline walkthrough and opt-in execution
+  modeling.md / modeling.es.md # Definitions, features, evaluator and protocol
+  golden-set.yaml # Synthetic development, validation, and test fixtures
+  prompt.yaml     # Mutable policy seed
+  config.yaml     # Fixed run configuration and opt-in
+  .env.example    # Local credential template
+  requirements.txt # Notebook dependencies
+  prompt-search.ipynb / prompt-search.es.ipynb # Paired walkthroughs and opt-in execution
   prompt_search.py    # Testable runtime, evaluation, and search
 ```
 

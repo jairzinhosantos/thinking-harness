@@ -17,6 +17,8 @@ jobs:
           cache: npm
       - name: Install diagram tooling
         run: npm ci --no-fund --no-audit
+      - name: Install notebook dependencies
+        run: python3 -m pip install -r research/proposals/case-0003-debt-negotiation/requirements.txt
       - name: Validate repository
         run: python3 scripts/check_repository.py
       - name: Test validation tools

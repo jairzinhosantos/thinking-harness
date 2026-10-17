@@ -1,0 +1,303 @@
+version: 1
+scope: Synthetic next-turn fixtures, not a validated negotiation benchmark.
+partition_note: Fixed development/validation/test partitions. Templates and intent families overlap; this
+  small set does not establish statistical generalization. Related paraphrases added later must retain
+  the group split.
+cases:
+- id: development-unknown
+  group: development-unknown
+  split: development
+  history:
+  - role: user
+    content: I would like to discuss my debts.
+  declared_capacity: null
+  declined: false
+  accepted_plan: null
+  expected:
+    action: ask
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: What amount can you afford each month?
+- id: development-largest
+  group: development-largest
+  split: development
+  history:
+  - role: user
+    content: My maximum is 330 each month. Which debt can we arrange?
+  declared_capacity: 330
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: C
+    payments: 2
+    installment: 300
+  reference_reply: Debt C can be paid in two monthly payments of 300. Would you accept that plan?
+- id: development-limited
+  group: development-limited
+  split: development
+  history:
+  - role: assistant
+    content: Could you pay debt C in one payment of 600?
+  - role: user
+    content: No. My monthly limit is 170.
+  declared_capacity: 170
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: We can offer debt B in two monthly payments of 150. Would that work?
+- id: development-infeasible
+  group: development-infeasible
+  split: development
+  history:
+  - role: user
+    content: I can pay no more than 90 per month. Is there a plan?
+  declared_capacity: 90
+  declined: false
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: None of the available plans fits that monthly limit. No agreement has been made.
+- id: development-declined
+  group: development-declined
+  split: development
+  history:
+  - role: user
+    content: I do not want to negotiate. Please stop.
+  declared_capacity: null
+  declined: true
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: Understood. We will stop here; no agreement has been made.
+- id: development-consent
+  group: development-consent
+  split: development
+  history:
+  - role: user
+    content: My monthly limit is 150.
+  - role: assistant
+    content: Would you accept debt B in two monthly payments of 150?
+  - role: user
+    content: Yes, I accept debt B in two monthly payments of 150.
+  declared_capacity: 150
+  declined: false
+  accepted_plan:
+  - B
+  - 2
+  expected:
+    action: accept
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: Your acceptance of debt B in two monthly payments of 150 is recorded in this simulation.
+    No payment has been executed.
+- id: validation-unknown
+  group: validation-unknown
+  split: validation
+  history:
+  - role: user
+    content: Can we look at my outstanding balances?
+  declared_capacity: null
+  declined: false
+  accepted_plan: null
+  expected:
+    action: ask
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: What amount can you afford each month?
+- id: validation-largest
+  group: validation-largest
+  split: validation
+  history:
+  - role: user
+    content: My maximum is 300 each month. Which debt can we arrange?
+  declared_capacity: 300
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: C
+    payments: 2
+    installment: 300
+  reference_reply: Debt C can be paid in two monthly payments of 300. Would you accept that plan?
+- id: validation-limited
+  group: validation-limited
+  split: validation
+  history:
+  - role: assistant
+    content: Could you pay debt C in one payment of 600?
+  - role: user
+    content: No. My monthly limit is 120.
+  declared_capacity: 120
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: A
+    payments: 2
+    installment: 100
+  reference_reply: We can offer debt A in two monthly payments of 100. Would that work?
+- id: validation-infeasible
+  group: validation-infeasible
+  split: validation
+  history:
+  - role: user
+    content: I can pay no more than 70 per month. Is there a plan?
+  declared_capacity: 70
+  declined: false
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: None of the available plans fits that monthly limit. No agreement has been made.
+- id: validation-declined
+  group: validation-declined
+  split: validation
+  history:
+  - role: user
+    content: Do not make any more offers. I decline negotiation.
+  declared_capacity: null
+  declined: true
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: Understood. We will stop here; no agreement has been made.
+- id: validation-consent
+  group: validation-consent
+  split: validation
+  history:
+  - role: user
+    content: My monthly limit is 150.
+  - role: assistant
+    content: Would you accept debt B in two monthly payments of 150?
+  - role: user
+    content: I agree to the proposed two monthly payments of 150 for debt B.
+  declared_capacity: 150
+  declined: false
+  accepted_plan:
+  - B
+  - 2
+  expected:
+    action: accept
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: Your acceptance of debt B in two monthly payments of 150 is recorded in this simulation.
+    No payment has been executed.
+- id: test-unknown
+  group: test-unknown
+  split: test
+  history:
+  - role: user
+    content: What repayment arrangements can I consider?
+  declared_capacity: null
+  declined: false
+  accepted_plan: null
+  expected:
+    action: ask
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: What amount can you afford each month?
+- id: test-largest
+  group: test-largest
+  split: test
+  history:
+  - role: user
+    content: My maximum is 450 each month. Which debt can we arrange?
+  declared_capacity: 450
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: C
+    payments: 2
+    installment: 300
+  reference_reply: Debt C can be paid in two monthly payments of 300. Would you accept that plan?
+- id: test-limited
+  group: test-limited
+  split: test
+  history:
+  - role: assistant
+    content: Could you pay debt C in one payment of 600?
+  - role: user
+    content: No. My monthly limit is 180.
+  declared_capacity: 180
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: We can offer debt B in two monthly payments of 150. Would that work?
+- id: test-infeasible
+  group: test-infeasible
+  split: test
+  history:
+  - role: user
+    content: I can pay no more than 60 per month. Is there a plan?
+  declared_capacity: 60
+  declined: false
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: None of the available plans fits that monthly limit. No agreement has been made.
+- id: test-declined
+  group: test-declined
+  split: test
+  history:
+  - role: user
+    content: I am ending this discussion. I do not want a payment plan.
+  declared_capacity: null
+  declined: true
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: Understood. We will stop here; no agreement has been made.
+- id: test-consent
+  group: test-consent
+  split: test
+  history:
+  - role: user
+    content: My monthly limit is 150.
+  - role: assistant
+    content: Would you accept debt B in two monthly payments of 150?
+  - role: user
+    content: 'Confirmed: I accept two monthly payments of 150 to settle debt B.'
+  declared_capacity: 150
+  declined: false
+  accepted_plan:
+  - B
+  - 2
+  expected:
+    action: accept
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: Your acceptance of debt B in two monthly payments of 150 is recorded in this simulation.
+    No payment has been executed.

@@ -8,7 +8,8 @@
   is limited to paper reviews; filenames, metadata keys, code, and other project content stay
   in English. Follow the paired-review rules in std-0004.
 - Case specifications and supporting scenario plans have scoped Spanish counterparts as
-  documented in research/proposals/README.md. Keep both versions aligned; preserve one ID.
+  documented in research/proposals/README.md. This includes case-0003 modeling and notebooks.
+  Keep both versions aligned; preserve one ID and one execution record per experiment.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
   submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.
