@@ -13,6 +13,7 @@ doc-0003,Agentic development strategy,draft,1,2026-09-29,2026-10-01,docs/designs
 doc-0004,Progress measurement and human review,draft,1,2026-09-29,2026-10-02,docs/designs/doc-0004-progress-and-hitl.md
 doc-0005,Code repair scenario matrix and EDA plan,draft,4,2026-10-09,2026-10-09,research/proposals/doc-0005-code-repair-scenarios-and-eda.md
 doc-0006,Service workflow scenario matrix and EDA plan,superseded,4,2026-10-09,2026-10-16,research/proposals/doc-0006-service-workflow-scenarios-and-eda.md
+doc-0007,Harness participation in self-improvement,draft,1,2026-10-09,2026-10-09,research/proposals/doc-0007-harness-participation-proposal.md
 pap-0001,"STOP: mechanism, code trace, and evaluation",in-review,4,2026-09-29,2026-10-10,research/literature/reviews/pap-0001-stop/README.md
 pap-0011,"Self-Harness: mechanism, code trace, and evaluation",in-review,1,2026-10-01,2026-10-01,research/literature/reviews/pap-0011-self-harness.md
 std-0001,Naming and document lifecycle,in-review,5,2026-09-29,2026-10-16,docs/standards/std-0001-naming-and-lifecycle.md

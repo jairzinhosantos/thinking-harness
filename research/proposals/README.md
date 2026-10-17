@@ -3,7 +3,8 @@
 Case specifications define candidate problems, mutable harness components, fixed evaluation,
 and criteria to continue or discard a direction. They do not establish implemented systems
 or select the final thesis contribution. English is primary; cases 1-3 and their paired
-scenario plans have authorized Spanish reading versions with shared identities and evidence states.
+scenario plans, plus the draft extension below, have authorized Spanish reading versions
+with shared identities and evidence states.
 
 ## Active candidates
 
@@ -54,3 +55,11 @@ condition; no proposed sample count is execution approval.
 
 Agents stop at Review. Jairzinho decides integration and manually handles Done, issue
 completion, and Completed date. No status or closure automation is introduced.
+
+## Draft extension
+
+[Harness participation in self-improvement](doc-0007-harness-participation-proposal.md)
+([Español](doc-0007-harness-participation-proposal.es.md)) explores using the current harness
+to construct its next version, compared with a fixed constructor. It is a separate draft,
+not an additional case or a replacement for case-0001. Review whether to extend case-0001, replace
+it, or keep the proposal separate before changing existing case specifications and EDA plans.
