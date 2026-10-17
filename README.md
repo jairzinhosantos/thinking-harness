@@ -26,8 +26,8 @@ See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 - Read the [research charter](docs/doc-0001-research-charter.md) and [initial plan](docs/doc-0002-initial-plan.md).
 - Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
 - Use the [literature map](research/synthesis/research-options.md#literature-map) to compare research roles and choose the next reading.
-- Compare the [active cases](research/proposals/README.md), including the [debt negotiation model](research/proposals/case-0003-debt-negotiation/README.es.md).
-- Read the [negotiation model](research/proposals/case-0003-debt-negotiation/README.es.md#modelamiento), then open the notebook in [English](research/proposals/case-0003-debt-negotiation/prompt-search.ipynb) or [Spanish](research/proposals/case-0003-debt-negotiation/prompt-search.es.ipynb). Both notebooks replay the first measured run without API calls; the search stopped at its token limit with no accepted candidate.
+- Compare the [case index](research/cases/README.md), including the [debt negotiation model](research/cases/case-0003-debt-negotiation/README.es.md).
+- Read the [negotiation model](research/cases/case-0003-debt-negotiation/README.es.md#modelamiento), then open the notebook in [English](research/cases/case-0003-debt-negotiation/prompt-search.ipynb) or [Spanish](research/cases/case-0003-debt-negotiation/prompt-search.es.ipynb). Both notebooks replay the first measured run without API calls; the search stopped at its token limit with no accepted candidate.
 - Follow work in the [Project](https://github.com/users/jairzinhosantos/projects/2).
 - Before contributing, read [AGENTS.md](AGENTS.md), the [operating model](docs/operating-model.md),
   and the [writing and diagram standard](docs/standards/std-0004-writing-and-diagrams.md).
@@ -49,33 +49,27 @@ flowchart LR
 
 | Directory | Contents and purpose |
 |---|---|
-| `docs/` | Charter, plan, operating model, standards, decisions, designs, and iteration notes |
-| `research/` | Paper catalog, bilingual study notes, synthesis, proposals, and the case-specific negotiation prototype |
-| `src/` | Future implementation of the selected method; currently a placeholder |
-| `tests/` | Repository and diagram checks, plus offline evaluator, budget, and prompt-search tests |
-| `configs/` | Shareable experiment configuration, without credentials |
-| `benchmarks/` | Future reference tasks, scenarios, and evaluators |
-| `environments/` | Local service definitions when the selected case requires them |
-| `experiments/` | Protocols, execution manifests, and evidence-based reports |
-| `data/` | Dataset catalog, provenance, licenses, splits, and checksums |
-| `manuscripts/` | Academic requirements and thesis manuscript sources |
-| `templates/` | Reusable paper-review, experiment, agent-handoff, and academic templates |
-| `diagrams/` | Editable Draw.io sources and generated SVG previews |
-| `assets/` | Original or licensed resources with recorded provenance |
-| `scripts/` | Repository validation and documentation tooling |
-| `deliverables/` | Issued, versioned documents and their manifests |
-| `_archive/` | Retired material with a recorded reason and replacement |
-| `.github/` | CI workflows and issue and PR templates |
+| `research/` | Literature, case studies, prototypes, evidence and synthesis |
+| `docs/` | Project conventions, decisions, designs, academic requirements and templates |
+| `scripts/` | Validation, notebook diagram rendering and PDF export tools |
+| `tests/` | Offline repository checks and tests of implemented case behavior |
+| `.github/` | CI workflows and issue/PR templates |
 
-The directory structure establishes boundaries; it does not imply that each component
-has already been implemented. [Controlled documents](docs/catalog.csv) have stable IDs.
+Each case and reviewed paper has its own folder. The README presents the main study;
+related documents and resources stay beside it. Cases retain their scientific status:
+reorganization does not turn a proposal into an experiment or a pilot into a validated result.
+[Controlled documents](docs/catalog.csv) retain stable IDs when their filenames change.
+
+The [evolution plan](docs/project-evolution.md) records the present structure and the conditions
+for adding shared code, benchmarks, experiment infrastructure or formal deliverables.
+Folders are added when they contain useful work.
 
 ## Validate a change
 
 Use Python 3.11 or newer. The repository checker uses the standard library; the prompt-search tests also require the case dependencies:
 
 ```sh
-python3 -m pip install -r research/proposals/case-0003-debt-negotiation/requirements.txt
+python3 -m pip install -r research/cases/case-0003-debt-negotiation/requirements.txt
 python3 scripts/check_repository.py
 python3 -m unittest discover -s tests/unit -v
 ```

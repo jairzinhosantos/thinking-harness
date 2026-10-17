@@ -120,28 +120,40 @@ class RepositoryChecksTests(unittest.TestCase):
         return path
 
     def test_paper_and_case_folder_rules_coexist(self):
-        self.case_readme('research/proposals/case-0003-example')
+        self.case_readme('research/cases/case-0003-example')
         self.case_readme('research/literature/reviews/pap-0001-stop', 'pap-0001')
         rows, errors = checks.controlled_documents(self.root)
         self.assertEqual(errors, [])
         self.assertEqual({row['id'] for row in rows}, {'case-0003', 'pap-0001'})
 
     def test_case_folder_readme_has_one_catalog_identity(self):
-        path = self.case_readme('research/proposals/case-0003-example')
+        path = self.case_readme('research/cases/case-0003-example')
         path.with_name('README.es.md').write_text('---\ntranslation_of: case-0003\nsource: README.md\n---\n')
         rows, errors = checks.controlled_documents(self.root)
         self.assertEqual(errors, [])
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]['path'], 'research/proposals/case-0003-example/README.md')
+        self.assertEqual(rows[0]['path'], 'research/cases/case-0003-example/README.md')
+
+    def test_descriptive_case_study_retains_identity_and_scope(self):
+        case = self.case_readme('research/cases/case-0001-example', 'case-0001')
+        study = case.with_name('scenarios.md')
+        study.write_text(case.read_text().replace('id: case-0001', 'id: doc-0005'))
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual({r['id'] for r in rows}, {'case-0001', 'doc-0005'})
+        other = self.root / 'scenarios.md'
+        study.rename(other)
+        _, errors = checks.controlled_documents(self.root)
+        self.assertTrue(any('filename must start' in e for e in errors))
 
     def test_case_folder_mismatched_identity_is_rejected(self):
-        self.case_readme('research/proposals/case-0002-example')
+        self.case_readme('research/cases/case-0002-example')
         _, errors = checks.controlled_documents(self.root)
         self.assertTrue(any('filename must start' in error for error in errors))
 
     def test_case_folder_exception_does_not_allow_other_locations_or_types(self):
         for folder, identifier in [('other/case-0003-example', 'case-0003'),
-                                   ('research/proposals/doc-0001-example', 'doc-0001')]:
+                                   ('research/cases/doc-0001-example', 'doc-0001')]:
             with self.subTest(folder=folder):
                 path = self.case_readme(folder, identifier)
                 _, errors = checks.controlled_documents(self.root)
@@ -149,24 +161,24 @@ class RepositoryChecksTests(unittest.TestCase):
                 path.unlink()
 
     def test_case_folder_does_not_hide_duplicate_document_identity(self):
-        self.case_readme('research/proposals/case-0003-first')
-        self.case_readme('research/proposals/case-0003-second')
+        self.case_readme('research/cases/case-0003-first')
+        self.case_readme('research/cases/case-0003-second')
         _, errors = checks.controlled_documents(self.root)
         self.assertTrue(any('duplicate id' in error for error in errors))
 
 
     def test_spanish_primary_case_is_scoped_to_case_three(self):
-        path=self.case_readme('research/proposals/case-0003-debt-negotiation')
+        path=self.case_readme('research/cases/case-0003-debt-negotiation')
         path.write_text(path.read_text().replace('id: case-0003', 'id: case-0003\nlanguage: es'))
         spanish=path.with_name('README.es.md')
         path.rename(spanish)
         rows,errors=checks.controlled_documents(self.root)
         self.assertEqual(errors,[])
-        self.assertEqual(rows[0]['path'],'research/proposals/case-0003-debt-negotiation/README.es.md')
+        self.assertEqual(rows[0]['path'],'research/cases/case-0003-debt-negotiation/README.es.md')
         spanish.write_text(spanish.read_text().replace('language: es','language: en'))
         self.assertTrue(checks.controlled_documents(self.root)[1])
         spanish.unlink()
-        other=self.case_readme('research/proposals/case-0004-example','case-0004')
+        other=self.case_readme('research/cases/case-0004-example','case-0004')
         other.rename(other.with_name('README.es.md'))
         self.assertTrue(checks.controlled_documents(self.root)[1])
 

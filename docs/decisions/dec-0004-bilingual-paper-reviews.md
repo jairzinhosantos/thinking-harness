@@ -36,4 +36,4 @@ The thesis method, progress model, and scientific evidence states are unchanged.
 ## Standards
 - [Naming and lifecycle](../standards/std-0001-naming-and-lifecycle.md)
 - [Writing and translations](../standards/std-0004-writing-and-diagrams.md#paper-review-translations)
-- [Paper review template](../../research/literature/review-template.md)
+- [Paper review template](../templates/paper-review.md)

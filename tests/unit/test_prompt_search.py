@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-CASE = ROOT / 'research/proposals/case-0003-debt-negotiation'
+CASE = ROOT / 'research/cases/case-0003-debt-negotiation'
 spec = importlib.util.spec_from_file_location('case3_search', CASE / 'prompt_search.py')
 m = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = m
