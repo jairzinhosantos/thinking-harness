@@ -2,6 +2,8 @@
 import importlib.util
 import io
 import json
+import re
+import yaml
 from pathlib import Path
 import sys
 import tempfile
@@ -203,7 +205,11 @@ class PromptSearchTests(unittest.TestCase):
             self.assertNotIn('previous_response_id',body)
 
     def test_notebook_offline_path_never_calls_network(self):
-        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        for name in ('prompt-search.ipynb', 'prompt-search.es.ipynb'):
+            self.check_offline_notebook(name)
+
+    def check_offline_notebook(self, name):
+        notebook=json.loads((CASE/name).read_text())
         self.assertEqual(notebook['nbformat'],4)
         scope={}
         display=types.ModuleType('IPython.display')
@@ -218,6 +224,70 @@ class PromptSearchTests(unittest.TestCase):
                     exec(compile(''.join(cell['source']),'notebook-cell','exec'),scope)
         self.assertFalse(scope['RUN_LIVE'])
         self.assertIsNone(scope['report'])
+
+
+    def test_yaml_version_lineage_and_candidate_tie_selection(self):
+        original=(CASE/'prompt.yaml').read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            result=m.run_search(config(),tmp,FakeClient)
+            versions=result['versions']
+            self.assertEqual([v['id'] for v in versions],['p000','p001','p002','p003'])
+            self.assertEqual([v['parent'] for v in versions],[None,'p000','p001','p001'])
+            self.assertEqual(result['initial_version'],'p001')
+            self.assertEqual(result['selected_version'],'p002')
+            self.assertEqual(sum(e.get('selected',False) for e in result['events']),1)
+            for version in versions:
+                path=Path(result['evidence_dir'])/version['path']
+                self.assertEqual(yaml.safe_load(path.read_text()),{'prompt':version['prompt']})
+                self.assertEqual(m.hashlib.sha256(path.read_bytes()).hexdigest(),version['sha256'])
+            self.assertIn('golden-set.yaml',result['source_hashes'])
+            self.assertIn('prompt.yaml',result['source_hashes'])
+        self.assertEqual((CASE/'prompt.yaml').read_bytes(),original)
+
+    def test_disabled_live_switch_and_candidate_schema(self):
+        cfg=m.Config(**yaml.safe_load((CASE/'config.yaml').read_text()))
+        cfg.validate()
+        self.assertFalse(cfg.allow_live)
+        with patch.object(m.urllib.request,'urlopen') as network:
+            with self.assertRaises(ValueError): m.run_search(cfg)
+            network.assert_not_called()
+        for candidate in ({'prompt':''},{'prompt':'hello','budget':100},{'prompt':None}):
+            with self.assertRaises(m.ProviderFailure): m.get_prompt(candidate)
+
+    def test_bilingual_code_and_local_links(self):
+        notebooks=[json.loads((CASE/name).read_text())
+                   for name in ('prompt-search.ipynb','prompt-search.es.ipynb')]
+        code=[]
+        for notebook in notebooks:
+            code.append([''.join(c['source']).splitlines() for c in notebook['cells']
+                         if c['cell_type']=='code'])
+            for cell in notebook['cells']:
+                if cell['cell_type']=='markdown':
+                    for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', ''.join(cell['source'])):
+                        if not target.startswith(('https:', 'attachment:')):
+                            self.assertTrue((CASE/target.split('#')[0]).exists(),target)
+        self.assertNotEqual(code[0][0][0],code[1][0][0])
+        code[0][0][0]=code[1][0][0]
+        self.assertEqual(code[0],code[1])
+
+    def test_notebook_version_and_trace_display_with_test_evidence(self):
+        # Exercise presentation with a marked test double; never publish this as a live run.
+        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        cells=[''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code']
+        display=types.ModuleType('IPython.display')
+        rendered=[]
+        display.display=lambda value: rendered.append(value)
+        display.Markdown=display.HTML=lambda value:value
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(sys.modules,{'IPython.display':display}), \
+             patch.object(m.urllib.request,'urlopen',side_effect=AssertionError('Unexpected network call')):
+            result=m.run_search(config(),tmp,FakeClient)
+            scope={}
+            exec(cells[0],scope)
+            scope.update(report=result,report_path=Path(result['evidence_dir'])/'report.json')
+            for cell in cells[4:]: exec(cell,scope)
+            self.assertTrue(any('p003' in str(item) for item in rendered))
+            self.assertTrue(any('Scripted test verdict' in str(item) for item in rendered))
+            self.assertEqual(result['mode'],'offline_test_double')
 
 if __name__=='__main__':
     unittest.main()

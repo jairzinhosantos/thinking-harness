@@ -24,6 +24,44 @@ class RepositoryChecksTests(unittest.TestCase):
         _, errors = checks.controlled_documents(self.root)
         self.assertTrue(any('duplicate id' in error for error in errors))
 
+    def test_paper_folder_readme_keeps_catalog_identity(self):
+        folder = self.root / 'research/literature/reviews/pap-0001-stop'
+        folder.mkdir(parents=True)
+        self.write_doc('doc-0001-original.md')
+        original = self.root / 'doc-0001-original.md'
+        (folder / 'README.md').write_text(original.read_text().replace('doc-0001', 'pap-0001'))
+        original.unlink()
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual(rows[0]['id'], 'pap-0001')
+        self.assertEqual(rows[0]['path'], 'research/literature/reviews/pap-0001-stop/README.md')
+
+    def test_readme_exception_rejects_wrong_folder_and_identity(self):
+        for directory, identifier in [
+            ('research/literature/reviews/pap-0002-example', 'pap-0001'),
+            ('docs/pap-0001-example', 'pap-0001'),
+            ('research/literature/reviews/doc-0001-example', 'doc-0001'),
+        ]:
+            with self.subTest(directory=directory):
+                folder = self.root / directory
+                folder.mkdir(parents=True)
+                self.write_doc('doc-0001-original.md')
+                original = self.root / 'doc-0001-original.md'
+                readme = folder / 'README.md'
+                readme.write_text(original.read_text().replace('doc-0001', identifier))
+                original.unlink()
+                _, errors = checks.controlled_documents(self.root)
+                self.assertTrue(any('filename must start' in error for error in errors))
+                readme.unlink()
+
+    def test_local_upstream_is_excluded_from_document_checks(self):
+        folder = self.root / 'research/literature/reviews/pap-0001-stop/_local/upstream'
+        folder.mkdir(parents=True)
+        (folder / 'README.md').write_text('---\nid: invalid\n---\n[missing](missing.md)')
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual((rows, errors), ([], []))
+        self.assertEqual(checks.local_links(self.root), [])
+
     def test_invalid_revision_is_reported_without_crashing(self):
         self.write_doc('doc-0001-example.md', 'invalid')
         _, errors = checks.controlled_documents(self.root)
@@ -80,6 +118,13 @@ class RepositoryChecksTests(unittest.TestCase):
         path.write_text(f'---\nid: {identifier}\ntitle: Example\nstatus: in-review\n'
                         'revision: 1\ncreated: 2026-10-16\nupdated: 2026-10-16\n---\n')
         return path
+
+    def test_paper_and_case_folder_rules_coexist(self):
+        self.case_readme('research/proposals/case-0003-example')
+        self.case_readme('research/literature/reviews/pap-0001-stop', 'pap-0001')
+        rows, errors = checks.controlled_documents(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual({row['id'] for row in rows}, {'case-0003', 'pap-0001'})
 
     def test_case_folder_readme_has_one_catalog_identity(self):
         path = self.case_readme('research/proposals/case-0003-example')

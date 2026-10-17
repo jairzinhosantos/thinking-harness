@@ -312,7 +312,7 @@ flowchart TD
 
 ## 9. Relación con STOP y opciones de tesis
 
-**Interpretación.** [STOP](pap-0001-stop.es.md) distingue una solución del programa que mejora
+**Interpretación.** [STOP](pap-0001-stop/README.es.md) distingue una solución del programa que mejora
 soluciones y luego modifica recursivamente ese programa mejorador. Self-Harness centra el
 objeto modificable en superficies declaradas del harness agéntico y utiliza diagnóstico de
 trazas junto con un criterio por partición. Ambos mantienen fijos los pesos del modelo.

@@ -1,25 +1,37 @@
 ---
 translation_of: pap-0001
 language: es
-source: pap-0001-stop.md
-source_revision: 3
+source: README.md
+source_revision: 4
 title: "STOP: mechanism, code trace, and evaluation"
 status: in-review
 created: 2026-10-01
-updated: 2026-10-02
+updated: 2026-10-10
 ---
 
 # STOP: mecanismo, correspondencia con el código y evaluación
 
-[English](pap-0001-stop.md) | Español
+[English](README.md) | Español
 
-Traducción de la revisión 3 de la versión principal en inglés. Conserva sus fuentes,
+Traducción de la revisión 4 de la versión principal en inglés. Conserva sus fuentes,
 estados y conclusiones; no constituye una revisión independiente del paper.
 
 STOP es una referencia útil para distinguir la solución de una tarea del programa que la
 mejora. Para thinking-harness, la pregunta inmediata es qué componente podría modificarse
 y cómo medir su mejora de forma independiente de la búsqueda que la produjo.
 Esta revisión prepara esa discusión; todavía no selecciona el método de la tesis.
+
+**Recorrido de estudio:**
+
+1. [Fuentes y estado de la revisión](#1-fuentes-y-estado-de-la-revisión)
+2. [Contribución y evidencia](#2-contribución-y-evidencia)
+3. [Mecanismo paso a paso](#3-mecanismo-paso-a-paso)
+4. [Correspondencia con el código original](#4-correspondencia-con-el-código-original)
+5. [Inspección local y ejecución](#5-inspección-local-y-ejecución)
+6. [Lectura crítica y aplicación](#6-lectura-crítica-y-aplicación)
+
+Piloto de organización solo para STOP: la revisión y el análisis del código comparten este
+README. La estructura de otros papers y el template general permanecen sin cambios.
 
 ## 1. Fuentes y estado de la revisión
 
@@ -49,7 +61,7 @@ commit `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4`. Todos los enlaces al código 
 | Inspección asistida de fuentes | Resumen, introducción, secciones 3-8, algoritmo 1, figuras 2 y 4, tabla 1 y apéndice K; inspección parcial de A.1-A.2 |
 | Lectura completa del paper | Parcial; falta profundizar en los trabajos relacionados, las demostraciones y los demás apéndices |
 | Inspección estática del código | Ejecutor, mejoradores iniciales, metautilidad, utilidad de paridad, interfaz del modelo, cargador, configuración y punto de entrada de la evaluación de transferencia |
-| Ejecución | Código original no ejecutado; sin importar módulos de terceros, invocar modelos ni realizar experimentos científicos. Solo se ejecutaron los fragmentos didácticos propios y deterministas de la sección 4 para comprobar sus valores |
+| Ejecución | Código original no ejecutado; sin importar módulos de terceros, invocar modelos ni realizar experimentos científicos. Solo se ejecutaron los fragmentos didácticos propios y deterministas de la sección 3.2 para comprobar sus valores |
 | Discusión guiada | Pendiente; preparar el documento no acredita haber completado la lectura personal |
 | Reproducción | Sin resultados reproducidos |
 
@@ -58,7 +70,7 @@ un análisis del proyecto o una propuesta ilustrativa. `static-inspection` ident
 comportamiento observado directamente en el código fuente, todavía no verificado en ejecución.
 `reproduced-result` se reserva para evidencia medida.
 
-## 2. Contribución y evidencia publicadas
+## 2. Contribución y evidencia
 
 **Afirmación de los autores.** La contribución central consiste en utilizar un mejorador
 para modificar su propio código, manteniendo fijo el modelo de lenguaje. El argumento del
@@ -98,12 +110,14 @@ con ruido. La metautilidad utiliza **cinco copias repetidas del mismo par tarea/
 inicial**, porque las llamadas al modelo son estocásticas. La generalización se evalúa sobre
 **50 instancias reservadas**. Por separado, la gráfica agrega **cinco ejecuciones
 independientes de STOP**. Son niveles de repetición distintos, no cinco familias de tareas.
-La sección 6 de esta review describe los datos internos de la implementación.
+La sección 3.3 de esta review describe los datos internos de la implementación.
 
 Los modelos históricos son `gpt-4-0314`, `gpt-3.5-turbo-0613` y
 `Mixtral-8x7B-Instruct-v0.1`. Fuente: [paper v3](https://arxiv.org/pdf/2310.02304v3).
 
-## 3. Los dos niveles de mejora
+## 3. Mecanismo paso a paso
+
+### 3.1. Los dos niveles de mejora
 
 **Inspección estática e interpretación.** La función inicial recibe código, un evaluador y
 una interfaz del modelo. Genera alternativas y selecciona según su puntuación. En el nivel
@@ -140,14 +154,14 @@ tareas y los límites de recursos. Se modifica el código de las soluciones cand
 de una evaluación y el código del mejorador entre rondas externas.
 Cambiar un prompt o una estrategia de búsqueda no implica por sí mismo actualizar los pesos del modelo.
 
-## 4. Ejemplo paso a paso: de una prueba a un nuevo mejorador
+### 3.2. Ejemplo concreto
 
 **Interpretación: ejemplo didáctico propio, no mediciones de STOP.** Suma, multiplicación
 y máximo sustituyen las tareas más difíciles del paper para poder seguir cada puntuación.
 Las funciones y respuestas del modelo se escriben de antemano. Este ejemplo no contiene
 llamadas a modelos, aprendizaje ni resultados reproducidos de STOP.
 
-### 4.1. Separar los tres objetos
+#### 3.2.1. Separar los tres objetos
 
 | Objeto | Función | Salida |
 |---|---|---|
@@ -160,7 +174,7 @@ iteración. El `0` de `I_0` identifica al **mejorador inicial**. Los mejoradores
 `I_A` e `I_B` que aparecen después son programas alternativos, no los evaluadores `u_A`
 y `u_B`. El evaluador permanece fijo mientras cambia el código candidato.
 
-### 4.2. ¿Qué produce exactamente una puntuación de 0.6?
+#### 3.2.2. ¿Qué produce exactamente una puntuación de 0.6?
 
 La tarea A consiste en sumar dos enteros. Se parte de una solución incorrecta que ignora la
 segunda entrada. Una modificación propuesta resuelve las entradas con segundo operando no
@@ -177,9 +191,9 @@ una misma función:
 
 | Función | Propósito aquí | Dónde se utiliza |
 |---|---|---|
-| `add_start` | Programa inicial incorrecto: ignora `b` | Se puntúa abajo y luego se entrega a `I_0` en la sección 4.3 |
+| `add_start` | Programa inicial incorrecto: ignora `b` | Se puntúa abajo y luego se entrega a `I_0` en la sección 3.2.3 |
 | `add_nonnegative_b` | Candidato parcialmente correcto | Se puntúa abajo y se incluye entre las respuestas de `demo_model` |
-| `add_exact` | Comparación totalmente correcta para estos casos | Se puntúa abajo; **no** se ofrece en `demo_model` en la sección 4.3 |
+| `add_exact` | Comparación totalmente correcta para estos casos | Se puntúa abajo; **no** se ofrece en `demo_model` en la sección 3.2.3 |
 
 El comentario del código identifica un ejemplo didáctico escrito a mano. No desactiva las
 funciones ni significa que no se utilicen. Las tres se evalúan en las tres líneas `print`
@@ -284,7 +298,7 @@ utilidad agregada también puede estar entre cero y uno. El evaluador debe espec
 antes de comparar candidatos; cambiarlo durante la comparación alteraría el significado
 de la puntuación.
 
-### 4.3. Abrir la expresión anidada, una operación a la vez
+#### 3.2.3. Abrir la expresión anidada, una operación a la vez
 
 Un mejorador pequeño puede elegir entre dos programas propuestos. `demo_model` proporciona
 respuestas fijas únicamente para que el ejemplo sea determinista; un `L` real generaría código
@@ -314,7 +328,7 @@ sequenceDiagram
 ```
 
 `add_exact` no está entre estas propuestas, por lo que no puede ganar la selección aunque
-la sección 4.2 muestre su puntuación de `1.0`. El mejorador solo compara los candidatos
+la sección 3.2.2 muestre su puntuación de `1.0`. El mejorador solo compara los candidatos
 que recibe.
 
 ```python
@@ -344,6 +358,10 @@ La ejecución se lee en este orden:
 
 La expresión compacta contiene, por tanto, dos operaciones, no un evaluador recursivo:
 
+En esta fórmula, `s_A` nombra el código inicial y `s'_A` la solución devuelta.
+La prima significa «después de la mejora», no una derivada. Los paréntesis indican
+una llamada: primero obtener un programa y después puntuarlo.
+
 $$
 s'_A=I_0(u_A,s_A,L),\qquad u_A(s'_A)=6/10=0.6.
 $$
@@ -358,7 +376,7 @@ solo entre candidatos generados, por lo que conservar el programa de partida no 
 de ese mejorador. El ejemplo no modela excepciones, tiempos máximos, contabilidad de recursos
 ni aislamiento, y no es un ejecutor para código no confiable.
 
-### 4.4. ¿De dónde sale la media `(0.6 + 0.7 + 0.5) / 3`?
+#### 3.2.4. ¿De dónde sale la media `(0.6 + 0.7 + 0.5) / 3`?
 
 Se repite la mejora de soluciones para las tareas B y C. Supongamos que los programas
 devueltos son `multiply_magnitude` y `maximum_left`. Sus resultados también pueden calcularse
@@ -423,6 +441,42 @@ $$
 \widehat{u}_D(I)=\frac{1}{n}\sum_{j=1}^{n}u_j\bigl(I(u_j,s_j,L)\bigr).
 $$
 
+**Leer los símbolos antes de sustituir valores.** Esta es la notación explicativa de la
+revisión para la metautilidad empírica; no implica que cada símbolo se transcriba del paper.
+
+| Símbolo | Cómo se lee | Objeto u operación |
+|---|---|---|
+| `I` | Mejorador | Programa que devuelve código de una solución |
+| `L` | Interfaz del modelo de lenguaje | Propone código; los pesos permanecen fijos |
+| `D` | Colección de evaluación | Entradas con una utilidad y una solución inicial |
+| `j` | Índice de la entrada | Selecciona un par; no es una potencia ni una derivada |
+| `u_j`, `s_j` | Utilidad y solución inicial de la entrada j | Función de puntuación y código de un programa |
+| `n` | Número de entradas | Denominador de la media; no son los casos dentro de una utilidad |
+| `hat u_D` | Utilidad estimada sobre D | El sombrero indica una estimación empírica, no el rendimiento futuro exacto |
+| `sum`, escrito como Σ | Sumatoria | Sumar las puntuaciones de la entrada 1 a la n |
+
+Leer la expresión **desde dentro hacia fuera**:
+
+1. `I(u_j, s_j, L)` devuelve una solución mejorada para la entrada `j`.
+2. `u_j(...)` puntúa esa solución devuelta.
+3. La sumatoria agrega las puntuaciones: `0.6 + 0.7 + 0.5 = 1.8`.
+4. Dividir entre `n = 3`: `1.8 / 3 = 0.6`, la puntuación asignada al mejorador.
+
+```mermaid
+flowchart TD
+    I[Evaluar el mismo mejorador I] --> A[Entrada A: devolver solución y puntuar 0.6]
+    I --> B[Entrada B: devolver solución y puntuar 0.7]
+    I --> C[Entrada C: devolver solución y puntuar 0.5]
+    A --> S[Sumar puntuaciones: 1.8]
+    B --> S
+    C --> S
+    S --> M[Dividir entre tres entradas: 0.6]
+```
+
+El diagrama usa el ejemplo ficticio de tres tareas. La configuración de STOP inspeccionada
+repite cinco veces el mismo problema de mejora de paridad con ruido, con muestreo del modelo,
+en vez de usar estas tres tareas aritméticas. La sección 3.3 explica los datos de ese problema.
+
 Hay dos divisiones distintas: **diez casos** para puntuar cada solución y **tres tareas** para
 puntuar al mejorador. La media coincide con `18/30` porque las tareas tienen igual número de
 casos; con cantidades distintas, promediar las tareas con igual peso sería diferente de
@@ -430,7 +484,7 @@ agrupar todos los casos en una sola proporción. Del mismo modo, las puntuacione
 `5/10` y `8/10` producirían una metapuntuación aproximada de `0.5333`, no `0.6`. Son otro
 conjunto de resultados del ejemplo.
 
-### 4.5. ¿Dónde ocurre la automejora recursiva?
+#### 3.2.5. ¿Dónde ocurre la automejora recursiva?
 
 Hasta aquí, un mejorador fijo ha producido soluciones de tareas. La **ronda externa** modifica
 al propio mejorador. En lugar de entregar código de suma como entrada editable, se entrega
@@ -479,6 +533,19 @@ $$
 I_{t+1}=\mathrm{load}\left(I_t\left(\widehat{u}_D,\mathrm{code}(I_t),L\right)\right).
 $$
 
+**Leer la actualización como cuatro operaciones.** `t` es el índice de ronda; `t + 1` es la
+siguiente. El subíndice no es una multiplicación. `code` y `load` nombran operaciones
+conceptuales en esta revisión; Python utiliza cadenas de código y `temp_override`.
+
+| Operación | Entrada | Salida en el ejemplo hipotético |
+|---|---|---|
+| `code(I_t)` | Mejorador I0 en ejecución | Su código fuente como texto |
+| `I_t(hat u_D, code(I_t), L)` | Código, metaevaluador y modelo fijo | Código fuente del candidato IB seleccionado |
+| `load(...)` | Código seleccionado | Un mejorador ejecutable |
+| Asignar `I_{t+1}` | Ese ejecutable | I1, usado para construir el siguiente candidato |
+
+La igualdad define el siguiente programa; no afirma que su puntuación necesariamente aumente.
+
 - `code(I_t)` es el código fuente del mejorador actual, entregado como entrada editable.
 - `I_t(...)` utiliza el modelo y la metautilidad para devolver código de un mejorador propuesto.
 - `load(...)` convierte el código elegido en el siguiente mejorador ejecutable; no es un
@@ -498,23 +565,7 @@ prueba no utilizado puede invertir el orden. Seleccionar repetidamente con ese c
 convertiría en datos de búsqueda. El protocolo de tesis necesita, por tanto, evidencia de
 selección y de prueba final separadas, ejecuciones independientes repetidas y límites de recursos.
 
-## 5. Correspondencia entre el algoritmo y el código
-
-**Inspección estática.** Se presenta un recorrido de dependencias, no una traza de ejecución
-verificada. Los archivos descriptivos `utility.py` que se suministran al código generado
-difieren de los evaluadores implementados en `secret_utility.py`.
-
-| Responsabilidad | Fuente fijada al commit | Observación |
-|---|---|---|
-| Propuestas iniciales | [Mejorador inicial, líneas 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23) | Un lote; extracción; selección del candidato con `max` |
-| Iteración externa | [Ejecutor, líneas 122-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L122-L179) | Invoca al mejorador actual; evalúa su resultado; guarda y vuelve a cargar el código devuelto |
-| Metaevaluación | [Metautilidad, líneas 65-143](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L65-L143) | Repite la mejora de tareas; devuelve la puntuación media de validación; opcionalmente registra las puntuaciones de prueba |
-| Evaluación de tareas | [Utilidad de paridad, líneas 9-95](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/parity_noise/secret_utility.py#L9-L95) | Genera instancias, invoca la solución y puntúa las predicciones |
-| Presupuesto del modelo | [Interfaz, líneas 226-250](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/language_model.py#L226-L250) | Cuenta las invocaciones a la interfaz y limita las respuestas por invocación |
-| Carga del código generado | [Funciones auxiliares, líneas 52-77 y 154-192](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/helpers.py#L52-L192) | Escribe el código fuente en un módulo temporal y lo importa |
-| Entrada de evaluación de transferencia | [Evaluación de transferencia, líneas 207-214](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/transfer_eval.py#L207-L214) | Elige un mejorador almacenado e invoca al evaluador de tareas |
-
-## 6. Datos y evaluación en la implementación inspeccionada
+### 3.3. Datos y evaluación
 
 **Inspección estática.** La tarea de paridad genera datos sintéticos: 10 bits, 100 ejemplos
 etiquetados de entrenamiento y 20 entradas de prueba por instancia. El ruido afecta a las
@@ -532,7 +583,7 @@ generadas de juegos o los casos de negocio simulados podrían aportar esa eviden
 caso seleccionado debe permitir una puntuación repetible y separar la retroalimentación
 de la búsqueda de la evaluación final.
 
-## 7. Contabilidad del costo
+### 3.4. Contabilidad del costo
 
 **Inspección estática.** La configuración predeterminada especifica seis iteraciones
 externas, cuatro llamadas a la interfaz del modelo por invocación del mejorador, seis
@@ -560,7 +611,7 @@ cero. La `n` minúscula cuenta invocaciones de mejora, no los diez casos de prue
 por `u_A`. Esas diez comprobaciones aritméticas ejecutan Python; no necesitan una llamada
 al modelo por cada caso.
 
-### 7.1. Seguir el presupuesto de una ronda
+#### 3.4.1. Seguir el presupuesto de una ronda
 
 ```mermaid
 flowchart TD
@@ -600,13 +651,13 @@ La suma separa **proponer mejoradores** de **evaluarlos mediante la mejora de ta
 Las multiplicaciones cuentan trabajo repetido. El consumo real puede ser menor si un
 candidato termina antes o no utiliza toda su asignación.
 
-### 7.2. Qué incluye este total y qué deja fuera
+#### 3.4.2. Qué incluye este total y qué deja fuera
 
 Las 26 llamadas cubren únicamente las dos actividades anteriores. Se añaden por separado la
 evaluación de la referencia, las comprobaciones del mejorador vigente, las repeticiones
 adicionales a las incluidas en `n` y la evaluación final. Si el propio evaluador llama a un
 modelo, también deben contabilizarse esas llamadas por separado. El evaluador aritmético
-de la sección 4 no hace ninguna llamada a modelos.
+de la sección 3.2 no hace ninguna llamada a modelos.
 
 Con un máximo de cuatro respuestas por llamada a la interfaz, el presupuesto sería de
 **26 × 4 = 104 respuestas**. Las respuestas todavía no equivalen a tokens ni a dinero.
@@ -624,7 +675,155 @@ utilización en `m` tareas con esas mismas `m` tareas resueltas mediante un mejo
 El esfuerzo de revisión humana se registra por separado. Una puntuación mayor en las tareas
 no demuestra por sí sola un menor costo de desarrollo.
 
-## 8. Brechas de reproducción y riesgos de validez
+## 4. Correspondencia con el código original
+
+**Inspección estática.** Se presenta un recorrido de dependencias, no una traza de ejecución
+verificada. Los archivos descriptivos `utility.py` que se suministran al código generado
+difieren de los evaluadores implementados en `secret_utility.py`.
+
+| Responsabilidad | Fuente fijada al commit | Observación |
+|---|---|---|
+| Propuestas iniciales | [Mejorador inicial, líneas 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23) | Un lote; extracción; selección del candidato con `max` |
+| Iteración externa | [Ejecutor, líneas 122-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L122-L179) | Invoca al mejorador actual; evalúa su resultado; guarda y vuelve a cargar el código devuelto |
+| Metaevaluación | [Metautilidad, líneas 65-143](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L65-L143) | Repite la mejora de tareas; devuelve la puntuación media de validación; opcionalmente registra las puntuaciones de prueba |
+| Evaluación de tareas | [Utilidad de paridad, líneas 9-95](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/parity_noise/secret_utility.py#L9-L95) | Genera instancias, invoca la solución y puntúa las predicciones |
+| Presupuesto del modelo | [Interfaz, líneas 226-250](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/language_model.py#L226-L250) | Cuenta las invocaciones a la interfaz y limita las respuestas por invocación |
+| Carga del código generado | [Funciones auxiliares, líneas 52-77 y 154-192](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/helpers.py#L52-L192) | Escribe el código fuente en un módulo temporal y lo importa |
+| Entrada de evaluación de transferencia | [Evaluación de transferencia, líneas 207-214](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/transfer_eval.py#L207-L214) | Elige un mejorador almacenado e invoca al evaluador de tareas |
+
+
+### 4.1. Recorrer el código original en cuatro pasos
+
+**Fragmentos originales**, con indentación ajustada para leerlos; el código circundante
+omitido permanece en los archivos enlazados. No son scripts independientes. Código:
+Microsoft y colaboradores, [licencia MIT](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/LICENSE). Los ejemplos aritméticos de la
+sección 3.2 son **código ilustrativo**, no fragmentos de este repositorio.
+
+**A. Proponer y seleccionar código fuente de una solución.**
+[Mejorador inicial, líneas 18-23](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_seed_algorithm.py#L18-L23):
+
+```python
+n_messages = min(language_model.max_responses_per_call, utility.budget)
+new_solutions = language_model.batch_prompt(expertise, [message] * n_messages, temperature=0.7)
+new_solutions = extract_code(new_solutions)
+print("new_solutions:", new_solutions)
+best_solution = max(new_solutions, key=utility)
+return best_solution
+```
+
+- **Entrada:** `initial_solution` es texto de código; el prompt anterior lo incluye junto con `utility.str`.
+- **Operación:** acotar las respuestas, pedir candidatos al modelo, extraer su código y
+  llamar a `utility` sobre cada candidato mediante `max(..., key=utility)`.
+- **Salida:** `best_solution` es código fuente, no su puntuación. Puede ser código de una tarea
+  o de un mejorador según la entrada y el evaluador. El mejorador inicial original no conserva
+  automáticamente el código de partida entre sus candidatos.
+
+**B. Probar un mejorador candidato pidiéndole mejorar una solución de una tarea.**
+[`get_improver`, líneas 33-35](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L33-L35):
+
+```python
+new_improve_algorithm = temp_override(improve_str, "improve_algorithm")
+improved_algorithm_str = new_improve_algorithm(base_algorithm_str, utility, language_model)
+return improved_algorithm_str
+```
+
+- **Entrada:** `improve_str` es el código del mejorador candidato.
+- **Operación:** cargar su función `improve_algorithm` y llamarla sobre `base_algorithm_str`,
+  el programa inicial de la tarea, con su utilidad e interfaz del modelo.
+- **Salida:** `improved_algorithm_str` es la solución resultante de la tarea. El nombre no
+  significa que sea otro mejorador: su rol depende de las entradas de esta llamada.
+
+**C. Convertir las soluciones devueltas en una puntuación del mejorador candidato.**
+Dos líneas originales separadas de [`meta_utility`](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/tasks/meta_optimization/secret_utility.py#L123-L138):
+
+```python
+new_utility_val = utility_wrapped(improved_algorithm_str, mode="val")
+```
+
+```python
+expected_utility_val += new_utility_val / n_tests
+```
+
+La primera línea puntúa una solución devuelta. La segunda suma su aporte a la media. Para
+los valores didácticos `0.6`, `0.7`, `0.5` con `n_tests = 3`, los aportes son `0.2`,
+aproximadamente `0.2333` y aproximadamente `0.1667`, que suman `0.6`. Son valores ilustrativos;
+el valor predeterminado inspeccionado es cinco mejoras repetidas. `meta_utility` devuelve esa media.
+
+**D. Cargar el mejorador devuelto para la siguiente ronda.**
+[Ejecutor, líneas 175-179](https://github.com/microsoft/stop/blob/0d6780c54306b2486dd36e9c4ae9b49aceb27ea4/run_improver.py#L175-L179), dentro de su rama de retorno exitoso:
+
+```python
+if config["iterative"]:
+    improver_str = new_algorithm_str
+algorithm_to_improve = new_algorithm_str
+previous_improve_algorithm = improve_algorithm
+improve_algorithm = temp_override(improver_str, "improve_algorithm")
+```
+
+Con `config["iterative"] = True`, el código devuelto pasa a ser el siguiente mejorador activo.
+La comprobación de éxito rechaza una puntuación de cero, pero no exige superar a la versión
+vigente. Por eso **cargar una nueva versión no demuestra una mejora**.
+
+```mermaid
+flowchart TD
+    A[Mejorador actual propone código del candidato J] --> B[meta_utility recibe código J]
+    B --> C[get_improver carga J]
+    C --> D[J devuelve código de solución de la tarea]
+    D --> E[Utilidad de la tarea puntúa la solución]
+    E --> F[meta_utility promedia puntuaciones repetidas]
+    F --> G[Mejorador actual selecciona código por esa puntuación]
+    G --> H[Ejecutor comprueba el retorno y carga el siguiente mejorador]
+```
+
+Es un recorrido de lectura estática. Omite rutas de error y controles de recursos; el mapa
+anterior y las limitaciones de la sección 5.2 permiten ubicar esos detalles.
+
+## 5. Inspección local y ejecución
+
+### 5.1. Abrir el código sin modificar
+
+| Campo | Versión inspeccionada |
+|---|---|
+| Repositorio | [microsoft/stop](https://github.com/microsoft/stop) |
+| Commit | `0d6780c54306b2486dd36e9c4ae9b49aceb27ea4` |
+| Descarga | 2026-10-10 |
+| Ruta local, relativa a este README | `_local/upstream/` |
+| Alcance | Los 37 archivos versionados, incluidos 31 Python; 100,939 bytes sin contar el historial Git |
+| Integridad | Checkout separado en el commit fijado; limpio, sin cambios al código |
+| Correspondencia con el paper | Implementación pública asociada a STOP; no se ha establecido el entorno histórico exacto de ejecución |
+| Ejecución | No ejecutado ni importado; sin instalar dependencias ni llamar a modelos |
+
+El repositorio original es solo local y está excluido de Git. No se incluye cuando otra
+persona clona thinking-harness; los enlaces web al commit siguen disponibles. Su README y
+licencia permanecen dentro de `_local/upstream/`. Conservar esta carpeta antes de eliminar
+o archivar un worktree, o descargar nuevamente el mismo commit.
+
+**Orden de lectura:** abrir `config.py` y después el mejorador inicial, metautilidad, ejecutor
+e interfaz del modelo indicados en la sección 4. Leerlos en el editor no requiere Python.
+
+Para obtener el mismo código en un checkout nuevo, ejecutar estos comandos Git **desde la
+carpeta de este paper**, solo si `_local/upstream/` todavía no existe. Descargan código, no dependencias:
+
+```sh
+git clone --no-checkout https://github.com/microsoft/stop.git _local/upstream
+git -C _local/upstream checkout --detach 0d6780c54306b2486dd36e9c4ae9b49aceb27ea4
+git -C _local/upstream rev-parse HEAD
+git -C _local/upstream status --short
+```
+
+El hash debe coincidir con la tabla; un checkout intacto no muestra entradas de estado.
+
+**Requisitos de ejecución, inspeccionados pero no instalados:** los imports referencian
+`numpy`, `pebble`, `tqdm`, `openai` y `jsonlines`. La interfaz también importa una configuración
+local `api_key.py` y usa convenciones históricas de API. Esta versión no contiene archivo de
+requisitos, manifiesto del proyecto, bloqueo de dependencias ni versión compatible de Python
+declarada. Es un inventario de imports, no una receta de instalación probada.
+
+Todavía no se incluye notebook ni versión corregida. Una decisión posterior de ejecución
+especificaría dependencias/modelo compatibles, aislamiento, presupuesto y desviaciones en
+una copia de trabajo separada. Descargar y comprender el código no exige hacerlo funcionar.
+
+### 5.2. Brechas de reproducción y riesgos de validez
 
 Estas observaciones corresponden al commit fijado. No se ejecutaron fallos ni intentos de explotación.
 
@@ -645,21 +844,23 @@ la misma interfaz del evaluador de Python; sería necesaria una frontera de orqu
 confiable para restringir ese acceso. Es una observación de arquitectura, no una filtración
 demostrada ni evidencia de que los experimentos publicados hayan sido comprometidos.
 
-## 9. Qué se ha comprobado de forma independiente
+## 6. Lectura crítica y aplicación
+
+### 6.1. Qué se ha comprobado de forma independiente
 
 - La inspección del código fijado al commit respalda el mapa de llamadas y la inconsistencia
   identificada en la ruta de transferencia.
 - El análisis sintáctico estático de los archivos Python descargados no encontró errores de
   sintaxis. No demuestra que puedan importarse, que sus dependencias sean compatibles, que
   funcionen correctamente en ejecución ni que se hayan reproducido sus resultados numéricos.
-- Se ejecutaron localmente los fragmentos didácticos propios de Python de la sección 4: puntuaciones de suma 0.1, 0.6 y 1.0; puntuaciones de tareas 0.6, 0.7 y 0.5; media 0.6. La tabla de candidatos externos sigue siendo hipotética y se comprobó su aritmética. Esto valida la explicación, no STOP.
+- Se ejecutaron localmente los fragmentos didácticos propios de Python de la sección 3.2: puntuaciones de suma 0.1, 0.6 y 1.0; puntuaciones de tareas 0.6, 0.7 y 0.5; media 0.6. La tabla de candidatos externos sigue siendo hipotética y se comprobó su aritmética. Esto valida la explicación, no STOP.
 - Las afirmaciones de rendimiento del artículo siguen atribuidas a sus autores. No existe
   un resultado medido del proyecto.
 
 La revisión está lista para la discusión. La lectura completa, la inspección en ejecución,
 la verificación de demostraciones y la reproducción siguen siendo actividades separadas.
 
-## 10. Implicaciones para la tesis y siguiente discusión
+### 6.2. Implicaciones y siguiente discusión
 
 **Interpretación.** Antes de seleccionar un método, se comparan tres alcances posibles:
 

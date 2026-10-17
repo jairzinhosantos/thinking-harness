@@ -291,7 +291,7 @@ flowchart TD
 
 ## 9. Relation to STOP and thesis options
 
-**Interpretation.** [STOP](pap-0001-stop.md) separates a solution from the program that
+**Interpretation.** [STOP](pap-0001-stop/README.md) separates a solution from the program that
 improves solutions, then recursively revises that improver. Self-Harness centers the mutable
 object on declared agent-harness surfaces and uses trace diagnosis plus a split-wise gate.
 Both keep model weights fixed. They offer different units of improvement; neither makes
