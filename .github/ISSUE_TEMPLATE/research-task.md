@@ -1,16 +1,16 @@
 ---
-name: Research task
-about: Read, synthesize, or decide a research question
+name: Tarea de investigación
+about: Tarea de investigación
 title: ""
 labels: research
 ---
 
-## Question
+## Pregunta
 
-## Expected output
+## Salida esperada
 
-## Closure criteria
+## Criterios de cierre
 
-## Sources and dependencies
+## Fuentes y dependencias
 
-## Budget or time limit
+## Presupuesto y condición de parada

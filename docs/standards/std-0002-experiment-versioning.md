@@ -1,61 +1,49 @@
 ---
 id: std-0002
-title: "Experiment versioning and resources"
+title: "Versiones y recursos experimentales"
 status: in-review
-revision: 2
+revision: 3
 created: 2026-09-29
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
-# Experiment versioning and resources
+# Versiones y recursos experimentales
 
+## Capas de versión
 
-## Version layers
-Identify code by commit. Use SemVer for published software once an interface exists;
-initial software development uses 0.x. Documents use rNNN revisions.
-Protocols, cases, datasets, and evaluators carry an ID and revision or hash.
-Separate the procedure being evaluated from its executions and saved prompt versions:
+Identificar código por commit; usar SemVer cuando exista una interfaz publicada, inicialmente
+`0.x`. Documentos, casos, datasets y evaluadores conservan ID y revisión o hash.
 
-| Layer | Convention | Example |
+| Capa | Convención | Ejemplo |
 |---|---|---|
-| Protocol | `<case-id>-<study-slug>-vN`; increment for material changes | `case-0003-prompt-search-v3` |
-| Run | `YYYYMMDDTHHMMSSZ-<8-lowercase-hex>` in UTC | `20261017T011558Z-f5eca942` |
-| Prompt version | `p` plus a zero-padded integer of at least three digits, scoped to a run | `p000`, `p001`, `p002` |
+| Protocolo | `<case-id>-<study-slug>-vN`; incrementar ante cambios materiales | `case-0003-prompt-search-v3` |
+| Ejecución | `YYYYMMDDTHHMMSSZ-<8-lowercase-hex>`, UTC | `20261017T011558Z-f5eca942` |
+| Prompt | `p` y al menos tres dígitos, dentro de una ejecución | `p000`, `p001`, `p002` |
 
-Runs stay under their case's `results/<run-id>/` when published. Local raw output may stay
-in ignored `runs/`; publication retains the run ID and documents sanitization and provenance.
-Prompt versions live under `prompts/`, with their parent, hash and evaluation in the run record.
-For the current prompt-search pilot, `p000` is the seed and `p001` is the generated baseline;
-later IDs identify proposals, not accepted improvements. Other artifact types define their
-local identity in their protocol instead of adopting a prompt-specific prefix.
+Publicar registros en `results/<run-id>/` dentro del caso. Salida local sin depurar puede
+permanecer en `runs/`, ignorado por Git; documentar procedencia y tratamiento al publicarla.
+Los prompts quedan en `prompts/`, con padre, hash y evaluación. En el piloto actual, `p000`
+es la semilla y `p001` el baseline generado; los siguientes IDs no implican mejora aceptada.
+Otros artefactos definen su identidad en el protocolo, sin adoptar un prefijo de prompts.
 
-A standalone controlled protocol document may retain an `exp-NNNN` document ID. It is not
-a run ID and is not required for every small pilot: the case guide may contain the protocol,
-provided the runner records its version and source hashes. Existing IDs remain valid.
-Each new execution or retry gets a new run ID; link retries to the earlier attempt in provenance.
-Record costs and failures. Do not rename historical run or prompt IDs to apply this convention.
+Un protocolo pequeño cabe en la guía del caso. Usar `exp-NNNN` si necesita documento propio;
+no confundirlo con un run ID. Cada ejecución o reintento recibe un ID nuevo, conserva costo
+y fallos y referencia intentos previos. No modificar registros históricos.
 
-## Minimum manifest
-Record commit and local changes, protocol, case, resolved configuration, model/provider/parameters,
-dataset/splits/checksums, evaluator, seeds, image digest, hardware, budget, start/end, and
-termination reason. A seed does not guarantee exact reproducibility with a remote provider.
-Do not overwrite evidence from an issued run.
+## Manifiesto mínimo
 
-## Resources
-Prefix: th. Compose projects: th-case0001-dev-01 or th-case0001-eval-01.
-Functional service names: agent, evaluator, request-api, postgres.
-Avoid fixed container_name values. Isolate ports and storage between runs.
-Labels: project, case-id, experiment-id, run-id, environment, owner, expires-at.
-Adapt cloud resource names to provider restrictions; keep versions in manifests.
-Pushing code does not automatically start cloud resources or model calls.
+Commit y cambios locales; protocolo y caso; configuración resuelta; modelo, proveedor y
+parámetros; dataset, particiones y checksums; evaluador; semillas; imagen y hardware cuando
+correspondan; presupuesto, inicio, fin y motivo de parada. Una semilla no garantiza
+reproducibilidad exacta con un proveedor remoto.
 
-## Revision history
+## Recursos
 
-Revision 2 separates protocol, run and prompt identities and replaces the unused composite
-run/candidate naming from revision 1. The recorded pilot is unchanged; see
-[dec-0006](../decisions/dec-0006-active-research-cleanup.md).
+Prefijo `th`; proyectos Compose como `th-case0001-dev-01` o `th-case0001-eval-01`.
+Servicios por función: `agent`, `evaluator`, `request-api`, `postgres`. Evitar `container_name`
+fijo y aislar puertos y almacenamiento. Etiquetas: `project`, `case-id`, `experiment-id`,
+`run-id`, `environment`, `owner`, `expires-at`. Adaptar nombres a restricciones del proveedor.
+Un push no autoriza recursos de nube ni llamadas a modelos.
 
-## References
-- [SemVer](https://semver.org/)
-- [Compose project names](https://docs.docker.com/compose/how-tos/project-name/)
-- [Azure naming](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
+Referencias: [SemVer](https://semver.org/), [Compose](https://docs.docker.com/compose/how-tos/project-name/),
+[Azure](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming).

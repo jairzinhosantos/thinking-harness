@@ -1,43 +1,44 @@
 ---
 id: case-0001
-title: "Code repair harness"
+title: "Harness de corrección de código"
 status: draft
-revision: 7
+revision: 8
 created: 2026-10-02
-updated: 2026-10-16
+updated: 2026-10-17
+language: es
 ---
 
-# Code repair harness
+# Harness de corrección de código
 
-English | [Español](README.es.md)
 
-[Scenario matrix and EDA plan](scenarios.md)
+[Matriz de escenarios y plan de EDA](scenarios.md)
 
-## 1. Question and scope
+## 1. Pregunta y alcance
 
-How can automatic code-repair harness changes be evaluated against a simple LLM improvement loop?
+¿Cómo evaluar cambios automáticos de un harness de corrección de código frente a un bucle simple de mejora con LLM?
 
-**Code repair** means correcting faulty code. The patch solves one task; the **harness**
-organizes context, model calls, tests, and retries. The research compares harnesses across tasks.
+**Code repair** significa corregir código defectuoso. El parche resuelve una tarea; el
+**harness** organiza contexto, llamadas al modelo, pruebas y reintentos. La investigación
+compara harnesses sobre varias tareas.
 
-Candidate case only: fictional examples, no implementation or results. Start with a small
-local Python package. Full-repository development, deployment, training, and recursive
-optimizer changes are outside the first pilot. Compare with [case-0003](../case-0003-debt-negotiation/README.es.md).
+Caso candidato: ejemplos ficticios, sin implementación ni resultados. Empezar con un paquete
+Python pequeño y local. El desarrollo de repositorios completos, despliegue, entrenamiento y
+cambios recursivos del optimizador quedan fuera del primer piloto. Comparar con [case-0003](../case-0003-debt-negotiation/README.md).
 
-## 2. One possible design
+## 2. Un diseño posible
 
-**Illustrative pseudocode, not an implementation commitment.** The filenames below describe
-roles, not existing files. Helper functions, isolation, and budget enforcement are omitted.
+**Pseudocódigo ilustrativo, no una implementación acordada.** Los nombres siguientes representan
+roles, no archivos existentes. Se omiten funciones auxiliares, aislamiento y control del presupuesto.
 
-| Artifact | Role | What it may change |
+| Artefacto | Función | Qué puede cambiar |
 |---|---|---|
-| `task.py` | Program to repair | Permitted task code |
-| `harness.py` | Calls the model, tests patches, and prepares retries | A bounded component, such as `select_feedback` |
-| `optimizer.py` | Uses an LLM to propose harness edits | Candidate copies of the allowed harness component |
-| `evaluation.py` | Measures task outcomes and resources | Fixed in this example; candidates cannot edit it |
+| `task.py` | Programa que se quiere corregir | Código permitido de la tarea |
+| `harness.py` | Llama al modelo, prueba parches y prepara reintentos | Un componente acotado, como `select_feedback` |
+| `optimizer.py` | Usa un LLM para proponer cambios al harness | Copias candidatas del componente permitido |
+| `evaluation.py` | Mide resultados de tareas y recursos | Fijo en este ejemplo; los candidatos no pueden editarlo |
 
-**A. Repair a task.** A model can fix this arithmetic in one call. That changes `task.py`,
-not `harness.py`.
+**A. Corregir una tarea.** Un modelo puede corregir esta aritmética en una llamada. Eso
+modifica `task.py`, no `harness.py`.
 
 ```python
 # task.py: faulty task code
@@ -48,8 +49,8 @@ def line_total(price, quantity):
 # return price * quantity
 ```
 
-The harness organizes that call and any retries. Passing development tests stops the
-inner loop; protected acceptance checks still determine the task result.
+El harness organiza esa llamada y los reintentos. Pasar las pruebas de desarrollo detiene
+el bucle interno; la aceptación protegida sigue determinando el resultado de la tarea.
 
 ```python
 # harness.py: illustrative task-solving loop
@@ -67,19 +68,19 @@ def solve_task(task, model):
 
 ```mermaid
 flowchart TD
-    T[task.py: faulty program] --> H[harness.py: solve_task]
-    H --> L[LLM proposes task patch]
-    L --> P[Updated task.py]
-    P --> D[Development tests]
-    D -->|Failure and budget remains| F[select_feedback]
+    T[task.py: programa defectuoso] --> H[harness.py: solve_task]
+    H --> L[LLM propone parche de tarea]
+    L --> P[task.py modificado]
+    P --> D[Pruebas de desarrollo]
+    D -->|Fallo y presupuesto disponible| F[select_feedback]
     F --> H
-    D -->|Pass or stop| R[Return task code]
+    D -->|Pasa o se detiene| R[Devolver código de tarea]
 ```
 
-**B. Propose a harness change.** A separate optimizer could ask an LLM to replace
-`select_feedback`: for example, select the failed test, expected/actual values, and relevant
-location instead of forwarding raw output. This might help or discard useful information;
-it must be measured. The solving and optimizing roles may use the same fixed model.
+**B. Proponer un cambio al harness.** Un optimizador separado podría pedir a un LLM que
+modifique `select_feedback`: por ejemplo, seleccionar prueba fallida, valores esperado/obtenido
+y ubicación relevante en vez de reenviar la salida completa. Podría ayudar o perder información
+útil; hay que medirlo. Los roles de resolución y optimización pueden usar el mismo modelo fijo.
 
 ```python
 # harness.py: initial feedback function
@@ -91,8 +92,8 @@ def select_feedback(results):
     return format_failures(results.failed_tests)
 ```
 
-`format_failures` would retain the fields listed above. This replaces a harness function,
-not the arithmetic function in the task.
+`format_failures` conservaría los campos indicados arriba. Aquí se reemplaza una función
+del harness, no la función aritmética de la tarea.
 
 ```python
 # optimizer.py: illustrative search over harness versions
@@ -107,100 +108,101 @@ for _ in range(search_rounds):
         best, report = candidate, candidate_report
 ```
 
-`evaluate_development` runs a harness on multiple development tasks in isolation, checks
-returned patches with protected acceptance rules, and records success and cost. Its report
-may guide search; reserved final tasks never enter this loop. Selection must obey the same
-constraints, include search cost, and retain failed candidates in the evidence.
+`evaluate_development` ejecuta un harness sobre varias tareas de desarrollo de forma aislada,
+comprueba los parches con reglas de aceptación protegidas y registra éxito y costo. Su informe
+puede orientar la búsqueda; las tareas finales reservadas nunca entran en este bucle. La selección
+debe respetar las mismas restricciones, incluir el costo de búsqueda y conservar evidencia de candidatos fallidos.
 
 ```mermaid
 flowchart TD
-    O[optimizer.py and LLM] --> C[Candidate harness.py]
-    C --> R[Run development tasks]
-    R --> E[evaluation.py: outcomes and cost]
-    E --> S{Meets selection rule?}
-    S -->|Yes| K[Keep candidate]
-    S -->|No| D[Discard candidate]
-    K --> B[Next round within search budget]
+    O[optimizer.py y LLM] --> C[harness.py candidato]
+    C --> R[Ejecutar tareas de desarrollo]
+    R --> E[evaluation.py: resultados y costo]
+    E --> S{¿Cumple la regla de selección?}
+    S -->|Sí| K[Conservar candidato]
+    S -->|No| D[Descartar candidato]
+    K --> B[Siguiente ronda dentro del presupuesto]
     D --> B
     B --> O
-    K -->|After validation and freeze| F[Independent final evaluation]
+    K -->|Tras validar y fijar la versión| F[Evaluación final independiente]
 ```
 
-The optimizer edits a copy and selects a version; the harness does not rewrite itself
-while repairing one task. No candidate edits tests, reference outcomes, or budget controls.
-If both versions fix the simple arithmetic immediately, that task shows no repair-quality gain.
+El optimizador edita una copia y selecciona una versión; el harness no se reescribe mientras
+corrige una tarea. Ningún candidato modifica pruebas, referencias ni controles de presupuesto.
+Si ambas versiones corrigen la aritmética de inmediato, esa tarea no demuestra mayor calidad de corrección.
 
-## 3. Worked examples
+## 3. Ejemplos paso a paso
 
-**L1, local arithmetic:** the starting program adds price and quantity instead of multiplying.
-Values are integer cents; these examples are not a complete test suite.
+**L1, aritmética local:** el programa inicial suma precio y cantidad en lugar de multiplicar.
+Los valores son centavos enteros; estos ejemplos no son una batería completa de pruebas.
 
-| Input | Starting output | Required output | Meaning |
+| Entrada | Resultado inicial | Resultado requerido | Significado |
 |---|---|---|---|
-| Price 250 cents, quantity 3 | 253 | 750 | Three units at 250 cents each |
-| Price 250 cents, quantity 0 | 250 | 0 | No units produce no charge |
-| Price 0 cents, quantity 4 | 4 | 0 | Free units remain free |
+| Precio de 250 céntimos, cantidad 3 | 253 | 750 | Tres unidades a 250 céntimos cada una |
+| Precio de 250 céntimos, cantidad 0 | 250 | 0 | Si no hay unidades, no hay cargo |
+| Precio de 0 céntimos, cantidad 4 | 4 | 0 | Las unidades gratuitas siguen sin generar cargo |
 
-**L2, interacting rules:** a fixed discount before tax gives 1,080 cents; reversing the order
-gives 1,100. Two proportional adjustments would not detect this ordering defect.
-This is a fictional pricing rule; input restrictions are in the linked EDA plan.
+**L2, reglas relacionadas:** descontar un importe fijo antes del impuesto da 1,080 centavos;
+invertir el orden da 1,100. Dos ajustes proporcionales no detectarían este defecto de orden.
+Es una regla de precios ficticia; las restricciones de entrada están en el plan de EDA enlazado.
 
 ```mermaid
 flowchart TD
-    S[Subtotal: 1000] --> D[Correct order: subtract fixed discount 100]
-    D --> A[Taxable amount: 900]
-    A --> T[Add 20 percent tax: 180]
-    T --> C[Required total: 1080]
-    S --> W[Wrong order: add 20 percent tax 200]
-    W --> B[Amount before discount: 1200]
-    B --> X[Subtract fixed discount 100]
-    X --> F[Wrong total: 1100]
+    S[Subtotal: 1000] --> D[Orden correcto: restar descuento fijo 100]
+    D --> A[Base imponible: 900]
+    A --> T[Agregar impuesto del 20 por ciento: 180]
+    T --> C[Total requerido: 1080]
+    S --> W[Orden incorrecto: agregar impuesto del 20 por ciento 200]
+    W --> B[Importe antes del descuento: 1200]
+    B --> X[Restar descuento fijo 100]
+    X --> F[Total incorrecto: 1100]
 ```
 
-**L3, module contract:** preserve the numeric total, including zero, across pricing and
-serialization. Add integration and regression checks only if L1/L2 remain affordable.
-These are planned complexity levels, not measured difficulty rankings.
+**L3, contrato entre módulos:** preservar el total numérico, incluido cero, entre cálculo
+y serialización. Agregar pruebas de integración y regresión si L1/L2 siguen siendo viables.
+Son niveles de complejidad propuestos, no dificultades medidas.
 
-## 4. Comparison and acceptance
+## 4. Comparación y aceptación
 
-An LLM → edit → evaluate → retain loop is the **basic comparator**, not a novelty claim.
-Improving the mechanism that proposes changes would also require modifying `optimizer.py` and
-showing an advantage over that comparator. This is outside the first pilot; repeating a loop does not establish RSI.
+Un bucle LLM → editar → evaluar → conservar es el **comparador básico**, no una novedad por sí mismo.
+La mejora del mecanismo que propone cambios requeriría modificar también `optimizer.py` y demostrar
+una ventaja frente a ese comparador. Eso queda fuera del primer piloto; no se afirma RSI por repetir el bucle.
 
-| Comparison | Question |
+| Comparación | Pregunta |
 |---|---|
-| Fixed harness versus candidate | Does task resolution improve under matched limits? |
-| Simple LLM optimizer versus another method | Does it find better harnesses under the same total search budget? Method pending |
+| Harness fijo frente a candidato | ¿Mejora la resolución de tareas bajo límites equivalentes? |
+| Optimizador LLM simple frente a otro método | ¿Encuentra mejores harnesses con el mismo presupuesto total de búsqueda? Método pendiente |
 
-Search-guiding evaluation could evolve in another study. Evidence of progress still needs a
-stable, independent comparison reference; changing the score does not establish improvement.
+La evaluación que orienta la búsqueda podría evolucionar en otro estudio. Para demostrar avances,
+la referencia de comparación debe seguir siendo estable e independiente; cambiar la puntuación no prueba mejora.
 
-- **Candidate hypothesis:** selecting relevant test feedback resolves more tasks than a fixed policy; it is not yet the selected contribution.
-- **Comparison:** change feedback selection only; match model, tasks, retry limits, and budget.
-- **Success:** all acceptance checks pass, only permitted files change, and limits are respected.
-  Any prohibited edit fails the task; partial test scores are diagnostic only.
-- **Measures:** task success, repeated-run variability, calls, tokens, attempts, and duration.
-  Record search cost, manual edits, and human review separately as construction effort.
-- **Evidence:** preserve failed attempts. A reviewed reference establishes solvability;
-  matching its patch text is not required. Separate development, validation, and final tasks
-  by family; repetitions are not independent tasks. Use equal task weights unless justified.
+- **Hipótesis candidata:** seleccionar feedback relevante resuelve más tareas que una política fija; aún no se ha elegido como contribución.
+- **Comparación:** cambiar solo la selección del feedback; igualar modelo, tareas, reintentos y presupuesto.
+- **Éxito:** pasan todas las comprobaciones de aceptación, solo cambian archivos permitidos y se respetan
+  los límites. Una edición prohibida invalida la tarea; las puntuaciones parciales son solo diagnósticas.
+- **Medidas:** éxito por tarea, variabilidad entre repeticiones, llamadas, tokens, intentos y duración.
+  Registrar búsqueda, ediciones manuales y revisión humana por separado como esfuerzo de construcción.
+- **Evidencia:** conservar intentos fallidos. Una referencia revisada demuestra que la tarea tiene solución;
+  no se exige copiar su parche. Separar desarrollo, validación y evaluación final por familia; las
+  repeticiones no son tareas independientes. Usar igual peso por tarea salvo justificación.
 
-## 5. Next decision
+## 5. Siguiente decisión
 
-Use the [scenario matrix and EDA plan](scenarios.md) to review
-coverage, evaluator quality, baseline failures, and cost before selecting an intervention.
-Continue if there is a measurable problem and an affordable comparison. Revise or discard
-if the evaluator is unreliable, the baseline already solves the tasks, or gains depend on test leakage.
+Usar la [matriz de escenarios y plan de EDA](scenarios.md)
+para revisar cobertura, calidad del evaluador, fallos del baseline y costo antes de elegir una intervención.
+Continuar si hay un problema medible y una comparación viable. Ajustar o descartar si el evaluador
+es poco fiable, el baseline ya resuelve las tareas o las mejoras dependen de filtraciones de pruebas.
 
-Task families, model, search method, and budget remain open. Implementation and execution
-require a separate [protocol](../../../docs/templates/experiment-protocol.md).
-Tasks, evaluators and evidence will remain inside this case until reuse justifies extraction.
-The [evolution plan](../../../docs/project-evolution.md) describes that transition.
+Siguen pendientes las familias de tareas, modelo, método de búsqueda y presupuesto. Implementar y
+ejecutar requiere un [protocolo](../../../docs/templates/experiment-protocol.md) separado.
+Las tareas, evaluadores y evidencia permanecerán dentro de este caso hasta que
+su reutilización justifique separarlos. El [plan de evolución](../../../docs/project-evolution.md)
+describe esa transición.
 
-Method reference: [STOP](../../literature/reviews/pap-0001-stop/README.md).
-Other directions: [research options](../../synthesis/research-options.md).
+Referencia de método: [STOP](../../literature/reviews/pap-0001-stop/README.md).
+Otras líneas: [opciones de investigación](../../synthesis/research-options.md).
 
-## Related proposal
+## Propuesta relacionada
 
-[Harness participation in self-improvement](harness-participation.md)
-is studied as a separate extension. It remains a draft and does not change this case's scope.
+La [participación del harness en su propia mejora](harness-participation.md)
+se estudia como una extensión separada. Sigue en borrador y no modifica el alcance de este caso.

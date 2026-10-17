@@ -1,18 +1,14 @@
-# Experiment protocol template
+# Plantilla de protocolo experimental
 
-For a small pilot, keep the protocol in the case guide and identify it as
-`<case-id>-<study-slug>-vN`. A separate controlled protocol document may use `exp-NNNN`
-with revision, status and date when its scope warrants a separate file.
-Run and prompt IDs follow [std-0002](../standards/std-0002-experiment-versioning.md);
-they do not replace the protocol identity.
+Para un piloto pequeño, incluir el protocolo en la guía del caso e identificarlo como
+`<case-id>-<study-slug>-vN`. Crear un documento `exp-NNNN` solo si requiere un alcance propio.
+Las ejecuciones conservan IDs distintos según [std-0002](../standards/std-0002-experiment-versioning.md).
 
-- Question and hypothesis.
-- Case, units of analysis, and instance selection.
-- Conditions and comparators.
-- Modified and controlled factors.
-- Development, validation, and held-out test sets.
-- Metrics and acceptance criteria.
-- Total budget, repetitions, and stop conditions.
-- Versions, seeds, and configuration.
-- Analysis plan, uncertainty, and failure handling.
-- Evidence to retain and permitted changes.
+- Pregunta, hipótesis y unidad de análisis.
+- Caso, selección de instancias y comparadores.
+- Factores modificables y controles.
+- Particiones de desarrollo, validación y prueba reservada.
+- Métricas, aceptación y plan de análisis.
+- Presupuesto total, repeticiones y parada, incluida evaluación final.
+- Versiones, semillas y configuración.
+- Incertidumbre, fallos y evidencia que se conservará.

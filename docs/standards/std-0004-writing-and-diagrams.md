@@ -1,112 +1,70 @@
 ---
 id: std-0004
-title: "Writing and diagram conventions"
+title: "Escritura y diagramas"
 status: in-review
-revision: 4
+revision: 5
 created: 2026-09-30
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
-# Writing and diagram conventions
+# Escritura y diagramas
 
+## Idioma y tono
 
-## Language and tone
-Use English for prose, README files, code comments, docstrings, configuration descriptions,
-diagram labels, commits, PRs, issue bodies, and Project metadata.
-Paper reviews additionally include a Spanish translation, with translated prose and explanatory
-diagram labels, under the scoped rules below.
-Keep exact bibliographic titles and attributed quotations. Explicit approval
-is required for an academic submission in another language.
-Use plain words, concrete verbs, and short paragraphs. Avoid emojis, em dashes, marketing
-claims, repetition, and filler. Add detail when explaining a mechanism, assumption, or result.
-Define concepts and symbols before equations. Separate author claims, interpretations,
-and reproduced evidence. Translation must not change evidence or completion states.
+La documentación principal se escribe en **español**. Nombres de archivos y carpetas,
+identificadores, claves y valores controlados, código, comentarios de código y docstrings
+permanecen en **inglés**. Los decks se redactan en inglés. Commits usan descripciones breves
+en inglés; issues y PRs pueden explicar el trabajo en español.
 
-## Paper review translations
-Every paper review has a primary English file and a full Spanish `.es.md` translation in
-the same directory. Add reciprocal language links below the heading. The Spanish version
-is a derived reading aid with the same scope, uncertainty, and evidence as the primary.
-It does not create another review or advance reading, discussion, or reproduction status.
-This exception was adopted on 2026-10-01; see
-[dec-0004](../decisions/dec-0004-bilingual-paper-reviews.md).
+Conservar títulos bibliográficos, citas atribuidas y licencias originales. No traducir ni
+reescribir prompts, configuraciones, trazas o resultados históricos como parte de una limpieza
+editorial: modificar una entrada experimental requiere una revisión de protocolo independiente.
 
-Keep filenames, metadata keys and controlled values, code, symbols, bibliographic titles,
-source URLs, and identifiers unchanged. Translate headings, prose, tables, link labels,
-and explanatory diagram labels. Preserve diagram relationships and use the same format.
-For Mermaid, translate labels in the paired Markdown and render both versions.
+Usar frases concretas y voz del proyecto: «Se compararán dos mejoradores con el mismo
+presupuesto». Evitar narrar preferencias personales, conversaciones o actividad del asistente.
+Sin emojis, guiones largos, afirmaciones promocionales ni repeticiones. Atribuir resultados
+externos y distinguir interpretación, inspección estática y reproducción.
 
-Update both files in the same task PR. Revise the English source first, update the full
-Spanish counterpart, and copy the source revision and document status into its metadata.
-Check equations, quantities, source links, examples, section coverage, and caveats together.
-A correction discovered while translating must also be applied to the English primary.
-Do not publish a partial summary as the equivalent translation.
+## Una fuente por tema
 
-Git preserves both histories; no second repository or independent translation release is
-needed. The revision field records the source baseline but does not automatically detect
-changes within that revision. Synchronization and semantic equivalence require paired
-editorial review; existing CI checks links, document structure, and diagram rendering.
+- `README.md`: entrada principal en español; contexto, mecanismo y enlaces necesarios.
+- Una review explica el paper. Priorizar ecuaciones originales, un flujo y fragmentos de código
+  vinculados a la fuente. Ejercicios básicos y explicaciones extensas se trabajan por chat.
+- La guía de cada caso conserva su interpretación; `results/` conserva la evidencia original.
+  El plan y el README raíz enlazan el detalle sin repetir todas sus tablas.
+- El [estándar de ramas](std-0003-branching-and-releases.md) define la integración;
+  otros documentos lo enlazan. El Project conserva el estado de tareas.
+- Eliminar duplicados y registrar reemplazos según [std-0001](std-0001-naming-and-lifecycle.md).
+  No crear archivos para cada conversación ni archivar borradores obsoletos.
 
-## Authorial voice
-Write from the project author's perspective. State the research and project content directly,
-using impersonal or project-centered sentences by default. First-person language may be used
-when a document's format calls for it, but must remain consistent within that document.
-Do not describe personal preferences, requests, or conversations through an assistant's
-external narration. Remove conversational explanations that do not belong in the artifact.
+## Traducciones selectivas
 
-Examples of the intended voice:
+Crear `README.en.md` o `<name>.en.md` únicamente para una audiencia que lo necesite.
+La traducción comparte identidad y estados con el original: `translation_of`, `language: en`,
+`source`, `source_revision`, `title`, `status`, `created` y `updated`. No lleva otro `id`.
+Enlazar ambos idiomas y revisar la traducción cuando cambie la fuente. Si deja de ser útil,
+eliminarla; no mantener versiones divergentes como equivalentes.
 
-- Progress will be tracked through observable evidence.
-- The evaluation will compare candidate harnesses against a fixed baseline.
-- This policy was adopted on 2026-09-30.
-- The progress-measurement model remains open.
-- Promotion into main requires explicit human acceptance.
+Un resumen en inglés debe identificarse como resumen, no como traducción completa.
+Los decks en inglés son una presentación derivada, con referencias a sus fuentes y commit;
+no requieren duplicar la documentación. Esta política sustituye el bilingüismo obligatorio
+mediante [dec-0008](../decisions/dec-0008-spanish-primary-documentation.md).
 
-Apply this convention to every project-authored document, README, review, summary, decision,
-iteration note, template, metadata field, issue, PR, and diagram label. Operational roles
-such as builder, QA, and human review remain explicit where they explain responsibility.
-Preserve third-party attribution and exact quotations. Authorship voice must not imply that
-assisted inspection equals completed personal reading, validation, or reproduction.
+## Diagramas
 
-Repository validation rejects selected recurring external-narration phrases in Markdown
-prose, CSV fields, and Draw.io labels. It is a regression check, not a semantic guarantee.
-Attributed block quotations, inline code, and fenced code are excluded from Markdown lint;
-review diagram labels and other excluded content manually. PR review must check authorial
-voice throughout the actual artifact, including formats the lint does not cover.
+Preferir **Mermaid** para flujos, secuencias y dependencias legibles. Usar etiquetas breves
+en el idioma del documento, una dirección clara y pocos nodos. Definir símbolos antes de
+las ecuaciones. Evitar macros matemáticas que GitHub no renderice; usar `\mathrm{...}`
+para nombres de operaciones cuando corresponda.
 
-## README structure
-The root README welcomes readers, defines the project and harness concept, states current
-maturity, points to a starting path, explains the workflow and every top-level directory,
-and gives validation, contribution, licensing, and citation guidance.
-Directory READMEs stay short: purpose, expected contents, and relevant constraints.
-Use relative documentation links. Avoid duplicating live Project statuses in static files.
+Usar **Draw.io** cuando importe la colocación manual. Guardar XML editable y SVG generado
+junto al documento. No editar el SVG por separado; registrar hashes después de exportar y
+revisar visualmente. No mantener dos representaciones independientes del mismo diagrama.
+Los notebooks usan fuentes `.mmd` y adjuntos con hashes de fuente e imagen.
 
-## Diagram choice
-Use Mermaid for flows, sequences, dependencies, and architecture that remain readable
-with automatic layout. Keep its fenced source beside the explanation in Markdown.
-Split a complex diagram before increasing its density. Notebook diagrams use local `.mmd` sources and embedded image attachments with source and
-preview hashes. The reading view shows the image once, without duplicating raw Mermaid code.
-Each diagram needs a clear purpose,
-short labels in the document language, a consistent reading direction, and surrounding explanation.
+Archify se evalúa con una prueba local; todavía no sustituye Mermaid ni agrega una dependencia al CI.
 
-Use Draw.io when manual placement or visual complexity requires it. Store uncompressed
-editable XML beside the owning case or design, with its generated SVG preview. Shared design
-diagrams currently use docs/designs/diagrams/source and docs/designs/diagrams/exports.
-The .drawio file is authoritative; never edit its SVG as an independent diagram.
-Embed the SVG and link the source. Do not maintain a second Mermaid version of the same view.
-
-## Regeneration and verification
-Export Draw.io with a white background and readable labels:
-
-```sh
-# macOS example; adapt the executable path to the local installation.
-"/Applications/draw.io.app/Contents/MacOS/draw.io" --export --format svg --embed-diagram --output docs/designs/diagrams/exports/agentic-development-workflow.svg docs/designs/diagrams/source/agentic-development-workflow.drawio
-python3 scripts/check_diagrams.py --record-drawio
-```
-
-The recording command updates docs/designs/diagrams/exports/manifest.json with source and preview SHA-256
-values. Run it only after actually exporting and visually reviewing the changed diagram.
-Checks detect missing previews, malformed XML, and stale recorded hashes; they cannot prove
-visual equivalence. Review the source and preview together in the PR.
+## Validación
 
 ```sh
 python3 scripts/check_repository.py
@@ -114,20 +72,9 @@ npm ci
 npm run check:diagrams
 ```
 
-The diagram command renders every Markdown Mermaid block using the pinned CLI. CI performs
-the same rendering. Rendering verifies syntax and exportability, not explanatory quality;
-review the resulting layout as well. Temporary Mermaid renders are not committed.
-Language and tone are reviewed editorially; CI does not pretend to prove English prose.
+El CI verifica estructura, enlaces, catálogo y sintaxis de diagramas. No garantiza precisión
+científica, equivalencia de traducciones ni calidad visual; esas revisiones siguen siendo necesarias.
+Los diagramas Draw.io se registran con `python3 scripts/check_diagrams.py --record-drawio`
+solo después de exportar. La regeneración de adjuntos usa `python3 scripts/render_notebook_diagrams.py`.
 
-## Reference
-[GitHub Markdown diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams)
-
-## Revision history
-Revision 4 colocates diagram assets with cases and designs and records notebook preview
-provenance on 2026-10-16.
-
-Revision 3 adds paired paper reviews on 2026-10-01, including translated diagram labels
-and paired editorial review. See [dec-0004](../decisions/dec-0004-bilingual-paper-reviews.md).
-
-Revision 2 adopts the project-author voice convention on 2026-10-01.
-See [dec-0003](../decisions/dec-0003-project-author-voice.md).
+Referencia: [diagramas en GitHub](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams).

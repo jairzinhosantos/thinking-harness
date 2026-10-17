@@ -1,39 +1,16 @@
-# Project evolution
+# Evolución de la estructura
 
-Thinking Harness is in exploratory applied research. Literature reviews and candidate cases
-support the selection of a bounded thesis question. Case 0003 has one recorded pilot, without
-an accepted improvement or a completed final comparison.
+Mantener los recursos junto a su caso o paper. Extraer componentes compartidos cuando
+exista reutilización real, no para anticipar un proyecto de mayor tamaño.
+La [guía raíz](../README.md#estructura) describe las carpetas actuales.
 
-## Current structure
-
-| Location | Present responsibility |
-|---|---|
-| `research/literature/` | Sources, search records and bilingual paper reviews |
-| `research/cases/` | Case definitions, related studies, prototypes and recorded evidence |
-| `research/synthesis/` | Comparisons across papers and research directions |
-| `docs/` | Charter, current research plan, conventions, decisions and designs |
-| `docs/academic/` | University requirements and academic traceability |
-| `docs/templates/` | Reusable research and engineering document templates |
-| `scripts/` | Repository checks and document tooling |
-| `tests/` | Offline checks of the repository and implemented case behavior |
-| `.github/` | CI and issue/PR templates |
-
-Folders represent existing work. A case keeps its inputs, configuration, code and evidence
-together until an actual shared responsibility emerges. Mermaid sources and other diagram
-assets stay with their case or design document. No empty implementation or delivery tree is
-required to describe a future direction.
-
-### Implemented cases
-
-Keep the reading and execution entry points at the case root. Put supporting Python modules
-in case-local `utils/`; this is a folder convention, not a shared framework or installable package.
-For example:
+## Caso implementado
 
 ```text
 case-0003-debt-negotiation/
-  README.es.md
+  README.md
   prompt-search.ipynb
-  prompt-search.es.ipynb
+  prompt-search.pdf
   config.yaml
   golden-set.yaml
   prompt.yaml
@@ -45,61 +22,38 @@ case-0003-debt-negotiation/
   results/
 ```
 
-`prompt_search.py` implements the bounded search; `notebook_view.py` presents its evidence.
-Future implemented cases use the same layout when supporting modules are needed. A Markdown-only
-case needs no empty `utils/`. Keep repository tooling in `scripts/` and offline tests in `tests/`.
-See the [case-utils decision](decisions/dec-0007-case-local-utils.md).
+El README es la fuente narrativa; el notebook presenta la ejecución; el PDF es una copia
+regenerable de lectura. `utils/` es apoyo local, no un framework instalable. Un caso solo
+Markdown no necesita carpetas de implementación. Véase [dec-0007](decisions/dec-0007-case-local-utils.md).
 
-## Conditions for growth
+## Cuándo crecer
 
-| Evidence of a need | Possible structural change |
+| Necesidad comprobada | Posible cambio |
 |---|---|
-| Two cases use the same tested component | Extract that component to `src/` with its tests |
-| A reusable evaluation set has stable tasks, metrics and versions | Introduce `benchmarks/` |
-| Experiments span cases or need a common execution registry | Introduce `experiments/`; preserve original run identities and hashes |
-| Thesis drafting begins | Introduce `manuscripts/` for manuscript sources |
-| A formal academic document is issued | Introduce `deliverables/` with immutable versions and manifests |
-| A case needs simulated services | Add an environment definition inside that case; share it only when reused |
-| Data requires a lifecycle independent of one case | Introduce `data/` with provenance, licensing and version records |
+| Dos casos reutilizan un componente probado | Extraerlo a `src/` con pruebas |
+| Conjunto de evaluación estable e independiente | Crear `benchmarks/` |
+| Ejecuciones entre varios casos | Registro compartido en `experiments/` sin alterar IDs ni evidencia |
+| Comienza la tesis escrita | Fuentes en `manuscripts/` |
+| Se emite una entrega formal | `deliverables/` con versiones inmutables y manifiestos |
+| Se necesitan servicios simulados | Definición de entorno dentro del caso |
+| Datos con ciclo de vida propio | `data/` con procedencia, licencia y versión |
 
-These are conditions, not a fixed sequence or a commitment to create every directory.
-Small changes can remain local to a case. Extraction is justified by reuse, evaluation or
-publication needs rather than anticipated scale.
+Son condiciones, no carpetas por crear ahora. La ubicación de decks está pendiente de elegir;
+su contenido será en inglés y referenciará documentos y commits de origen.
 
 ```mermaid
 flowchart LR
-    W[Existing research work] --> N{New structural need?}
-    N -->|No| L[Keep resources with their case]
-    N -->|Yes| E[Define the shared responsibility]
-    E --> M[Move content and preserve identity]
-    M --> V[Verify links, behavior and evidence]
-    V --> W
+    A[Necesidad concreta] --> B{Responsabilidad compartida?}
+    B -->|No| C[Mantener dentro del caso]
+    B -->|Sí| D[Extraer componente]
+    C --> E[Verificar enlaces y evidencia]
+    D --> E
 ```
 
-## Identity and history
+## Identidad y conservación
 
-A case or paper folder carries its stable ID. Its README is the primary document.
-Supporting documents have descriptive filenames and retain their original IDs in metadata
-and the [document catalog](catalog.csv). Language pairs share identity and source revision.
-The [naming standard](standards/std-0001-naming-and-lifecycle.md) defines the details.
-
-Git retains edits and removed scaffolding. Historical experiment records retain the paths,
-commits and hashes measured at execution time; relocation does not rewrite scientific evidence.
-Negative results remain available. Remove superseded material from the active tree after
-recording its replacement and retired IDs in a decision; Git retains earlier contents.
-Do not create an archive for removed drafts or duplicate notes.
-
-## Structural decisions
-
-| Date | Decision | Reason |
-|---|---|---|
-| 2026-10-16 | Replace `research/proposals/` with `research/cases/` | Cases now include models, prototypes and evidence |
-| 2026-10-16 | Use one folder per case and reviewed paper | Keep each research unit understandable in one location |
-| 2026-10-16 | Remove placeholder-only top-level folders | Align the repository with its present stage |
-| 2026-10-16 | Keep academic requirements, templates and design diagrams under `docs/` | Preserve useful material without separate top-level collections |
-
-The [cleanup decision](decisions/dec-0006-active-research-cleanup.md) records retired IDs,
-retention rules and the alignment of protocol, run and prompt naming.
-
-This record describes structural decisions. Work priorities and task progress remain in the
-[GitHub Project](project-links.md).
+IDs estables en metadatos y [catálogo](catalog.csv). Eliminar documentos reemplazados y
+registrar IDs retirados en decisiones, sin `_archive`. Git conserva lo eliminado.
+Los resultados de ejecuciones mantienen bytes, nombres, rutas históricas y hashes aunque
+se reorganice el código actual. Las decisiones [dec-0006](decisions/dec-0006-active-research-cleanup.md)
+y [dec-0008](decisions/dec-0008-spanish-primary-documentation.md) explican las consolidaciones.

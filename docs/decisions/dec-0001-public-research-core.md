@@ -1,32 +1,23 @@
 ---
 id: dec-0001
-title: "Public research core and private extension"
+title: "Núcleo público y extensión privada"
 status: accepted
-revision: 1
+revision: 2
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-17
 ---
 
-# Public research core and private extension
+# Núcleo público y extensión privada
 
+Iniciar `thinking-harness` como repositorio público independiente. Crear
+`thinking-harness-private` solo ante trabajo restringido concreto; consumirá una versión
+identificada del núcleo público sin duplicar el método.
 
-## Decision
-Start thinking-harness as an independent public repository.
-Create thinking-harness-private only when concrete restricted work exists.
-The private repository will consume an identified version of the public core without
-duplicating the method.
+El caso debe poder desarrollarse y evaluarse públicamente. La tesis acotará pregunta y caso;
+el laboratorio puede explorar alternativas. El trabajo institucional existente es referencia
+técnica, no el sistema cuya evolución define la tesis.
 
-## Rationale
-Research must be developable and testable with a reproducible public case.
-The thesis will select a bounded question and case; the laboratory can explore alternatives.
-Existing work is a technical reference, not the system whose evolution defines the thesis.
-
-## Implementation
-Initialize a new directory and keep original source files outside the public root.
-Do not automatically import previous documents or institutional assets.
-Use MIT for original material created in the repository during bootstrap.
-External sources and dependencies retain their own licenses.
-
-## Status
-The repository name and public/private separation are accepted decisions. The method,
-framework, case, and final title remain undecided.
+Mantener originales y material privado fuera de la raíz pública. No importar automáticamente
+documentos ni activos institucionales. Material original del repositorio bajo MIT; fuentes y
+dependencias conservan sus licencias. Nombre y separación público/privado aceptados; método,
+framework, caso y título final todavía abiertos.

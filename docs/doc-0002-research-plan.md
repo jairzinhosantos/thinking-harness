@@ -1,60 +1,63 @@
 ---
 id: doc-0002
-title: "Research plan"
+title: "Plan de investigación"
 status: in-review
-revision: 2
+revision: 3
 created: 2026-09-29
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
-# Research plan
+# Plan de investigación
 
-## Objective
-Select a bounded thesis question about improving an agent harness, supported by an understood
-mechanism, a feasible comparison, and traceable evidence. Whether improving the improver adds
-value over a fixed procedure remains an open research question.
+## Motivación y pregunta
 
-## Current position
+Construir soluciones agénticas exige ajustar instrucciones, herramientas, flujos, memoria
+y evaluación. Se estudia cómo automatizar parte de esa construcción y medir calidad,
+costo e intervención humana.
 
-| Area | Evidence and remaining work |
+**Pregunta provisional:** bajo un presupuesto acotado, ¿qué aporta mejorar al propio
+mejorador frente a un procedimiento fijo, en una familia específica de tareas?
+
+El caso, método y contribución final siguen abiertos. Se consideran búsqueda fija, mejora
+recursiva, evolución, planificación y RL. El punto de partida utiliza modelos fijos;
+entrenar un controlador o modelo requiere justificación y presupuesto. El feedback por sí solo no implica RL.
+
+## Evidencia disponible
+
+| Frente | Estado |
 |---|---|
-| Literature | 23 cataloged papers; bilingual STOP and Self-Harness reviews remain partial. Complete guided reading and outstanding bibliographic checks. |
-| Code repair, case-0001 | Case, scenario plan and separate harness-participation proposal; no executed experiment. Decide whether and how to test the extension. |
-| Debt negotiation, case-0003 | Implemented bounded prompt search with a fixed optimizer. One v2 pilot stopped at its token guard without an accepted candidate or final comparison. The current v3 objective has not been measured. |
-| Thesis | Final case, method and contribution remain open. No paper reproduction or demonstrated recursive improvement is claimed. |
+| Literatura | 23 papers catalogados; STOP y Self-Harness con lectura parcial y sin reproducción |
+| Corrección de código | Caso y escenarios propuestos; participación del harness en su mejora como extensión separada, sin ejecutar |
+| Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
+| Tesis | Caso y comparación principal por seleccionar; colaboración institucional opcional |
 
-The [case index](../research/cases/README.md) links specifications and evidence.
-The retired service-workflow case is not an active research track.
+Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
+y el [índice de casos](../research/cases/README.md). No reinterpretar resultados v2 como evidencia v3.
 
-## Next bounded steps
+## Próximas decisiones
 
-| Step | Reviewable output | Decision supported |
+| Paso | Evidencia para revisar | Decisión |
 |---|---|---|
-| Understand the mechanism | Explain STOP and Self-Harness with code and mathematical examples; use the [literature map](../research/synthesis/research-options.md#literature-map) to compare fixed and adaptive improvers | What changes, what stays fixed, and what would count as recursion |
-| Diagnose the existing pilot | Inspect the recorded budget stop, baseline violations, evaluator assumptions and task coverage without new model calls | Whether the negotiation case warrants another bounded test |
-| Specify the next comparison | Choose one case and a versioned protocol with splits, baseline, acceptance criteria, total budget and a stop rule that accounts for final evaluation | Whether execution is informative and affordable |
-| Execute after authorization | Produce a new run record and report failure, incomplete evaluation or measured outcomes without overwriting prior evidence | Retain, revise or reject the proposed method |
-| Draft the thesis plan | Map the selected question, variables, evaluation and limitations to [academic requirements](academic/requirements.csv) | Whether the academic plan is supported by evidence |
+| Leer STOP y Self-Harness | Mecanismo, ecuaciones y recorrido del código original | Qué cambia, qué queda fijo y qué constituye recursión |
+| Diagnosticar el piloto | Cobertura, violaciones, consumo y condición de parada | Si negociación merece otra prueba |
+| Acotar una comparación | Baseline, particiones, métricas, aceptación y presupuesto total, incluida evaluación final | Qué caso ejecutar |
+| Ejecutar con autorización | Registro nuevo, resultados y limitaciones | Conservar, ajustar o descartar el método |
+| Preparar el plan de tesis | Pregunta, variables, evaluación y alcance | Ajuste a [requisitos académicos](academic/requirements.csv) |
 
-AFlow and DGM remain comparator candidates after the guided readings; they do not require
-additional parallel reading tasks.
+Son dependencias, no compromisos automáticos de ejecución. Medidas candidatas: calidad,
+tiempo hasta aceptación, intervención humana, costo total, generalización y estabilidad.
+Definirlas operacionalmente antes de una comparación confirmatoria.
 
-These are dependencies, not dates or automatic execution commitments. A change of objective,
-model, evaluator or split requires a protocol revision. Do not reinterpret the v2 pilot as v3 evidence.
+## Método y gestión
 
-## Work model
+Se propone adaptar [DSRM](https://doi.org/10.2753/MIS0742-1222240302) para construcción,
+[FEDS](https://doi.org/10.1057/ejis.2014.36) para evaluación y prácticas de PRINCE2 y
+[Kanban](https://kanbanguides.org/the-kanban-guide/) para gestión. Es una combinación del proyecto.
 
-Keep one deep reading task and one technical task in progress. Each review should produce
-an explanation, evidence, or a decision. Hours do not create quotas; the specific progress
-measurement choice remains open in [progress and HITL](designs/doc-0004-progress-and-hitl.md).
-The [Project](project-links.md) owns task status; this plan owns research direction.
-Only human review and acceptance advance integration or formal baselines.
+Mantener una lectura profunda y una tarea técnica en curso. El
+[modelo operativo](operating-model.md) define el flujo; el [Project](project-links.md),
+el estado de tareas. La [métrica de progreso](designs/doc-0004-progress-and-hitl.md)
+sigue pendiente. El [piloto multiagente](designs/doc-0003-agentic-development-strategy.md)
+requiere una decisión posterior.
 
-The [builder and independent-QA design](designs/doc-0003-agentic-development-strategy.md)
-remains a future bounded pilot. New shared infrastructure, training, cloud services and
-additional folders require a demonstrated need; see the [evolution plan](project-evolution.md).
-
-## Revision
-
-Revision 2 replaces the initial-cycle plan while preserving doc-0002. It reflects the
-expanded literature, two active cases and the incomplete negotiation pilot as of 2026-10-16.
+Esta revisión integra la motivación de doc-0001, retirado sin reutilizar su ID.

@@ -107,7 +107,7 @@ def visible(case):
             "history": case["history"]}
 
 
-def load_objective(path=CASE_DIR / "README.es.md"):
+def load_objective(path=CASE_DIR / "README.md"):
     """Read only the fixed objective, excluding evaluation results and other prose."""
     document = Path(path).read_text()
     start, end = "<!-- objective:start -->", "<!-- objective:end -->"
@@ -305,7 +305,7 @@ def run_search(config, output_root=None, client_factory=ResponsesClient):
     run_dir.mkdir(parents=True)
     objective = load_objective()
     hashes = {name: hashlib.sha256((CASE_DIR / name).read_bytes()).hexdigest()
-              for name in ("README.es.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "utils/prompt_search.py")}
+              for name in ("README.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "utils/prompt_search.py")}
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=CASE_DIR, text=True,
                                          stderr=subprocess.DEVNULL).strip()

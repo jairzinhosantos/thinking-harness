@@ -1,54 +1,47 @@
 ---
 id: doc-0003
-title: "Agentic development strategy"
+title: "Estrategia de desarrollo con agentes"
 status: draft
-revision: 1
+revision: 2
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-17
 ---
 
-# Agentic development strategy
+# Estrategia de desarrollo con agentes
 
+**Propuesta para un piloto posterior.** No habilita agentes persistentes, programaciones
+ni un bucle autónomo. Asistir al desarrollo y evaluar científicamente la mejora de un harness
+son actividades distintas. Los agentes no alteran datos reservados ni criterios para aprobar una prueba.
 
-## Status
-Proposal for a later pilot. No persistent agents, scheduler, or project self-modification
-loop is enabled.
+| Rol | Responsabilidad | Límite |
+|---|---|---|
+| `coordinator` | Objetivo, alcance, asignación y resumen | No ampliar alcance sin decisión |
+| `research-reviewer` | Fuentes, evidencia y objeciones | No acreditar lectura humana |
+| `builder` | Cambio pequeño y explicación | No aprobar su propio trabajo |
+| `qa` | Verificar criterios originales y fallos reproducibles | No debilitar criterios |
+| `experiment-runner` | Ejecutar protocolo y registrar evidencia | Respetar presupuesto y parada |
+| `documentation-reviewer` | Mantener consistencia | No convertir expectativas en resultados |
 
-## Scope
-Using agents to build thinking-harness is an engineering workflow. Scientifically evaluating
-a harness-improvement method is a separate activity. Development agents must not modify
-held-out datasets, acceptance criteria, or results to obtain approval.
+```mermaid
+flowchart LR
+    H[Objetivo humano] --> C[Alcance y criterios]
+    C --> B[Construcción o lectura]
+    B --> Q[QA independiente]
+    Q -->|Defecto concreto| B
+    Q --> E[Evidencia y límites]
+    E --> R[Revisión humana]
+```
 
-| Role | Input | Output | Boundary |
-|---|---|---|---|
-| coordinator | Objective and issue | Plan, assignment, summary | Does not silently expand scope |
-| research-reviewer | Paper and review | Evidence, objections, citations | Does not mark human readings complete |
-| builder | Issue and criteria | Small diff and explanation | Does not approve its own change |
-| qa | Diff and original criteria | Checks and reproducible failures | Does not weaken criteria to pass |
-| experiment-runner | Fixed protocol | Manifest, metrics, logs | Respects budget and stop conditions |
-| documentation-reviewer | Accepted evidence | Consistent documentation | Does not turn expectations into results |
+La corrección tiene un límite de intentos y costo; un desacuerdo sin resolver pasa a Review.
+El [estándar de ramas](../standards/std-0003-branching-and-releases.md) define la integración posterior.
 
-## Proposed workflow
-![Agentic development workflow](diagrams/exports/agentic-development-workflow.svg)
+## Primer piloto propuesto
 
-[Edit the Draw.io source](diagrams/source/agentic-development-workflow.drawio).
-The diagram describes a proposed workflow, not currently running agents.
+1. Seleccionar una tarea determinista, sin llamadas adicionales a modelos externos.
+2. Fijar criterios y [contrato de transferencia](../templates/agent-handoff.md).
+3. Separar construcción y QA; verificar criterios y un fallo plausible.
+4. Comparar retrabajo, tiempo, costo y defectos con el flujo de referencia.
+5. Decidir si conviene incorporar paralelismo o herramientas de orquestación.
 
-## Incremental pilot
-1. Define role contracts and a handoff template.
-2. Select one deterministic task without additional external-model calls; builder prepares it.
-3. QA checks original criteria and designs a plausible failure test.
-4. The coordinator assembles evidence; material disagreements require human review.
-5. Measure rework, time, cost, and defects against the reference workflow.
-6. Then evaluate parallelism and orchestration tools.
-
-## Minimum handoff
-Issue, objective, scope, inputs, allowed files, acceptance criteria, budget, reference commit,
-expected output, and escalation conditions. One writer owns each task branch.
-Parallel work uses separate branches or checkouts; record contributions and resolve conflicts
-before integration. Branches follow the [standard](../standards/std-0003-branching-and-releases.md).
-
-## Pilot acceptance
-The change satisfies original criteria; QA provides independent evidence; history allows
-reconstruction; cost is recorded. Quality cannot rest only on self-approval.
-An unresolved disagreement goes to review rather than an unlimited correction loop.
+Un responsable de escritura por rama. La evidencia debe permitir reconstruir el cambio;
+calidad y aceptación no pueden depender solo de autoevaluación.

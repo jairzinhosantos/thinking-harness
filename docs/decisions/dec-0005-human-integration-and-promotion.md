@@ -1,47 +1,25 @@
 ---
 id: dec-0005
-title: "Human integration and baseline promotion"
+title: "Integración y promoción con revisión humana"
 status: accepted
-revision: 1
+revision: 2
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-17
 ---
 
-# Human integration and baseline promotion
+# Integración y promoción con revisión humana
 
-## Decision
+Decisión del 2026-10-02. La aceptación de tareas y la promoción formal son puertas separadas:
 
-Task integration and formal baseline promotion each require human review and a merge
-performed by the human maintainer:
+1. PR de tarea, checks, revisión humana y squash merge a `develop` por el responsable humano.
+2. Decisión de preparar baseline, PR de promoción, checks, aceptación explícita y merge commit a `main`.
 
-1. Task branch, task PR, passing checks, human acceptance, then a squash merge into develop.
-2. A separate decision to propose a baseline, promotion PR, passing checks, explicit
-   baseline acceptance, then a merge commit into main.
+La revisión de baseline cada una o dos semanas es referencial; no dispara promociones.
+La sincronización posterior de `main` a `develop` también pasa por PR y revisión humana.
+El agente prepara y llega a Review. Checks correctos no constituyen aceptación.
 
-Review baseline readiness approximately every one or two weeks. This is an indicative
-cadence; promotion depends on readiness and a human decision, not elapsed time.
-Synchronization from main back into develop also uses a PR, passing checks, human review,
-and a maintainer-performed merge commit.
-
-Agents may prepare authorized changes, evidence, checks, and PRs. They do not merge into
-permanent branches or enable auto-merge under this workflow. A passing CI run is technical
-evidence, not human acceptance. The maintainer's reviewed task merge records task acceptance;
-baseline acceptance is additionally recorded explicitly in the promotion PR.
-
-## Rationale
-
-The previous branch diagram drew a direct arrow from task PR checks to develop while
-showing human acceptance only before main. The text required review of task criteria but
-did not state the human merge action clearly. Both gates must be visible so preparation,
-acceptance, and integration cannot be mistaken for one automatic step.
-
-## Scope
-
-This clarifies the branch policy in [dec-0002](dec-0002-branching-and-english-standard.md)
-and updates [std-0003](../standards/std-0003-branching-and-releases.md) to revision 2.
-It addresses the integration-review portion of
-[issue 11](https://github.com/jairzinhosantos/thinking-harness/issues/11).
-
-The progress metric, research case, and experiment budgets remain separate decisions.
-No schedule, reminder, auto-merge setting, or branch-protection configuration is changed.
-The documentation correction does not itself accept or merge a pending PR.
+La corrección aclaró un diagrama que parecía unir checks directamente a `develop` y mostrar
+revisión humana solo antes de `main`. El [estándar de ramas](../standards/std-0003-branching-and-releases.md)
+concentra el flujo vigente. Atiende la parte de integración del
+[issue 11](https://github.com/jairzinhosantos/thinking-harness/issues/11), sin elegir métrica de progreso,
+caso, presupuesto ni programaciones.

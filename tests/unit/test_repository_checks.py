@@ -128,7 +128,7 @@ class RepositoryChecksTests(unittest.TestCase):
 
     def test_case_folder_readme_has_one_catalog_identity(self):
         path = self.case_readme('research/cases/case-0003-example')
-        path.with_name('README.es.md').write_text('---\ntranslation_of: case-0003\nsource: README.md\n---\n')
+        path.with_name('README.en.md').write_text('---\ntranslation_of: case-0003\nlanguage: en\nsource: README.md\n---\n')
         rows, errors = checks.controlled_documents(self.root)
         self.assertEqual(errors, [])
         self.assertEqual(len(rows), 1)
@@ -167,20 +167,17 @@ class RepositoryChecksTests(unittest.TestCase):
         self.assertTrue(any('duplicate id' in error for error in errors))
 
 
-    def test_spanish_primary_case_is_scoped_to_case_three(self):
-        path=self.case_readme('research/cases/case-0003-debt-negotiation')
-        path.write_text(path.read_text().replace('id: case-0003', 'id: case-0003\nlanguage: es'))
-        spanish=path.with_name('README.es.md')
-        path.rename(spanish)
+    def test_spanish_primary_uses_canonical_readme_for_any_case(self):
+        for number in ('0003', '0004'):
+            path=self.case_readme('research/cases/case-'+number+'-example', 'case-'+number)
+            path.write_text(path.read_text().replace('title:', 'language: es\ntitle:'))
         rows,errors=checks.controlled_documents(self.root)
         self.assertEqual(errors,[])
-        self.assertEqual(rows[0]['path'],'research/cases/case-0003-debt-negotiation/README.es.md')
-        spanish.write_text(spanish.read_text().replace('language: es','language: en'))
-        self.assertTrue(checks.controlled_documents(self.root)[1])
-        spanish.unlink()
-        other=self.case_readme('research/cases/case-0004-example','case-0004')
-        other.rename(other.with_name('README.es.md'))
-        self.assertTrue(checks.controlled_documents(self.root)[1])
+        self.assertEqual(len(rows),2)
+        for row in rows:
+            self.assertTrue(row['path'].endswith('/README.md'))
+        path.rename(path.with_name('README.es.md'))
+        self.assertTrue(any('filename must start' in e for e in checks.controlled_documents(self.root)[1]))
 
 if __name__ == '__main__':
     unittest.main()

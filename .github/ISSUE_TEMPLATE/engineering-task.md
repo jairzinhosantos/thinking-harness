@@ -1,16 +1,16 @@
 ---
-name: Engineering task
-about: Implement or verify a component
+name: Tarea de ingeniería
+about: Tarea de ingeniería
 title: ""
 labels: engineering
 ---
 
-## Problem
+## Problema
 
-## Scope
+## Alcance
 
-## Acceptance criteria
+## Criterios de aceptación
 
-## Validation and evidence
+## Validación y evidencia
 
-## Dependencies
+## Dependencias

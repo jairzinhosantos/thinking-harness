@@ -54,8 +54,7 @@ def controlled_documents(root):
             and path.parent.parent == root / 'research/literature/reviews'
         )
         case_folder = (
-            (path.name == 'README.md' or (path.name == 'README.es.md' and identifier == 'case-0003'
-             and path.parent.name == 'case-0003-debt-negotiation' and meta.get('language') == 'es'))
+            path.name == 'README.md'
             and re.fullmatch(r'case-\d{4}', identifier) is not None
             and re.fullmatch(re.escape(identifier) + r'-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
             and path.parent.parent == root / 'research/cases'
