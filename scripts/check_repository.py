@@ -47,7 +47,13 @@ def controlled_documents(root):
         if identifier in seen:
             errors.append(f'{relative}: duplicate id {identifier}')
         seen.add(identifier)
-        if not path.name.startswith(identifier + '-'):
+        case_folder = (
+            path.name == 'README.md'
+            and re.fullmatch(r'case-\d{4}', identifier) is not None
+            and re.fullmatch(re.escape(identifier) + r'-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
+            and path.parent.parent == root / 'research/proposals'
+        )
+        if not path.name.startswith(identifier + '-') and not case_folder:
             errors.append(f'{relative}: filename must start with its id')
         for field in FIELDS[:-1]:
             if not meta.get(field):
