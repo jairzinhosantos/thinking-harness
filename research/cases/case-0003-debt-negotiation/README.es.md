@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 9
+revision: 10
 created: 2026-10-16
 updated: 2026-10-16
 ---
@@ -11,6 +11,10 @@ updated: 2026-10-16
 # Negociación de deudas sintéticas
 
 [Notebook en español](prompt-search.es.ipynb) · [Notebook en inglés](prompt-search.ipynb) · [PDF de lectura](prompt-search.es.pdf)
+
+El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
+[presentación de evidencia](utils/notebook_view.py). Los notebooks y los YAML permanecen
+en la raíz del caso; `results/` conserva las ejecuciones registradas.
 
 ## Caso
 
