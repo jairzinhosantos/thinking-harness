@@ -2,7 +2,7 @@
 id: case-0003
 title: "Synthetic debt negotiation harness"
 status: in-review
-revision: 4
+revision: 5
 created: 2026-10-16
 updated: 2026-10-16
 ---
@@ -54,8 +54,8 @@ flowchart LR
    selection rule, and limits.
 2. Open the [English notebook](prompt-search.ipynb) or [Spanish notebook](prompt-search.es.ipynb).
    Both use the same YAML files, implementation, and run evidence.
-3. Follow [local setup](modeling.md#local-setup). Live execution is disabled until the API key
-   and configuration are ready. No live results are included yet.
+3. Follow [local setup](modeling.md#local-setup). The default notebook replays the [first live run](results/20261017T011558Z-f5eca942/README.md)
+   without API calls. A new charged run requires explicit opt-in.
 
 The [objective](objective.md), [golden set](golden-set.yaml), [initial prompt](prompt.yaml), and
 [configuration](config.yaml) are kept in this folder. The [runtime](prompt_search.py) stores
@@ -66,4 +66,4 @@ A broader tool-backed harness could later extract refusal reasons, select author
 and track acceptance through explicit tools. That extension needs a separate protocol.
 Automatic prompt improvement with a fixed optimizer is not recursive self-improvement.
 
-Revision 4 separates the case from its model and adds paired notebooks and YAML artifacts.
+Revision 5 adds the first measured run: no candidate accepted, token-limited search, final test not reached. The paired notebooks show the same saved evidence.

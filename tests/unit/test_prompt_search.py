@@ -219,11 +219,13 @@ class PromptSearchTests(unittest.TestCase):
              patch.object(m.urllib.request,'urlopen',side_effect=AssertionError('Unexpected network call')):
             for cell in notebook['cells']:
                 if cell['cell_type']=='code':
-                    self.assertEqual(cell['outputs'],[])
-                    self.assertIsNone(cell['execution_count'])
+                    self.assertIsInstance(cell['execution_count'], int)
+                    self.assertFalse(any(o['output_type']=='error' for o in cell['outputs']))
                     exec(compile(''.join(cell['source']),'notebook-cell','exec'),scope)
         self.assertFalse(scope['RUN_LIVE'])
-        self.assertIsNone(scope['report'])
+        self.assertFalse(scope['config'].allow_live)
+        self.assertEqual(scope['report']['mode'],'live')
+        self.assertEqual(scope['report']['run_id'],notebook['metadata']['evidence']['report'].split('/')[1])
 
 
     def test_yaml_version_lineage_and_candidate_tie_selection(self):
@@ -288,6 +290,45 @@ class PromptSearchTests(unittest.TestCase):
             self.assertTrue(any('p003' in str(item) for item in rendered))
             self.assertTrue(any('Scripted test verdict' in str(item) for item in rendered))
             self.assertEqual(result['mode'],'offline_test_double')
+
+
+    def test_published_live_evidence_is_consistent_and_shared(self):
+        notebooks=[json.loads((CASE/name).read_text())
+                   for name in ('prompt-search.ipynb','prompt-search.es.ipynb')]
+        self.assertEqual(notebooks[0]['metadata']['evidence'],notebooks[1]['metadata']['evidence'])
+        evidence=notebooks[0]['metadata']['evidence']
+        path=CASE/evidence['report']
+        self.assertEqual(m.hashlib.sha256(path.read_bytes()).hexdigest(),evidence['sha256'])
+        report=json.loads(path.read_text())
+        self.assertEqual(report['mode'],'live')
+        self.assertFalse(report['usage']['uncertain'])
+        versions={v['id']:v for v in report['versions']}
+        self.assertEqual(len(versions),len(report['versions']))
+        for version in versions.values():
+            policy=path.parent/version['path']
+            self.assertEqual(m.hashlib.sha256(policy.read_bytes()).hexdigest(),version['sha256'])
+            self.assertEqual(yaml.safe_load(policy.read_text()),{'prompt':version['prompt']})
+            if version['parent'] is not None: self.assertIn(version['parent'],versions)
+        self.assertEqual(versions[report['selected_version']]['prompt'],report['selected_prompt'])
+        ledger=[json.loads(line) for line in (path.parent/'usage.jsonl').read_text().splitlines()]
+        received=[row for row in ledger if row['stage']=='received']
+        self.assertEqual(len(received),report['usage']['calls'])
+        self.assertEqual(sum(row['usage']['input_tokens']+row['usage']['output_tokens'] for row in received),report['usage']['tokens'])
+        self.assertAlmostEqual(sum(row['estimated_cost_usd'] for row in received),report['usage']['estimated_cost_usd'])
+        evaluations=[report['initial_validation']]
+        for event in report['events']:
+            evaluations.extend(event[key] for key in ('development','validation') if key in event)
+        for result in evaluations:
+            self.assertAlmostEqual(result['score'],sum(row['success'] for row in result['rows'])/len(result['rows']))
+            self.assertEqual(result['violations'],sum(bool(row['violations']) for row in result['rows']))
+        self.assertFalse(report['final_complete'])
+        self.assertNotIn('final_selected',report)
+        self.assertEqual(report['selected_version'],report['initial_version'])
+        self.assertFalse(any(event.get('selected') for event in report['events']))
+        provenance=json.loads((path.parent/'provenance.json').read_text())
+        guard=provenance['budget_diagnosis']
+        self.assertGreater(guard['projected_tokens'],guard['limit'])
+        self.assertEqual(guard['consumed_tokens'],report['usage']['tokens'])
 
 if __name__=='__main__':
     unittest.main()

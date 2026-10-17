@@ -106,11 +106,10 @@ respuestas, evidencia del juez, candidatos conservados y descartados, consumo y 
 La notebook presenta esa secuencia con diferencias YAML y decisiones. Ambos idiomas pueden
 mostrar el mismo reporte sin llamar a OpenAI. Dos ejecuciones distintas no son una sola prueba.
 
-La ejecución y publicación de resultados están pendientes. Después de revisar la ejecución
-real se conservarán el reporte y prompts depurados, junto con las salidas de las notebooks,
-en un commit de resultados. No publicar `.env`, credenciales, rutas locales absolutas ni
-registros de solicitudes sin revisar. Las notebooks actuales no contienen mejoras medidas
-ni versiones generadas por el modelo.
+La [primera ejecución real](results/20261017T011558Z-f5eca942/README.es.md) incluye reporte depurado,
+versiones, consumo y salidas de notebooks. No se aceptó ningún candidato; la reserva de tokens
+detuvo la búsqueda antes de la prueba final. Ambas notebooks muestran esta misma ejecución.
+`.env`, credenciales, rutas locales absolutas y solicitudes completas permanecen fuera de Git.
 
 ## Preparación local
 
@@ -126,8 +125,9 @@ cp -n .env.example .env
 Completar `OPENAI_API_KEY` en `.env`, excluido de Git. En un editor de notebooks, elegir el
 kernel Thinking Harness. Confirmar acceso al modelo, precios y límites en [config.yaml](config.yaml).
 Mantener `allow_live: false` hasta autorizar la ejecución; la notebook también exige
-`RUN_LIVE = True`. Ejecutar un solo idioma y copiar su ruta relativa `runs/<run-id>/report.json`
-en `REPLAY_REPORT` de la otra notebook. El modo real y la lectura de un reporte son excluyentes.
+`RUN_LIVE = True`. Las notebooks incluyen por defecto un `REPLAY_REPORT` publicado. Vaciar esa ruta antes de
+otra ejecución real. Ejecutar un solo idioma y copiar su ruta relativa
+`runs/<run-id>/report.json` en `REPLAY_REPORT` de la otra notebook. El modo real y la lectura de un reporte son excluyentes.
 
 ## Referencias
 

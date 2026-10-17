@@ -45,10 +45,9 @@ case-0003-debt-negotiation/
   prompt_search.py    # Testable runtime, evaluation, and search
 ```
 
-The [notebook](case-0003-debt-negotiation/prompt-search.ipynb) starts offline. Live calls require
+The [notebook](case-0003-debt-negotiation/prompt-search.ipynb) replays the first live run offline. Live calls require
 an explicit model, prices, budget, and environment API key. The prototype changes only the
-policy prompt; it does not implement full conversations or a recursive optimizer. No live
-improvement result is claimed. Keep small fixtures and demonstration code here; shared
+policy prompt; it does not implement full conversations or a recursive optimizer. The first live run ended at its token limit with no accepted candidate and no final comparison. Keep small fixtures and demonstration code here; shared
 infrastructure and formal experiment evidence retain their repository locations.
 
 This folder exception is scoped to case-0003. Existing case IDs and paths remain stable.
