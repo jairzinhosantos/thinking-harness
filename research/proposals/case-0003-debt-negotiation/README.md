@@ -2,7 +2,7 @@
 id: case-0003
 title: "Synthetic debt negotiation harness"
 status: in-review
-revision: 2
+revision: 3
 created: 2026-10-16
 updated: 2026-10-16
 ---
@@ -222,7 +222,7 @@ runtime dependencies; the notebook frontend provides IPython display support.
 No live model evaluation or improvement is claimed by this implementation. Easy fixtures may
 be solved on the first attempt. Next review: inspect fixture coverage and judge calibration,
 then choose a live configuration and budget. The agent prepares work up to Review; only
-Jairzinho decides integration and completion. PRs #26 and #27 remain independent.
+Jairzinho decides integration and completion.
 
 ### References
 
@@ -232,3 +232,5 @@ Jairzinho decides integration and completion. PRs #26 and #27 remain independent
 - [STOP](https://arxiv.org/abs/2310.02304)
 
 Revision 2 adds the bounded prompt-search prototype and distinguishes it from the broader case.
+
+Revision 3 removes an obsolete PR coordination note. The prototype and scientific scope are unchanged.

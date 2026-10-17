@@ -14,7 +14,8 @@ flowchart LR
 A blocked task records its cause and next action. Initial work in progress is one deep
 reading task and one technical task. Done requires evidence, satisfied criteria, and human
 acceptance. For repository changes, the maintainer must also merge the task PR into develop.
-Passing CI alone does not move a task to Done. A negative result can close a task when its
+Only Jairzinho moves cards to Done, closes completed issues, or sets Completed date.
+Agents stop at Review. No PR or CI event may automate these completion actions. A negative result can close a task when its
 criteria are met. Small readings and tests do not each need a PRD.
 
 ## Cadence

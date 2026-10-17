@@ -11,7 +11,7 @@ with shared identities and evidence states.
 | Case | Focus | Reading |
 |---|---|---|
 | case-0001 | Code repair: feedback and bounded task-solving loops | [English](case-0001-code-repair-harness.md) / [Español](case-0001-code-repair-harness.es.md) |
-| case-0003 | Synthetic debt negotiation: offers, consent, features, and future harness improvement | [English](case-0003-debt-negotiation/README.md) / [Español](case-0003-debt-negotiation/README.es.md) |
+| case-0003 | Synthetic debt negotiation: offers, consent, and bounded prompt optimization | [English](case-0003-debt-negotiation/README.md) / [Español](case-0003-debt-negotiation/README.es.md) |
 
 The code-repair [scenario plan](doc-0005-code-repair-scenarios-and-eda.md)
 ([Español](doc-0005-code-repair-scenarios-and-eda.es.md)) remains a proposed feasibility
@@ -28,18 +28,23 @@ original IDs. They describe cancellations and refunds, not negotiation. Their pr
 
 ## Compact case folder
 
-Case-0003 keeps its specification and future small demonstration together:
+Case-0003 keeps its specification, examples, and first executable prototype together:
 
 ```text
 case-0003-debt-negotiation/
   README.md       # Primary specification, id: case-0003
   README.es.md    # Spanish counterpart, source: README.md
+  objective.md    # Fixed negotiation objective
+  scenarios.json # Synthetic development, validation, and test fixtures
+  prompt-search.ipynb # Offline walkthrough and opt-in execution
+  prompt_search.py    # Testable runtime, evaluation, and search
 ```
 
-Future scenarios.json and demo.py will live beside these documents when their design and
-implementation are authorized. They do not exist yet. Keep small case-specific fixtures
-and demonstration code here; shared infrastructure and formal experiment evidence retain
-their repository locations. Do not duplicate the specification in another folder.
+The [notebook](case-0003-debt-negotiation/prompt-search.ipynb) starts offline. Live calls require
+an explicit model, prices, budget, and environment API key. The prototype changes only the
+policy prompt; it does not implement full conversations or a recursive optimizer. No live
+improvement result is claimed. Keep small fixtures and demonstration code here; shared
+infrastructure and formal experiment evidence retain their repository locations.
 
 This folder exception is scoped to case-0003. Existing case IDs and paths remain stable.
 A controlled case README must sit directly in research/proposals/case-NNNN-description/,

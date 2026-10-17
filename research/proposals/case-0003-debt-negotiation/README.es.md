@@ -2,7 +2,7 @@
 translation_of: case-0003
 language: es
 source: README.md
-source_revision: 2
+source_revision: 3
 title: "Synthetic debt negotiation harness"
 status: in-review
 created: 2026-10-16
@@ -232,7 +232,7 @@ credenciales. El módulo no requiere dependencias externas; el editor de noteboo
 Esta implementación no declara una evaluación real de modelos ni mejoras observadas. Los ejemplos
 sencillos podrían resolverse al primer intento. Siguiente revisión: cobertura y calibración del juez;
 después, elegir configuración y presupuesto para una ejecución real. El agente llega hasta Review;
-solo Jairzinho decide integración y cierre. Los PRs #26 y #27 siguen siendo independientes.
+solo Jairzinho decide integración y cierre.
 
 ### Referencias
 
@@ -242,3 +242,5 @@ solo Jairzinho decide integración y cierre. Los PRs #26 y #27 siguen siendo ind
 - [STOP](https://arxiv.org/abs/2310.02304)
 
 La revisión 2 incorpora el prototipo de búsqueda limitada de prompts y lo distingue del caso amplio.
+
+La revisión 3 elimina una nota desactualizada sobre coordinación de PRs. El prototipo y el alcance científico no cambian.

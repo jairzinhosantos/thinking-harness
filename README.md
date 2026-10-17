@@ -11,8 +11,8 @@ under measurable quality, cost, and human-review constraints.
 ## Current status
 
 The project is in its research preparation stage. The thesis case, method, framework,
-and final contribution remain open. No improvement method or scientific reproduction
-has been implemented yet. Existing code validates the repository itself.
+and final contribution remain open. A bounded negotiation prompt-search prototype is
+implemented and checked offline. No live improvement result or paper reproduction is claimed.
 
 `main` holds reviewed baselines. `develop` integrates ongoing work through task PRs.
 Both task integration and baseline promotion require human review and a merge performed
@@ -26,6 +26,7 @@ See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
 - Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
 - Use the [literature map](research/synthesis/research-options.md#literature-map) to compare research roles and choose the next reading.
 - Compare the [active cases](research/proposals/README.md), including the [debt negotiation model](research/proposals/case-0003-debt-negotiation/README.md).
+- Open the [negotiation notebook](research/proposals/case-0003-debt-negotiation/prompt-search.ipynb) for the offline walkthrough and opt-in model experiment.
 - Follow work in the [Project](https://github.com/users/jairzinhosantos/projects/2).
 - Before contributing, read [AGENTS.md](AGENTS.md), the [operating model](docs/operating-model.md),
   and the [writing and diagram standard](docs/standards/std-0004-writing-and-diagrams.md).
@@ -48,9 +49,9 @@ flowchart LR
 | Directory | Contents and purpose |
 |---|---|
 | `docs/` | Charter, plan, operating model, standards, decisions, designs, and iteration notes |
-| `research/` | Paper catalog, review notes, search records, synthesis, and research proposals |
+| `research/` | Paper catalog, bilingual study notes, synthesis, proposals, and the case-specific negotiation prototype |
 | `src/` | Future implementation of the selected method; currently a placeholder |
-| `tests/` | Automated checks; currently tests for repository and diagram validation |
+| `tests/` | Repository and diagram checks, plus offline evaluator, budget, and prompt-search tests |
 | `configs/` | Shareable experiment configuration, without credentials |
 | `benchmarks/` | Future reference tasks, scenarios, and evaluators |
 | `environments/` | Local service definitions when the selected case requires them |

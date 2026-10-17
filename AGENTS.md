@@ -23,6 +23,10 @@
 - Read docs/doc-0002-initial-plan.md and the relevant issue before changing scope.
 - Follow docs/standards/std-0003-branching-and-releases.md. Create short task branches
   from develop, open PRs into develop, and reserve main for explicitly accepted promotions.
+- Agents stop at Review. Only Jairzinho accepts and merges PRs, closes issues as completed,
+  moves cards to Done, or sets Completed date. Do not enable auto-merge or automations that
+  close issues or move cards to Done after PR events or checks. CI success and an earlier
+  merge do not establish acceptance of new work. This also applies to delegated work.
 - Do not push directly to permanent branches, force-push them, or delete them.
   Keep main as the repository default; select develop explicitly as the task PR base.
 - Use squash merges for task PRs and merge commits for promotions and synchronization.
