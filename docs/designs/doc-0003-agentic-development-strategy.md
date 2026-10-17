@@ -29,9 +29,9 @@ held-out datasets, acceptance criteria, or results to obtain approval.
 | documentation-reviewer | Accepted evidence | Consistent documentation | Does not turn expectations into results |
 
 ## Proposed workflow
-![Agentic development workflow](../../diagrams/exports/agentic-development-workflow.svg)
+![Agentic development workflow](diagrams/exports/agentic-development-workflow.svg)
 
-[Edit the Draw.io source](../../diagrams/source/agentic-development-workflow.drawio).
+[Edit the Draw.io source](diagrams/source/agentic-development-workflow.drawio).
 The diagram describes a proposed workflow, not currently running agents.
 
 ## Incremental pilot

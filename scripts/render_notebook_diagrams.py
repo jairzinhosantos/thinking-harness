@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-CASE = ROOT / 'research/proposals/case-0003-debt-negotiation'
+CASE = ROOT / 'research/cases/case-0003-debt-negotiation'
 
 
 def main():

@@ -25,12 +25,12 @@ class DiagramChecksTests(unittest.TestCase):
     def test_source_change_invalidates_recorded_preview(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            (root / 'diagrams/source').mkdir(parents=True)
-            (root / 'diagrams/exports').mkdir()
-            source = root / 'diagrams/source/example.drawio'
+            (root / 'docs/designs/diagrams/source').mkdir(parents=True)
+            (root / 'docs/designs/diagrams/exports').mkdir()
+            source = root / 'docs/designs/diagrams/source/example.drawio'
             source.write_text('<mxfile/>')
-            (root / 'diagrams/exports/example.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
-            (root / 'diagrams/exports/manifest.json').write_text(json.dumps({'schema_version': 1, 'diagrams': diagrams.drawio_records(root)}))
+            (root / 'docs/designs/diagrams/exports/example.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
+            (root / 'docs/designs/diagrams/exports/manifest.json').write_text(json.dumps({'schema_version': 1, 'diagrams': diagrams.drawio_records(root)}))
             self.assertEqual(diagrams.preview_checks(root), [])
             source.write_text('<mxfile host="changed"/>')
             self.assertTrue(any('hashes differ' in e for e in diagrams.preview_checks(root)))
@@ -38,8 +38,8 @@ class DiagramChecksTests(unittest.TestCase):
     def test_missing_preview_is_reported(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            (root / 'diagrams/source').mkdir(parents=True)
-            (root / 'diagrams/source/example.drawio').write_text('<mxfile/>')
+            (root / 'docs/designs/diagrams/source').mkdir(parents=True)
+            (root / 'docs/designs/diagrams/source/example.drawio').write_text('<mxfile/>')
             self.assertTrue(any('Missing Draw.io preview' in e for e in diagrams.preview_checks(root)))
 
 

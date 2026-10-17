@@ -58,9 +58,15 @@ def controlled_documents(root):
              and path.parent.name == 'case-0003-debt-negotiation' and meta.get('language') == 'es'))
             and re.fullmatch(r'case-\d{4}', identifier) is not None
             and re.fullmatch(re.escape(identifier) + r'-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
-            and path.parent.parent == root / 'research/proposals'
+            and path.parent.parent == root / 'research/cases'
         )
-        if not path.name.startswith(identifier + '-') and not (case_folder or paper_readme):
+        case_study = (
+            re.fullmatch(r'doc-\d{4}', identifier) is not None
+            and path.parent.parent == root / 'research/cases'
+            and re.fullmatch(r'case-\d{4}-[a-z0-9]+(?:-[a-z0-9]+)*', path.parent.name) is not None
+            and re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*\.md', path.name) is not None
+        )
+        if not path.name.startswith(identifier + '-') and not (case_folder or paper_readme or case_study):
             errors.append(f'{relative}: filename must start with its id')
         for field in FIELDS[:-1]:
             if not meta.get(field):

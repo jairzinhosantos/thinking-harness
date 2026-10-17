@@ -1,10 +1,10 @@
 ---
 id: std-0004
 title: "Writing and diagram conventions"
-status: accepted
-revision: 3
+status: in-review
+revision: 4
 created: 2026-09-30
-updated: 2026-10-01
+updated: 2026-10-16
 ---
 
 # Writing and diagram conventions
@@ -83,11 +83,14 @@ Use relative documentation links. Avoid duplicating live Project statuses in sta
 ## Diagram choice
 Use Mermaid for flows, sequences, dependencies, and architecture that remain readable
 with automatic layout. Keep its fenced source beside the explanation in Markdown.
-Split a complex diagram before increasing its density. Each diagram needs a clear purpose,
+Split a complex diagram before increasing its density. Notebook diagrams use local `.mmd` sources and embedded image attachments with source and
+preview hashes. The reading view shows the image once, without duplicating raw Mermaid code.
+Each diagram needs a clear purpose,
 short labels in the document language, a consistent reading direction, and surrounding explanation.
 
 Use Draw.io when manual placement or visual complexity requires it. Store uncompressed
-editable XML under diagrams/source and a generated SVG preview under diagrams/exports.
+editable XML beside the owning case or design, with its generated SVG preview. Shared design
+diagrams currently use docs/designs/diagrams/source and docs/designs/diagrams/exports.
 The .drawio file is authoritative; never edit its SVG as an independent diagram.
 Embed the SVG and link the source. Do not maintain a second Mermaid version of the same view.
 
@@ -96,11 +99,11 @@ Export Draw.io with a white background and readable labels:
 
 ```sh
 # macOS example; adapt the executable path to the local installation.
-"/Applications/draw.io.app/Contents/MacOS/draw.io" --export --format svg --embed-diagram --output diagrams/exports/agentic-development-workflow.svg diagrams/source/agentic-development-workflow.drawio
+"/Applications/draw.io.app/Contents/MacOS/draw.io" --export --format svg --embed-diagram --output docs/designs/diagrams/exports/agentic-development-workflow.svg docs/designs/diagrams/source/agentic-development-workflow.drawio
 python3 scripts/check_diagrams.py --record-drawio
 ```
 
-The recording command updates diagrams/exports/manifest.json with source and preview SHA-256
+The recording command updates docs/designs/diagrams/exports/manifest.json with source and preview SHA-256
 values. Run it only after actually exporting and visually reviewing the changed diagram.
 Checks detect missing previews, malformed XML, and stale recorded hashes; they cannot prove
 visual equivalence. Review the source and preview together in the PR.
@@ -120,6 +123,9 @@ Language and tone are reviewed editorially; CI does not pretend to prove English
 [GitHub Markdown diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams)
 
 ## Revision history
+Revision 4 colocates diagram assets with cases and designs and records notebook preview
+provenance on 2026-10-16.
+
 Revision 3 adds paired paper reviews on 2026-10-01, including translated diagram labels
 and paired editorial review. See [dec-0004](../decisions/dec-0004-bilingual-paper-reviews.md).
 

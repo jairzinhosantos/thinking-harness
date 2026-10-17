@@ -47,10 +47,10 @@ def digest(path):
 def drawio_records(root):
     return [
         {'source': source.relative_to(root).as_posix(),
-         'preview': (Path('diagrams/exports') / (source.stem + '.svg')).as_posix(),
+         'preview': (Path('docs/designs/diagrams/exports') / (source.stem + '.svg')).as_posix(),
          'source_sha256': digest(source),
-         'preview_sha256': digest(root / 'diagrams/exports' / (source.stem + '.svg'))}
-        for source in sorted((root / 'diagrams/source').glob('*.drawio'))
+         'preview_sha256': digest(root / 'docs/designs/diagrams/exports' / (source.stem + '.svg'))}
+        for source in sorted((root / 'docs/designs/diagrams/source').glob('*.drawio'))
     ]
 
 
@@ -60,7 +60,7 @@ def preview_checks(root):
         expected = drawio_records(root)
     except FileNotFoundError as exc:
         return [f'Missing Draw.io preview: {exc.filename}']
-    manifest = root / 'diagrams/exports/manifest.json'
+    manifest = root / 'docs/designs/diagrams/exports/manifest.json'
     if not expected and not manifest.exists():
         return []
     try:
@@ -108,7 +108,9 @@ def render_mermaid(root, destination, executable=None):
                 raise RuntimeError(f'{path.relative_to(root)}:{line}: Mermaid rendering failed\n'
                                    + result.stderr + result.stdout)
             print(f'Rendered {path.relative_to(root)}:{line} -> {output.name}')
-    for source in sorted((root / 'diagrams/source').glob('*.mmd')):
+    for source in sorted(root.rglob('*.mmd')):
+        if any(part in IGNORED for part in source.relative_to(root).parts):
+            continue
         count += 1
         output = destination / (str(count).zfill(3) + '-' + source.stem + '.svg')
         result = subprocess.run([executable, '-i', str(source), '-o', str(output),
@@ -129,7 +131,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.record_drawio:
-        target = root / 'diagrams/exports/manifest.json'
+        target = root / 'docs/designs/diagrams/exports/manifest.json'
         target.parent.mkdir(parents=True, exist_ok=True)
         try:
             target.write_text(json.dumps({'schema_version': 1, 'diagrams': drawio_records(root)}, indent=2) + '\n')
