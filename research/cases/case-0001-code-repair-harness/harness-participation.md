@@ -1,95 +1,97 @@
 ---
 id: doc-0007
-title: "Harness participation in self-improvement"
+title: "Participación del harness en su propia mejora"
 status: draft
-revision: 3
+revision: 4
 created: 2026-10-09
-updated: 2026-10-16
+updated: 2026-10-17
+language: es
 ---
 
-# Harness participation in self-improvement
+# Participación del harness en su propia mejora
 
-English | [Español](harness-participation.es.md)
 
-**Separate proposal for review.** This document explores an extension of
-[case-0001](README.md). It does not replace that case, select a thesis
-method, or assign another case number. Examples are hypothetical; no code or experiment has run.
+**Propuesta separada para revisión.** Este documento explora una extensión del
+[case-0001](README.md). No reemplaza ese caso, no selecciona un
+método de tesis ni asigna otro número de caso. Los ejemplos son hipotéticos; no se ha ejecutado
+código ni experimentos.
 
-## 1. Proposed question
+## 1. Pregunta propuesta
 
-Does using the current accepted harness to construct its next version produce better
-code-repair harnesses than always using the initial harness as the constructor?
+¿Usar el harness aceptado actual para construir su siguiente versión produce mejores
+harnesses de reparación de código que usar siempre el harness inicial como constructor?
 
-The task remains repairing faulty programs. The added question concerns **how the harness
-is constructed**. A fixed LLM operates through the harness in both roles: repairing task
-code and proposing changes to a copy of the harness code.
+La tarea sigue siendo reparar programas defectuosos. La pregunta adicional se refiere a
+**cómo se construye el harness**. Un LLM fijo opera mediante el harness en ambos roles:
+reparar código de las tareas y proponer cambios sobre una copia del código del harness.
 
-| Role | Example artifact | Boundary |
+| Rol | Artefacto ilustrativo | Límite |
 |---|---|---|
-| Program to repair | `task.py` | Task patches solve individual problems |
-| Agent harness | `harness.py` | Only `select_feedback` may change initially |
-| Search coordinator | `optimizer.py` | Fixed: launches construction, evaluation, and selection |
-| External evaluator | `evaluation.py` | Fixed: checks outcomes, regressions, and resource use |
+| Programa que se repara | `task.py` | Los parches resuelven problemas individuales |
+| Harness del agente | `harness.py` | Inicialmente solo puede cambiar `select_feedback` |
+| Coordinador de búsqueda | `optimizer.py` | Fijo: inicia construcción, evaluación y selección |
+| Evaluador externo | `evaluation.py` | Fijo: comprueba resultados, regresiones y uso de recursos |
 
-Filenames illustrate roles, not existing implementations. The coordinator can remain fixed:
-the changing harness can still participate in constructing its successor. No change to model
-weights or evaluator is required.
+Los nombres ilustran roles, no implementaciones existentes. El coordinador puede permanecer
+fijo: el harness que cambia puede participar en construir a su sucesor. No es necesario
+modificar los pesos del modelo ni el evaluador.
 
-## 2. One possible example
+## 2. Un ejemplo posible
 
-Suppose a small invoice package incorrectly omits a zero total from its serialized output.
-Its requirement is to preserve the numeric total, including zero.
+Supongamos que un pequeño paquete de facturación omite incorrectamente un total de cero en
+su salida serializada. El requisito es preservar el total numérico, incluido el cero.
 
-- **Task repair:** change the serialization condition so that zero is preserved.
-- **Harness improvement:** change how failed tests are presented to the LLM, potentially
-  helping it repair this and other programs.
+- **Reparación de la tarea:** cambiar la condición de serialización para conservar el cero.
+- **Mejora del harness:** cambiar cómo se presentan los tests fallidos al LLM, lo que podría
+  ayudarlo a reparar este y otros programas.
 
-Call the initial harness `H0`. Its feedback function forwards raw test output. The same
-function serves retries during task repair and retries during harness construction.
+Llamemos `H0` al harness inicial. Su función de feedback reenvía la salida completa de los
+tests. La misma función sirve para los reintentos al reparar tareas y al construir harnesses.
 
-| Step | What could happen | What it establishes |
+| Paso | Qué podría ocurrir | Qué permite establecer |
 |---|---|---|
-| Observe | Development traces contain repeated logs obscuring the failed assertion | A candidate explanation, not proof of the cause |
-| Construct H1 | An agent running H0 edits a copy of H0 to retain failed-test names, locations, and expected/actual values | H0 participates in constructing H1 |
-| Evaluate | A fixed evaluator runs H1 across multiple development and validation tasks | Whether the candidate meets the selection rule |
-| Construct H2 | If H1 is accepted, an agent running H1 edits a copy of H1, for example to remove duplicate failures without dropping locations | The accepted version now governs construction of its successor |
+| Observar | Las trazas de desarrollo contienen logs repetidos que ocultan la aserción fallida | Una explicación candidata, no una prueba de la causa |
+| Construir H1 | Un agente que ejecuta H0 edita una copia de H0 para conservar nombres de tests fallidos, ubicaciones y valores esperados/obtenidos | H0 participa en construir H1 |
+| Evaluar | Un evaluador fijo ejecuta H1 sobre varias tareas de desarrollo y validación | Si el candidato cumple la regla de selección |
+| Construir H2 | Si H1 se acepta, un agente que ejecuta H1 edita una copia de H1, por ejemplo para eliminar fallos duplicados sin perder ubicaciones | La versión aceptada ahora gobierna la construcción de su sucesora |
 
-If constructing H2 causes a local test failure, H1's feedback function prepares that failure
-for the next LLM attempt. This is where the previous improvement could help construction.
-Simply passing H1's source code to a fixed proposer would not exercise this mechanism.
+Si al construir H2 falla un test local, la función de feedback de H1 prepara ese fallo para
+el siguiente intento del LLM. Allí la mejora anterior podría ayudar a la construcción.
+Pasar únicamente el código fuente de H1 a un proponente fijo no ejercitaría este mecanismo.
 
 ```mermaid
 flowchart TD
-    H[Current accepted harness Ht] --> P[LLM running through Ht]
-    D[Development failure evidence] --> P
-    P --> C[Edit a copy: candidate harness]
-    C --> T[Local construction tests]
-    T -->|Failure within budget| F[Ht prepares retry feedback]
+    H[Harness aceptado actual Ht] --> P[LLM ejecutado mediante Ht]
+    D[Evidencia de fallos de desarrollo] --> P
+    P --> C[Editar una copia: harness candidato]
+    C --> T[Tests locales de construcción]
+    T -->|Fallo dentro del presupuesto| F[Ht prepara feedback del reintento]
     F --> P
-    T -->|Ready for evaluation| E[Fixed external evaluator]
-    E --> G{Selection rule passes?}
-    G -->|Yes| N[Accept candidate as next Ht]
+    T -->|Listo para evaluar| E[Evaluador externo fijo]
+    E --> G{¿Cumple la regla de selección?}
+    G -->|Sí| N[Aceptar candidato como siguiente Ht]
     N --> H
-    G -->|No| R[Record rejection and retain Ht]
+    G -->|No| R[Registrar rechazo y conservar Ht]
     R --> H
 ```
 
-Each round uses an immutable running version and a separate candidate copy. Candidates cannot
-edit protected tests, reference outcomes, or budget controls. The loop ends at the declared
-budget or stopping rule; an operational stop does not prove mathematical convergence.
+Cada ronda usa una versión en ejecución inmutable y una copia candidata separada. Los
+candidatos no pueden editar tests protegidos, resultados de referencia ni controles de
+presupuesto. El bucle termina por el presupuesto o la regla de parada declarados; detenerlo
+operativamente no demuestra convergencia matemática.
 
-## 3. The comparison that matters
+## 3. La comparación relevante
 
-Both arms start at H0 and improve their current candidate. Only the harness **executing the
-constructor** differs.
+Ambas variantes parten de H0 y mejoran su candidato actual. Solo difiere el harness que
+**ejecuta al constructor**.
 
-| Arm | Constructor runs through | Source being edited |
+| Variante | El constructor se ejecuta mediante | Código que se edita |
 |---|---|---|
-| Fixed constructor | H0 in every round | Copy of that arm's current accepted harness |
-| Updated constructor | That arm's current accepted Ht | Copy of that arm's current accepted harness |
+| Constructor fijo | H0 en todas las rondas | Copia del harness aceptado actual de esa variante |
+| Constructor actualizado | Ht aceptado actual de esa variante | Copia del harness aceptado actual de esa variante |
 
-Illustrative pseudocode, not executable code. `run_agent` returns a candidate snapshot;
-its `harness` argument configures the running agent, not just its prompt.
+Pseudocódigo ilustrativo, no ejecutable. `run_agent` devuelve una instantánea candidata;
+su argumento `harness` configura al agente en ejecución, no solamente su prompt.
 
 ```python
 constructor = initial_harness if mode == "fixed" else current_harness
@@ -104,64 +106,71 @@ candidate = run_agent(
 # A protected coordinator evaluates the candidate and applies the selection rule.
 ```
 
-The arms have the same configuration in round one. The mechanism can differ after an accepted
-change is used in a later construction round. Record constructor and target version hashes,
-feedback-hook calls, and failed attempts. If the changed hook never runs during construction,
-the experiment has not exercised the proposed feedback mechanism.
+Las variantes tienen la misma configuración en la primera ronda. El mecanismo puede diferir
+cuando un cambio aceptado se usa en una ronda posterior de construcción. Registrar hashes de
+las versiones del constructor y del código objetivo, llamadas a la función de feedback e
+intentos fallidos. Si la función modificada nunca se ejecuta durante la construcción, el
+experimento no ha ejercitado el mecanismo de feedback propuesto.
 
-## 4. Evaluation and acceptance
+## 4. Evaluación y aceptación
 
-- **Controls:** same model/version, starting harness, task splits, editable surface, prompts,
-  per-run limits, and total search budget. Different harness behavior is the intervention.
-- **Candidate gate:** valid bounded edit, protected checks pass, limits respected, no decrease
-  in success on either development or validation tasks, and an increase on at least one.
-  Fix repeat counts and denominators before running; this gate is not a significance test.
-- **Final comparison:** freeze one selected harness per arm, then evaluate on reserved task
-  families never used for construction or selection. Compare task success and variability;
-  record total construction/evaluation cost, tokens, time, and regressions.
-- **Evidence of benefit:** an advantage over the fixed-constructor arm under the matched
-  budget, across independent search repetitions. A better task patch or one accepted H1
-  alone does not establish this. Valid-candidate rate is a diagnostic, not the final outcome.
+- **Controles:** mismo modelo/versión, harness inicial, particiones de tareas, superficie
+  editable, prompts, límites por ejecución y presupuesto total de búsqueda. El comportamiento
+  diferente del harness es la intervención.
+- **Regla para candidatos:** edición válida y acotada, comprobaciones protegidas aprobadas,
+  límites respetados, sin disminución del éxito en desarrollo ni validación, y aumento en
+  al menos una partición. Fijar repeticiones y denominadores antes de ejecutar; esta regla
+  no es una prueba de significancia.
+- **Comparación final:** congelar un harness seleccionado por variante y evaluarlo en familias
+  de tareas reservadas, nunca usadas para construcción o selección. Comparar éxito y
+  variabilidad; registrar costo total de construcción/evaluación, tokens, tiempo y regresiones.
+- **Evidencia de beneficio:** ventaja frente al constructor fijo con el mismo presupuesto,
+  en repeticiones independientes de la búsqueda. Un mejor parche o un único H1 aceptado no
+  bastan. La tasa de candidatos válidos es un diagnóstico, no el resultado final.
 
-Both development and validation scores influence selection, so neither is an untouched final
-test. Sample sizes, cost limits, stopping thresholds, and uncertainty analysis remain for an
-execution protocol. Retain negative results and do not assume improvement at every round.
+Las puntuaciones de desarrollo y validación influyen en la selección; ninguna es una prueba
+final intacta. Tamaños de muestra, límites de costo, umbrales de parada y análisis de
+incertidumbre quedan para el protocolo de ejecución. Conservar resultados negativos y no
+suponer mejoras en cada ronda.
 
-## 5. Where this could fit
+## 5. Cómo podría integrarse
 
-**Suggested placement for review: two stages within the code-repair case.** They share the
-environment but answer different questions. The service workflow remains a separate candidate.
+**Ubicación sugerida para revisión: dos etapas dentro del caso de reparación de código.**
+Comparten entorno, pero responden preguntas distintas. El workflow de servicios sigue como
+candidato independiente.
 
 ```mermaid
 flowchart TD
-    A[Stage A: existing code-repair EDA] --> B[Check failures and simple harness changes]
-    B --> G{Measurable problem and affordable search?}
-    G -->|Yes, after protocol approval| C[Stage B: fixed vs updated constructor]
-    G -->|No| R[Revise tasks or stop this direction]
-    C --> D[Review evidence before further scope]
+    A[Etapa A: EDA existente de reparación de código] --> B[Revisar fallos y cambios simples del harness]
+    B --> G{¿Problema medible y búsqueda asequible?}
+    G -->|Sí, con protocolo aprobado| C[Etapa B: constructor fijo vs actualizado]
+    G -->|No| R[Revisar tareas o detener esta dirección]
+    C --> D[Revisar evidencia antes de ampliar alcance]
 ```
 
-The existing [EDA plan](scenarios.md) proposes 36 baseline runs.
-Those runs do not fund or validate Stage B; repeated search trajectories require a separate
-budget. A trivial sum fixed in one call may serve as a control but cannot demonstrate the
-proposed benefit when both arms already succeed.
+El [plan de EDA existente](scenarios.md) propone 36 ejecuciones
+de referencia. Estas ejecuciones no financian ni validan la etapa B; las trayectorias de
+búsqueda repetidas requieren un presupuesto separado. Una suma trivial corregida en una
+llamada puede servir como control, pero no demuestra el beneficio propuesto si ambas
+variantes ya la resuelven.
 
-| Editorial option | Consequence |
+| Opción editorial | Consecuencia |
 |---|---|
-| Extend case-0001 with stages A/B | Preserve the current baseline and add this research question |
-| Replace case-0001 | Rewrite its main question, scope, and linked EDA plan around this mechanism |
-| Keep a separate case | Assign a case ID only after approval; keep the service-workflow ID stable |
+| Extender case-0001 con etapas A/B | Conservar la referencia actual y añadir esta pregunta de investigación |
+| Reemplazar case-0001 | Reformular su pregunta principal, alcance y plan de EDA alrededor de este mecanismo |
+| Mantener un caso separado | Asignar un ID de caso nuevo solo tras aprobación; no reutilizar case-0002, retirado |
 
-Placement remains pending review. This draft changes none of the existing case specifications
-or EDA plans. No implementation is authorized by this document.
+La decisión de integrarlo o asignarle un caso propio queda pendiente. Este borrador no cambia las especificaciones de
+casos ni los planes de EDA existentes. Este documento no autoriza la implementación.
 
-## 6. Relation to Self-Harness
+## 6. Relación con Self-Harness
 
-This is a bounded adaptation of the current-harness construction idea discussed in
-[Self-Harness, section 3](https://arxiv.org/html/2606.09498v3), with a fixed model and external
-evaluation. The fixed-versus-updated constructor comparison and the invoice example are
-proposals for this project, not reported paper experiments or a reproduction.
+Es una adaptación acotada de la idea de construcción mediante el harness actual descrita en
+[Self-Harness, sección 3](https://arxiv.org/html/2606.09498v3), con modelo fijo y evaluación
+externa. La comparación entre constructor fijo y actualizado y el ejemplo de facturación
+son propuestas de este proyecto, no experimentos reportados por el paper ni una reproducción.
 
-See the [partial review](../../literature/reviews/pap-0011-self-harness/README.md) for paper/code
-version differences and evidence limits. Alignment with prior work does not establish novelty;
-the contribution still needs a measurable limitation and comparative evidence.
+La [revisión parcial](../../literature/reviews/pap-0011-self-harness/README.md) detalla diferencias
+entre versiones del paper y del código y límites de la evidencia. Alinearse con trabajos
+previos no establece novedad; la contribución aún requiere una limitación medible y evidencia
+comparativa.

@@ -1,72 +1,46 @@
 ---
 id: doc-0004
-title: "Progress measurement and human review"
+title: "Progreso y revisión humana"
 status: draft
-revision: 1
+revision: 2
 created: 2026-09-29
-updated: 2026-10-02
+updated: 2026-10-17
 ---
 
-# Progress measurement and human review
+# Progreso y revisión humana
 
+## Decisión pendiente
 
-## Pending decision
-Work can be initiated through voice or text instructions, delegated within defined limits,
-and reviewed at agreed checkpoints. Availability is a reference, not a progress measure.
-This proposal sets no quotas, calendar commitments, or running agents.
+La disponibilidad horaria es referencial. Se propone medir avance observable, sin cuotas
+ni compromisos automáticos de calendario.
 
-| Option | Unit of progress | Benefit | Limitation |
+| Opción | Unidad | Ventaja | Límite |
 |---|---|---|---|
-| A. Weekly evidence and decisions | A question resolved through a review, test, or comparison, with a recorded decision | Suits research uncertainty | Requires agreement on sufficient evidence |
-| B. Milestones with exit criteria | Literature, scope, protocol, pilot, and thesis plan | Shows overall maturity | Can hide incremental progress |
-| C. Accepted work flow | Accepted outputs, cycle time, and corrections | Useful during implementation | Tasks differ in difficulty |
+| A. Evidencia semanal | Pregunta resuelta y decisión registrada | Se adapta a incertidumbre | Requiere acordar evidencia suficiente |
+| B. Hitos | Literatura, alcance, protocolo, piloto y plan de tesis | Muestra madurez general | Puede ocultar progreso parcial |
+| C. Flujo aceptado | Entregas, tiempo de ciclo y correcciones | Útil al implementar | Las tareas no tienen igual dificultad |
 
-Proposal: use A for weekly review, B as the overall map, and C once implementation provides
-meaningful signals. A progress-measurement model must be selected before adoption as a standard.
-A documented negative result counts as progress when it reduces uncertainty.
-Commit count, lines of code, and downloaded papers are not scientific success measures.
+Propuesta todavía no adoptada: A en la revisión semanal, B para el mapa general y C cuando
+exista suficiente implementación. Un resultado negativo puede reducir incertidumbre;
+commits, líneas de código y papers descargados no miden éxito científico.
 
-## Proposed weekly report
-- Priority question and expected evidence.
-- Evidence obtained, link, and limitations.
-- Decision: continue, adjust, discard, or request review.
-- Remaining uncertainty.
-- Next task with a closure criterion and agreed cost limit.
+## Revisión semanal propuesta
 
-## Human-in-the-loop (HITL)
-1. Define the objective through voice or text instructions.
-2. The coordinator defines scope, inputs, criteria, permissions, and budget, asking only
-   for missing decisions that are necessary to proceed.
-3. A builder or research-reviewer prepares changes or evidence within that scope.
-4. QA checks independently, records results, and returns specific defects.
-5. Review the proposal, diff or reading note, supporting checks, limitations, and required
-   decision. Human review determines whether to accept, adjust, or reject the result.
-6. For repository changes, the human maintainer performs the squash merge into develop
-   after acceptance and passing checks. Record learning and close the task only when all
-   criteria are met; passing checks alone is not acceptance.
-7. Separately review readiness for a baseline approximately every one or two weeks.
-   Promotion requires a human decision, a promotion PR, passing checks, explicit baseline
-   acceptance, and a maintainer-performed merge commit into main. This cadence is indicative.
+- Pregunta prioritaria y evidencia esperada.
+- Evidencia obtenida, enlace y limitaciones.
+- Decisión: continuar, ajustar, descartar o pedir revisión.
+- Incertidumbre restante y siguiente tarea con criterio de cierre y presupuesto.
 
-The two integration gates are defined in the
-[branch standard](../standards/std-0003-branching-and-releases.md) and
-[dec-0005](../decisions/dec-0005-human-integration-and-promotion.md).
-This decision does not select one of the progress-measurement options above.
+## Trabajo entre revisiones
 
-Existing authorization remains valid. Do not request approval for every routine step.
-Escalate changes to scope, budget, information exposure, or scientific conclusions not
-previously agreed. Each agent's credentials must match its task and environment.
+Definir objetivo, entradas, alcance, archivos permitidos, presupuesto y parada antes de delegar.
+Leer, probar localmente y preparar cambios dentro de lo autorizado no exige pedir aprobación
+por cada paso. Cambios de alcance, costo, exposición o criterios científicos necesitan decisión.
+No asumir que un agente continúa trabajando al terminar una sesión.
 
-## Work between human reviews
-Readings, authorized local tests, and task-branch changes are candidates for bounded delegation.
-Execution needs an active process and task contract. Do not assume work continues after a
-session ends. Define attempt, cost, duration, and resource limits before a pilot.
-At a limit or unresolved dependency, preserve evidence and move to Review.
-Do not deploy, publish data, change scientific criteria, or incur costs outside existing
-authorization. Correction loops must be bounded.
+El agente prepara evidencia y llega a Review. Las dos aceptaciones humanas de integración
+se rigen por [std-0003](../standards/std-0003-branching-and-releases.md); no seleccionan por sí
+solas una métrica de progreso. Al alcanzar un límite, conservar evidencia y solicitar revisión.
 
-## First proposed pilot
-Use one small technical task with objective criteria. Compare assisted work with builder
-plus QA on acceptance, detected faults, corrections, cost, and human-review effort.
-One pilot does not establish causality or thesis results.
-See the [agentic development strategy](doc-0003-agentic-development-strategy.md).
+El primer piloto de builder y QA se describe en la
+[estrategia de desarrollo](doc-0003-agentic-development-strategy.md). No se ejecuta por documentarlo.

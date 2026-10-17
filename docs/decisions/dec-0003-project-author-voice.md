@@ -1,31 +1,23 @@
 ---
 id: dec-0003
-title: "Project-author voice"
+title: "Voz del proyecto"
 status: accepted
-revision: 1
+revision: 2
 created: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-17
 ---
 
-# Project-author voice
+# Voz del proyecto
 
-## Decision
-Use direct authorial prose throughout project documentation. Prefer impersonal or
-project-centered statements of objectives, methods, decisions, and requirements.
-External narration of personal preferences and assistant-to-user commentary does not
-belong in project artifacts. This convention was adopted on 2026-10-01 and is tracked
-in [issue 14](https://github.com/jairzinhosantos/thinking-harness/issues/14).
+Decisión adoptada el 2026-10-01, [issue 14](https://github.com/jairzinhosantos/thinking-harness/issues/14).
 
-## Scope
-Apply the convention to prose, metadata, templates, reviews, and diagram labels.
-Keep historical dates, decision status, source attribution, and human approval requirements.
-Do not imply completed personal reading or scientific validation from assisted preparation.
+Escribir objetivos, métodos y reglas directamente, con voz impersonal o centrada en el proyecto.
+Excluir narraciones externas de preferencias personales y comentarios del asistente dirigidos
+al usuario. Aplicar a prosa, metadatos, plantillas, reviews y diagramas.
 
-## Enforcement
-The [writing standard](../standards/std-0004-writing-and-diagrams.md), agent instructions,
-and PR template define the rule. A focused CI check catches recurring phrases; editorial
-review remains necessary for meaning and consistency across every document format.
+Conservar atribución, fechas, estados y responsabilidades humanas. Preparar material con
+asistencia no acredita lectura personal ni validación científica. El lint detecta algunas
+regresiones, pero la revisión editorial sigue siendo necesaria.
 
-At adoption, the progress-measurement and bilingual-documentation choices remained open.
-The later [paper-review translation decision](dec-0004-bilingual-paper-reviews.md) resolves
-the language choice for reviews only. The progress-measurement choice remains open.
+La regla vigente está en [std-0004](../standards/std-0004-writing-and-diagrams.md).
+La métrica de progreso sigue pendiente; las decisiones de idioma posteriores no la resuelven.

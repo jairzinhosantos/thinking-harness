@@ -205,7 +205,7 @@ class PromptSearchTests(unittest.TestCase):
             self.assertNotIn('previous_response_id',body)
 
     def test_notebook_offline_path_never_calls_network(self):
-        for name in ('prompt-search.ipynb', 'prompt-search.es.ipynb'):
+        for name in ('prompt-search.ipynb',):
             self.check_offline_notebook(name)
 
     def check_offline_notebook(self, name):
@@ -259,21 +259,16 @@ class PromptSearchTests(unittest.TestCase):
         for candidate in ({'prompt':''},{'prompt':'hello','budget':100},{'prompt':None}):
             with self.assertRaises(m.ProviderFailure): m.get_prompt(candidate)
 
-    def test_bilingual_code_and_local_links(self):
-        notebooks=[json.loads((CASE/name).read_text())
-                   for name in ('prompt-search.ipynb','prompt-search.es.ipynb')]
-        code=[]
-        for notebook in notebooks:
-            code.append([''.join(c['source']).splitlines() for c in notebook['cells']
-                         if c['cell_type']=='code'])
-            for cell in notebook['cells']:
-                if cell['cell_type']=='markdown':
-                    for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', ''.join(cell['source'])):
-                        if not target.startswith(('https:', 'attachment:')):
-                            self.assertTrue((CASE/target.split('#')[0]).exists(),target)
-        self.assertNotEqual(code[0][0][0],code[1][0][0])
-        code[0][0][0]=code[1][0][0]
-        self.assertEqual(code[0],code[1])
+    def test_canonical_spanish_notebook_and_local_links(self):
+        self.assertEqual(sorted(p.name for p in CASE.glob('*.ipynb')), ['prompt-search.ipynb'])
+        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        first_code=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code')
+        self.assertIn("LANGUAGE = 'es'", first_code)
+        for cell in notebook['cells']:
+            if cell['cell_type']=='markdown':
+                for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', ''.join(cell['source'])):
+                    if not target.startswith(('https:', 'attachment:')):
+                        self.assertTrue((CASE/target.split('#')[0]).exists(),target)
 
     def test_notebook_version_and_trace_display_with_test_evidence(self):
         # Exercise presentation with a marked test double; never publish this as a live run.
@@ -297,7 +292,7 @@ class PromptSearchTests(unittest.TestCase):
 
     def test_notebook_reading_content_and_diagram_provenance(self):
         import base64
-        for name in ('prompt-search.ipynb', 'prompt-search.es.ipynb'):
+        for name in ('prompt-search.ipynb',):
             notebook = json.loads((CASE/name).read_text())
             prose = '\n'.join(''.join(c['source']) for c in notebook['cells'] if c['cell_type'] == 'markdown')
             for internal in ('OPENAI_API_KEY', 'RUN_LIVE', 'REPLAY_REPORT', 'allow_live', '```mermaid', 'Regenerar'):
@@ -310,7 +305,7 @@ class PromptSearchTests(unittest.TestCase):
                 preview = base64.b64decode(cell['attachments']['workflow.png']['image/png'])
                 self.assertEqual(m.hashlib.sha256(source.read_bytes()).hexdigest(), manifest['source_sha256'])
                 self.assertEqual(m.hashlib.sha256(preview).hexdigest(), manifest['preview_sha256'])
-        guide = (CASE/'README.es.md').read_text()
+        guide = (CASE/'README.md').read_text()
         for internal in ('OPENAI_API_KEY', 'RUN_LIVE', 'REPLAY_REPORT', 'allow_live', 'ipykernel install'):
             self.assertNotIn(internal, guide)
 
@@ -329,10 +324,8 @@ class PromptSearchTests(unittest.TestCase):
             self.assertIn('&lt;img', view.table(['Text'], [['<img src=x>']]))
 
     def test_published_live_evidence_is_consistent_and_shared(self):
-        notebooks=[json.loads((CASE/name).read_text())
-                   for name in ('prompt-search.ipynb','prompt-search.es.ipynb')]
-        self.assertEqual(notebooks[0]['metadata']['evidence'],notebooks[1]['metadata']['evidence'])
-        evidence=notebooks[0]['metadata']['evidence']
+        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        evidence=notebook['metadata']['evidence']
         path=CASE/evidence['report']
         self.assertEqual(m.hashlib.sha256(path.read_bytes()).hexdigest(),evidence['sha256'])
         report=json.loads(path.read_text())
@@ -373,7 +366,7 @@ class PromptSearchTests(unittest.TestCase):
         self.assertNotIn('Resultados registrados',objective)
         self.assertNotIn('Modelamiento',objective)
         with tempfile.TemporaryDirectory() as tmp:
-            path=Path(tmp)/'README.es.md'
+            path=Path(tmp)/'README.md'
             path.write_text('private outcomes\n<!-- objective:start -->\nfixed objective\n<!-- objective:end -->\nvalidation failures')
             self.assertEqual(m.load_objective(path),'fixed objective')
             for invalid in ('missing markers', '<!-- objective:start --><!-- objective:end -->',
@@ -385,14 +378,14 @@ class PromptSearchTests(unittest.TestCase):
     def test_case_has_one_spanish_markdown_and_legacy_evidence_is_distinct(self):
         markdown=[p.relative_to(CASE).as_posix() for p in CASE.rglob('*.md')
                   if not {'runs','_local','.venv'} & set(p.relative_to(CASE).parts)]
-        self.assertEqual(markdown,['README.es.md'])
+        self.assertEqual(markdown,['README.md'])
         self.assertEqual(m.PROTOCOL,'case-0003-prompt-search-v3')
         self.assertIn('case-0003-prompt-search-v2',m.REPLAY_PROTOCOLS)
         with tempfile.TemporaryDirectory() as tmp:
             result=m.run_search(config(),tmp,FakeClient)
             self.assertEqual(result['protocol'],m.PROTOCOL)
             self.assertEqual(result['objective_sha256'],m.hashlib.sha256(m.load_objective().encode()).hexdigest())
-            self.assertIn('README.es.md',result['source_hashes'])
+            self.assertIn('README.md',result['source_hashes'])
             for role,_,payload in FakeClient.instances[-1].requests:
                 if role=='optimizer': self.assertEqual(payload['objective'],m.load_objective())
 

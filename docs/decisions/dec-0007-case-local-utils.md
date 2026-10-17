@@ -1,26 +1,25 @@
 ---
 id: dec-0007
-title: "Case-local Python utilities"
+title: "Utilidades Python dentro del caso"
 status: in-review
-revision: 1
+revision: 2
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
-# Case-local Python utilities
+# Utilidades Python dentro del caso
 
-Use `utils/` inside each implemented case for Python modules supporting its notebooks.
-Keep the primary README, notebooks, inputs and configuration at the case root. Create
-directories when resources exist; a Markdown-only case does not need implementation scaffolding.
+Usar `utils/` dentro de cada caso implementado para módulos Python de apoyo. Mantener
+README, notebooks, entradas y configuración en la raíz del caso. No crear estructura vacía.
 
-For case-0003, move both `prompt_search.py` and `notebook_view.py` into `utils/`.
-The first implements bounded search; the second formats evidence for reading. Their responsibilities
-and the experimental protocol remain unchanged. The folder is local to this case, not a shared library.
+En case-0003 se trasladaron `prompt_search.py` y `notebook_view.py`: búsqueda acotada y
+presentación de evidencia, respectivamente. No cambió el protocolo ni sus responsabilidades.
+Es una carpeta local, no una biblioteca compartida.
 
-Notebook loading, offline tests and future source-hash paths follow the new locations.
-Historical results retain their original bytes, paths and hashes. A reading-copy PDF may have
-its source links updated without changing the evidence it presents.
+Carga del notebook, pruebas y hashes futuros siguen las rutas nuevas; resultados históricos
+conservan bytes, rutas y hashes originales. La copia PDF puede actualizar enlaces sin cambiar
+la evidencia presentada.
 
-Repository checks and export tooling stay in `scripts/`; tests stay in `tests/`.
-Original paper source checkouts retain their upstream structure. Extract shared code only when
-actual reuse justifies it, as described in [project evolution](../project-evolution.md).
+Comprobaciones comunes en `scripts/`, pruebas en `tests/`. Los checkouts originales de papers
+mantienen su estructura. Extraer código compartido cuando exista reutilización real según
+[evolución del proyecto](../project-evolution.md).

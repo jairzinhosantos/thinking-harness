@@ -1,76 +1,66 @@
-# Initial search protocol
+# Protocolo de búsqueda
 
-Objective: map methods for constructing and improving harnesses and select comparators.
-Initial cutoff: 2026-09-29. Update the search when reviewing scope and before final evaluation.
-The 2026-10-11 expansion verifies ten approved candidates; it does not extend an exhaustive
-search cutoff or recover results from the inaccessible scheduled task.
+Mapear métodos de construcción y mejora de harnesses para seleccionar comparadores.
+Corte inicial: 2026-09-29. La ampliación de 2026-10-11 verificó diez candidatos aprobados;
+no fue una búsqueda exhaustiva ni recuperó resultados de la tarea programada inaccesible.
+Actualizar la búsqueda al revisar alcance y antes de la evaluación final.
 
-## Sources
-Official papers and proceedings, arXiv, OpenReview, ACL Anthology, PMLR, and repositories
-linked by authors. Use search engines for discovery. Distinguish reviewed publications,
-preprints, and technical projects.
+## Fuentes y consultas
 
-## Families and queries
-- "recursive self-improvement" AND (agent OR harness OR scaffolding)
-- "agentic workflow" AND (optimization OR search OR planning)
-- "harness" AND ("self-improving" OR adaptive OR evolution)
-- "reinforcement learning" AND (agent OR workflow OR tool-use)
-- References and citing works for central studies.
+Priorizar papers y proceedings oficiales, arXiv, OpenReview, ACL Anthology, PMLR y repositorios
+vinculados por autores. Los buscadores sirven para descubrir fuentes. Distinguir publicación
+revisada, preprint y proyecto técnico.
 
-## Inclusion and extraction
-Prioritize explicit mechanisms, relevance, and interpretable evaluation.
-Record title, primary source, version, code, mutable object, fixed components, method,
-evaluation, budget, limitations, and inclusion decision. Deduplicate versions of the same work.
-A repository is not automatically a paper. Do not infer prestige, publication, or code
-availability from a previous conversation.
+- `"recursive self-improvement" AND (agent OR harness OR scaffolding)`
+- `"agentic workflow" AND (optimization OR search OR planning)`
+- `"harness" AND ("self-improving" OR adaptive OR evolution)`
+- `"reinforcement learning" AND (agent OR workflow OR tool-use)`
+- Referencias y trabajos que citan los estudios centrales.
 
-## Independent states
-- Bibliography: pending/verified.
-- Reading: not-started/initial-review/partial/complete.
-- Code: not-inspected/partial-inspection/inspected/not-applicable.
-- Execution: not-run/smoke-tested/partial-reproduction/reproduced.
-- Guided discussion: pending/discussed.
+Incluir mecanismos explícitos, cercanos a la pregunta y evaluables. Registrar versión,
+código, objeto modificable, controles, método, evaluación, presupuesto, límites y decisión
+de inclusión. Deduplicar versiones. No inferir publicación o código disponible de una conversación.
 
-An initial source inspection does not establish complete personal reading or discussion.
-Record assisted source inspection and guided discussion separately.
-Verified bibliography establishes the source record; venue and code verification may remain pending.
+## Estados independientes
 
-## Classification and local originals
-
-The [catalog](catalog.csv) separates these dimensions:
-
-| Field | Meaning |
+| Campo | Valores |
 |---|---|
-| `theme` | Primary lens: `harness-evolution`, `metaoptimization`, `evaluation-generalization`, `model-harness-coevolution`, or `data-synthesis` |
-| `proximity` | `direct`: informs harness/improver design or evaluation; `complementary`: relevant extension with a different objective or training regime; `contextual`: background |
-| `reference_role` | Intended use in the study, such as a baseline, adaptive-improver candidate, or evaluation design reference |
-| `priority` | Reading order: P0 for the next comparison, P1 for supporting analysis, P2 for later extensions; not a quality rating |
-| `classification_basis` | `preliminary-source-screening` identifies an assessment from abstracts, selected PDF passages, and available author-linked repository descriptions |
-| `classification_notes` | Reason for inclusion and the main distinction or uncertainty to investigate |
-| `pdf_filename` | Versioned original filename for local lookup; not a repository attachment |
+| Bibliografía | `pending`, `verified` |
+| Lectura | `not-started`, `initial-review`, `partial`, `complete` |
+| Código | `not-inspected`, `partial-inspection`, `inspected`, `not-applicable` |
+| Ejecución | `not-run`, `smoke-tested`, `partial-reproduction`, `reproduced` |
+| Discusión | `pending`, `discussed` |
 
-The new classification fields are populated for pap-0014 through pap-0023. Blank fields
-on earlier records mean classification is pending, not that those papers are less relevant.
-Existing reading priorities and states remain unchanged. These classifications are working
-interpretations, not completed paper reviews or conclusions about novelty.
-Use the [research map](../synthesis/research-options.md#literature-map) to select the next reading.
+Una inspección inicial no acredita lectura completa ni reproducción.
 
-Keep originals outside Git in `paper-library/originals/`, with
-`<pap-id>-<short-slug>-v<arxiv-version>.pdf`, for example `pap-0019-rrsi-v3.pdf`.
-Keep manual annotations separately in `paper-library/annotated/`. Never overwrite an original
-with annotations or silently replace its version. Import the chosen original into Goodnotes;
-an imported copy is not assumed to synchronize back to the local file.
+## Clasificación y originales locales
 
-Before registering a download, match its title and arXiv version stamp to the source record,
-check that the PDF opens, and inspect its cover. A missing `code_url` means unverified here,
-not that no implementation exists. An available repository does not establish reproducibility.
+| Campo del catálogo | Significado |
+|---|---|
+| `theme` | Tema principal: evolución, metaoptimización, generalización, coevolución o síntesis de datos |
+| `proximity` | `direct`, `complementary` o `contextual`, según relación con diseño y evaluación del harness |
+| `reference_role` | Uso previsto como baseline, candidato o referencia de evaluación |
+| `priority` | P0: siguiente comparación; P1: apoyo; P2: extensiones. No mide calidad |
+| `classification_basis` | `preliminary-source-screening`: resumen, pasajes seleccionados y repositorios enlazados |
+| `classification_notes` | Motivo y principal incertidumbre |
+| `pdf_filename` | Nombre del PDF original local, no adjunto de GitHub |
 
-## Search record
-Record query, source, date, retained candidates, and scope for each search.
-Counts describe retained candidates, not every search-engine result.
-Systematic screening remains pending; the initial batch verifies seed works.
-Use PRISMA-ScR and PRISMA-S as reporting guidance, not certification.
+Los campos de clasificación se incorporaron en pap-0014 a pap-0023. Vacíos anteriores
+indican clasificación pendiente, no menor relevancia. Prioridades y estados no cambian al
+traducir. Véase [mapa de literatura](../synthesis/research-options.md#mapa-de-literatura).
 
-## References
-- [PRISMA-ScR](https://www.prisma-statement.org/scoping)
-- [PRISMA-S](https://www.prisma-statement.org/prisma-search)
+Originales fuera de Git en `paper-library/originals/`, con nombre
+`<pap-id>-<short-slug>-v<arxiv-version>.pdf`. Anotaciones en `paper-library/annotated/`.
+No sobrescribir originales ni reemplazar versiones silenciosamente. Una copia importada
+en Goodnotes no se considera sincronizada con el archivo local.
+
+Antes de registrar una descarga, verificar título, versión arXiv, apertura y portada.
+Un `code_url` vacío significa no verificado aquí; un repositorio disponible no demuestra reproducción.
+
+## Registro
+
+Conservar consulta, fuente, fecha, candidatos retenidos y alcance en `search-log.csv`.
+Los registros históricos mantienen su idioma original. Los conteos no cubren todos los
+resultados del buscador. El screening sistemático sigue pendiente.
+[PRISMA-ScR](https://www.prisma-statement.org/scoping) y
+[PRISMA-S](https://www.prisma-statement.org/prisma-search) son guías de reporte, no certificaciones.

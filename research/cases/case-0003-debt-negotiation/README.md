@@ -3,17 +3,17 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 10
+revision: 11
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
 # Negociación de deudas sintéticas
 
-[Notebook en español](prompt-search.es.ipynb) · [Notebook en inglés](prompt-search.ipynb) · [PDF de lectura](prompt-search.es.pdf)
+[Notebook](prompt-search.ipynb) · [PDF de lectura](prompt-search.pdf)
 
 El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
-[presentación de evidencia](utils/notebook_view.py). Los notebooks y los YAML permanecen
+[presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
 en la raíz del caso; `results/` conserva las ejecuciones registradas.
 
 ## Caso
@@ -30,7 +30,7 @@ Puede terminar sin acuerdo. Todos los datos son sintéticos; no hay pagos ni dat
 
 **Pregunta de investigación:** ¿mejorar automáticamente el prompt produce mejores decisiones
 que generarlo una sola vez, con el mismo modelo y evaluador?
-El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness/README.es.md).
+El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness/README.md).
 
 ## Objetivo
 

@@ -5,10 +5,10 @@ config:
     nodeSpacing: 24
 ---
 flowchart TD
-    S["Seed p000"] --> B["Generate baseline p001"]
-    B --> V["Validate and select"]
-    V -->|Continue| C["Development failures and new candidate"]
+    S["Semilla p000"] --> B["Generar baseline p001"]
+    B --> V["Validar y seleccionar"]
+    V -->|Continuar| C["Errores de desarrollo y nuevo candidato"]
     C --> V
-    V -->|Search finished| T["Freeze policy and run final test"]
-    V -->|Budget exhausted| X["Incomplete comparison"]
-    T -->|Insufficient budget| X
+    V -->|Fin de búsqueda| T["Fijar versión y evaluar prueba final"]
+    V -->|Presupuesto agotado| X["Comparación incompleta"]
+    T -->|Presupuesto insuficiente| X

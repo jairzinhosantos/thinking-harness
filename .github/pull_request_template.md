@@ -1,19 +1,20 @@
-## Problem and outcome
+## Problema y resultado
 
-## Issue and evidence
+## Issue y evidencia
 
-Refs #<issue-number>. Task PRs target develop. Promotion PRs target main.
+Refs #<issue-number>. PR de tarea hacia `develop`; promoción hacia `main`.
 
-## Validation
+## Validación
 
-## Editorial review
+## Límites y decisiones pendientes
 
-Confirm direct project-author voice in documents, metadata, and diagram labels. Preserve
-source attribution, pending decisions, and distinctions between assisted work and personal review.
-For paper reviews, verify the English primary and full Spanish translation together: matching
-source revision and status, reciprocal links, equations, quantities, citations, diagram
-relationships, and section coverage. Render both language versions of affected diagrams.
+## Revisión editorial
 
-## Limitations and pending decisions
+- Prosa en español y voz del proyecto; nombres y código en inglés.
+- Una fuente por tema, sin duplicados ni enlaces obsoletos.
+- Fuentes, ecuaciones, unidades y estados de evidencia conservados.
+- Traducciones selectivas: fuente, revisión y equivalencia verificadas si existen.
+- Diagramas modificados renderizados y legibles.
+- Resultados históricos intactos; preparar documentación no acredita lectura ni reproducción.
 
-For a promotion: identify the baseline, recorded human acceptance, and proposed tag.
+En una promoción, identificar baseline, aceptación humana explícita y tag propuesto.

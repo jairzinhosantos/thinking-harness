@@ -1,36 +1,16 @@
-# Research cases
+# Casos de investigación
 
-Each case folder contains its specification and related studies. The index distinguishes
-active candidates and their evidence; none defines the final thesis contribution.
+Cada carpeta reúne la especificación, estudios relacionados y evidencia del caso.
+Ninguno define todavía la contribución final de la tesis.
 
-| Folder | Contents | Status |
+| Caso | Entradas de lectura | Estado |
 |---|---|---|
-| [case-0001-code-repair-harness](case-0001-code-repair-harness/README.md) | Code-repair case, scenario plan and draft harness-participation proposal | Candidate; no executed experiment |
-| [case-0003-debt-negotiation](case-0003-debt-negotiation/README.es.md) | Case, model, YAML inputs, bilingual notebooks and recorded evidence | Synthetic pilot; final comparison incomplete |
+| [case-0001: corrección de código](case-0001-code-repair-harness/README.md) | [Escenarios y EDA](case-0001-code-repair-harness/scenarios.md); [participación del harness](case-0001-code-repair-harness/harness-participation.md) | Propuesta, sin ejecución; la extensión mantiene un alcance separado |
+| [case-0003: negociación sintética](case-0003-debt-negotiation/README.md) | [Notebook](case-0003-debt-negotiation/prompt-search.ipynb); [copia PDF](case-0003-debt-negotiation/prompt-search.pdf) | Piloto v2 incompleto, sin candidato aceptado; objetivo v3 sin medir |
 
-## Code repair
+El plan de escenarios de corrección propone 36 ejecuciones de viabilidad; no son resultados.
+La guía de negociación contiene objetivo, modelo y resultados; el notebook consulta un mismo
+registro local sin llamadas a modelos. Su PDF es una copia de lectura, no otra fuente de evidencia.
 
-[Case](case-0001-code-repair-harness/README.md)
-([Español](case-0001-code-repair-harness/README.es.md)) ·
-[Scenario plan](case-0001-code-repair-harness/scenarios.md)
-([Español](case-0001-code-repair-harness/scenarios.es.md)) ·
-[Harness-participation proposal](case-0001-code-repair-harness/harness-participation.md)
-([Español](case-0001-code-repair-harness/harness-participation.es.md))
-
-The scenario plan proposes a 36-run feasibility study. The harness-participation proposal
-explores an extension of the case and remains a separate draft, with its original document ID.
-Neither document establishes implemented behavior or measured results.
-
-## Debt negotiation
-
-[Spanish guide](case-0003-debt-negotiation/README.es.md) ·
-[English notebook](case-0003-debt-negotiation/prompt-search.ipynb) ·
-[Spanish notebook](case-0003-debt-negotiation/prompt-search.es.ipynb) ·
-[Spanish reading PDF](case-0003-debt-negotiation/prompt-search.es.pdf)
-
-One guide contains the case, objective, model and results. YAML inputs, runtime and evidence
-remain together in its folder. Both notebooks present the same recorded pilot: no candidate
-was accepted and the final comparison was not completed.
-
-The service-workflow case and its scenario study were retired in favor of case-0003.
-Their IDs remain reserved; see the [cleanup decision](../../docs/decisions/dec-0006-active-research-cleanup.md).
+El caso de workflow de servicios y su estudio se retiraron. Los IDs case-0002 y doc-0006
+siguen reservados en la [decisión de limpieza](../../docs/decisions/dec-0006-active-research-cleanup.md).

@@ -1,131 +1,85 @@
 ---
 id: std-0003
-title: "Branching and formal baselines"
+title: "Ramas y baselines formales"
 status: accepted
-revision: 2
+revision: 3
 created: 2026-09-30
-updated: 2026-10-02
+updated: 2026-10-17
 ---
 
-# Branching and formal baselines
+# Ramas y baselines formales
 
+## Ramas permanentes
 
-## Permanent branches
-
-| Branch | Purpose | Entry condition |
+| Rama | Propósito | Entrada |
 |---|---|---|
-| main | Reviewed baselines for presentation, submission, or release | Promotion PR, passing CI, explicit human acceptance, and a maintainer-performed merge commit |
-| develop | Integrated research and implementation work | Task PR, passing CI, explicit human acceptance, and a maintainer-performed squash merge |
+| `develop` | Integración de investigación e implementación | PR de tarea, checks correctos, revisión humana y squash merge por el responsable humano |
+| `main` | Baseline para presentación, entrega o release | PR de promoción, checks correctos, aceptación explícita del baseline y merge commit por el responsable humano |
 
-main remains the repository default. Select develop explicitly when opening a task PR.
-The bootstrap commits predate this workflow and are not a formal scientific release.
+`main` sigue como rama predeterminada. Elegir `develop` al abrir un PR de tarea.
+Los commits iniciales preceden este flujo y no constituyen una entrega científica formal.
+El agente prepara cambios, evidencia y PRs; se detiene en Review, sin merge ni auto-merge.
+CI correcto no equivale a aceptación humana.
 
-There are two separate human review gates. The human maintainer reviews and performs
-the merge at each gate. Passing CI, opening a PR, or targeting develop does not merge
-the change. Agents prepare branches, evidence, checks, and PRs; they do not merge into
-either permanent branch or enable auto-merge under this workflow.
-
-### Gate 1: accept a task into develop
-
-Review the task diff, evidence, and closure criteria. If accepted, the maintainer performs
-the squash merge. Requests for changes return to the task branch and require another review.
+## Dos puertas de revisión
 
 ```mermaid
 flowchart TD
-    D[Current develop] --> T[Task branch]
-    T --> Q[Task PR and passing checks]
-    Q --> H[Human task review]
-    H -->|Changes needed| T
-    H -->|Accepted| G[Maintainer performs squash merge]
-    G --> I[Updated develop]
+    D[develop actual] --> T[Rama de tarea]
+    T --> P[PR de tarea y checks]
+    P --> H[Revisión humana de la tarea]
+    H -->|Corregir| T
+    H -->|Aceptar y squash merge| I[develop integrado]
+    I --> Q[Decisión humana de preparar baseline]
+    Q --> R[PR de promoción y checks]
+    R --> B[Revisión humana del baseline]
+    B -->|Aceptar y merge commit| M[main]
 ```
 
-### Gate 2: promote a baseline into main
+Revisar la posibilidad de promoción cada una o dos semanas como referencia, sin automatizarla.
+La aceptación de una tarea no autoriza una promoción posterior. Sincronizar `main` hacia
+`develop` mediante otro PR, checks, revisión humana y merge commit.
 
-Accepted tasks accumulate in develop. A separate human decision selects a coherent baseline
-for presentation, submission, or release. Review promotion readiness approximately every
-one or two weeks; this is a reference cadence, not a deadline or an automatic promotion.
-The maintainer may defer promotion until the snapshot is ready.
+## Ramas de tarea
 
-```mermaid
-flowchart TD
-    D[Accepted work in develop] --> S[Human decision to propose a baseline]
-    S --> P[Promotion PR and passing checks]
-    P --> H[Human baseline review]
-    H -->|Accepted| G[Maintainer performs merge commit]
-    G --> M[Reviewed baseline in main]
-```
-
-After promotion, synchronize main back into develop through a separate PR, passing checks,
-human review, and a maintainer-performed merge commit. This synchronization preserves
-shared history; it does not bypass review or accept unrelated work.
-
-## Task branches
-Use `<type>/<issue-number>-<short-description>` in lowercase English.
-Types: docs, research, feat, fix, chore, refactor, and test.
-Example: docs/12-english-documentation. Agent roles are issue assignments, not branch names.
-Create from current develop, keep one bounded objective, and delete after integration.
-There is one writer per task branch; concurrent agents use separate branches or checkouts.
+Formato `<type>/<issue-number>-<short-description>`, en inglés y minúsculas.
+Tipos: `docs`, `research`, `feat`, `fix`, `chore`, `refactor`, `test`.
+Crear desde `origin/develop`, un objetivo acotado y un responsable de escritura por rama;
+eliminar después de integrar. Los roles de agentes no son ramas permanentes.
 
 ```sh
 git fetch origin
-git switch -c docs/12-english-documentation origin/develop
+git switch -c docs/43-spanish-research-notes origin/develop
 # Edit, validate, commit, and push the task branch.
-gh pr create --base develop --head docs/12-english-documentation --body-file pr-body.md
+gh pr create --base develop --head docs/43-spanish-research-notes --body-file pr-body.md
 ```
 
-The command is an example; allocate the actual issue and branch before using it.
-Commits use `type: concise English description`; an optional scope is allowed.
+El ejemplo no reserva futuros IDs. Commits: `type: concise English description`.
+El PR explica problema, resultado, evidencia, límites y `Refs #N`. Solo Jairzinho cierra
+issues, mueve tarjetas a Done y asigna Completed date. Un PR parcial no cierra una tarea amplia.
 
-## Merge and review rules
-Squash task PRs into develop. Use merge commits for develop-to-main promotions and
-main-to-develop synchronization so shared ancestry is preserved.
-Do not squash or rebase a permanent-branch promotion. Do not enforce linear history on
-permanent branches because synchronization uses merge commits.
-A task PR states its problem, result, issue, evidence, checks, and remaining decisions.
-Use `Refs #N`; close the task issue explicitly after the maintainer merges into develop
-and all issue criteria are satisfied. A PR that covers only part of an issue does not close it.
+## Integración y protección
 
-Human acceptance applies to the reviewed diff and commit. Material changes require renewed
-review, and required checks must pass on the updated branch. Acceptance of an individual
-task into develop does not authorize promotion of a larger baseline into main.
+- Squash para tareas; merge commit para promoción y sincronización. No squash ni rebase
+  entre ramas permanentes, ni historial lineal obligatorio que impida sincronización.
+- Aceptación sobre el diff y commit revisados; cambios materiales exigen revisión renovada.
+- Ramas permanentes: PR, `Repository checks` / `validate`, rama actualizada y conversaciones
+  resueltas. Prohibir force-push y eliminación, también a administradores.
+- Cero aprobaciones técnicas obligatorias permite operar al único mantenedor; no elimina
+  la revisión humana ni autoriza al agente a integrar. El squash deliberado registra
+  aceptación de tarea; una promoción registra además aceptación explícita del baseline.
+- No automatizar Done ni cierre de issues por eventos de PR o CI.
 
-main and develop require PRs, passing Repository checks (job: validate), up-to-date
-branches, and resolved conversations. Disable force pushes and deletion; apply protection
-to administrators too. Initially require zero GitHub approval reviews to avoid a sole
-maintainer being unable to approve their own PR. This does not remove either human review
-gate. For task PRs, the maintainer's deliberate squash merge after review records acceptance.
-For promotion PRs, record explicit acceptance of the baseline in the PR before the maintainer
-performs the merge. The technical approval-review count is not permission for agents to merge.
-Branch protection enforces checks and PR use; it cannot establish scientific validity
-or verify that a conversational acceptance occurred.
+## Baselines y excepciones
 
-## Formal promotion
-1. Select a coherent snapshot of develop; its criteria must pass on the exact proposed head.
-2. Open a promotion PR to main with scope, validation, known limits, and deliverable references.
-3. Obtain explicit human acceptance for that snapshot. Material changes invalidate it.
-4. The maintainer performs the merge commit; identify the accepted main commit with a tag.
-5. Synchronize main back into develop through a PR, with checks, human review, and a
-   maintainer-performed merge commit.
+Seleccionar un commit coherente de `develop`, validar ese head y abrir PR a `main` con
+alcance, límites y entregables. Tras aceptación y merge humano, identificarlo con un tag
+inmutable `milestone/<name>-rNNN`; software publicado usa `vMAJOR.MINOR.PATCH`.
+Una entrega o experimento cita commit o tag, no solo una rama mutable.
 
-Research tags use `milestone/<name>-rNNN`, such as milestone/research-plan-r001.
-Software tags use `vMAJOR.MINOR.PATCH` when a software release exists.
-Never move an issued tag; supersede it with a new revision. Branches are mutable working
-references; cite a commit or tag in a delivery or experiment manifest.
+Solo si hace falta preparar una entrega aparte, usar `release/<milestone>-rNNN` temporal.
+Una corrección urgente puede partir de `main` en `fix/<issue>-<description>`, pasar por PR
+y sincronizarse luego a `develop`. No crear esas ramas por anticipación.
 
-## Exceptions
-If presentation preparation must proceed independently, create a temporary
-release/<milestone>-rNNN branch from the chosen develop commit. It receives only baseline
-preparation fixes, is promoted by PR, synchronized back, then deleted.
-For an urgent formal-baseline correction, branch fix/<issue>-<description> from main,
-review through a PR into main, issue a new revision, then sync to develop.
-Do not introduce these branches until needed.
-
-## Revision history
-
-Revision 2 makes human review and maintainer-performed merges explicit for both integration
-and promotion, and records the indicative one-to-two-week baseline review cadence.
-See [dec-0005](../decisions/dec-0005-human-integration-and-promotion.md).
-
-## Reference
-[GitHub branch protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
+Esta revisión traduce y concentra el flujo de [dec-0005](../decisions/dec-0005-human-integration-and-promotion.md),
+sin cambiar sus dos aceptaciones humanas. [Protección de ramas en GitHub](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).

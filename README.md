@@ -1,108 +1,74 @@
 # Thinking Harness
 
-Welcome to Thinking Harness, an applied research project on the construction and
-improvement of agentic harnesses. This repository brings together literature reviews,
-experimental protocols, reference implementations, and thesis materials.
+Bienvenido a Thinking Harness, un proyecto de investigación aplicada sobre la construcción
+y mejora de harnesses agénticos. Reúne lecturas, propuestas, prototipos y evidencia para
+acotar una pregunta de tesis.
 
-A harness is the application layer around a model: instructions, tools, execution flow,
-memory, controls, and evaluation. The project studies how to construct or improve that layer
-under measurable quality, cost, and human-review constraints.
+El **harness** es el andamiaje de software que permite operar a un modelo: instrucciones,
+herramientas, contexto, ejecución, controles y evaluación. La pregunta central es qué aporta
+mejorar al propio mejorador frente a mantenerlo fijo, considerando calidad, generalización y costo.
 
-## Current status
+## Por dónde empezar
 
-The project is in its research preparation stage. The thesis case, method, framework,
-and final contribution remain open. A bounded negotiation prompt-search prototype is
-implemented and has one live pilot. Its token guard stopped the search without an accepted
-candidate or final comparison. No improvement or paper reproduction is claimed.
+- [Plan de investigación](docs/doc-0002-research-plan.md): pregunta, alcance y siguientes decisiones.
+- [Catálogo de papers](research/literature/catalog.csv) y [mapa de lectura](research/synthesis/research-options.md).
+- Reviews de [STOP](research/literature/reviews/pap-0001-stop/README.md) y
+  [Self-Harness](research/literature/reviews/pap-0011-self-harness/README.md).
+- [Casos](research/cases/README.md): corrección de código y negociación sintética.
+- [Notebook de negociación](research/cases/case-0003-debt-negotiation/prompt-search.ipynb):
+  reproduce la lectura de un registro existente, sin llamadas a modelos.
 
-`main` holds reviewed baselines. `develop` integrates ongoing work through task PRs.
-Both task integration and baseline promotion require human review and a merge performed
-by the human maintainer; passing CI does not merge a PR.
-The initial bootstrap predates this workflow; it is not a formal research release.
-See the [branch standard](docs/standards/std-0003-branching-and-releases.md).
-
-## Start here
-
-- Read the [research charter](docs/doc-0001-research-charter.md) and [research plan](docs/doc-0002-research-plan.md).
-- Explore the [paper catalog](research/literature/catalog.csv) and [partial STOP review](research/literature/reviews/pap-0001-stop/README.md).
-- Use the [literature map](research/synthesis/research-options.md#literature-map) to compare research roles and choose the next reading.
-- Compare the [case index](research/cases/README.md), including the [debt negotiation model](research/cases/case-0003-debt-negotiation/README.es.md).
-- Read the [negotiation model](research/cases/case-0003-debt-negotiation/README.es.md#modelamiento), then open the notebook in [English](research/cases/case-0003-debt-negotiation/prompt-search.ipynb) or [Spanish](research/cases/case-0003-debt-negotiation/prompt-search.es.ipynb). Both notebooks replay the first measured run without API calls; the search stopped at its token limit with no accepted candidate.
-- Follow work in the [Project](https://github.com/users/jairzinhosantos/projects/2).
-- Before contributing, read [AGENTS.md](AGENTS.md), the [operating model](docs/operating-model.md),
-  and the [writing and diagram standard](docs/standards/std-0004-writing-and-diagrams.md).
-
-## Research workflow
-
-Each cycle produces evidence that helps retain, refine, or reject a research direction.
-The thesis will select one bounded case; the public laboratory can explore additional cases.
+La investigación sigue abierta. Hay un piloto de búsqueda de prompts con optimizador fijo:
+se detuvo por presupuesto, sin candidato aceptado ni comparación final. No se afirma una
+mejora recursiva ni una reproducción de los papers. Cada caso contiene su estado y evidencia.
 
 ```mermaid
 flowchart LR
-    L[Literature review] --> P[Question and protocol]
-    P --> E[Pilot and evaluation]
-    E --> D[Evidence and decision]
+    L[Leer fuentes] --> P[Acotar pregunta y protocolo]
+    P --> E[Ejecutar y evaluar]
+    E --> D[Interpretar evidencia y decidir]
     D --> L
 ```
 
-## Repository guide
+## Estructura
 
-| Directory | Contents and purpose |
+| Ruta | Contenido |
 |---|---|
-| `research/` | Literature, case studies, prototypes, evidence and synthesis |
-| `docs/` | Project conventions, decisions, designs, academic requirements and templates |
-| `scripts/` | Validation, notebook diagram rendering and PDF export tools |
-| `tests/` | Offline repository checks and tests of implemented case behavior |
-| `.github/` | CI workflows and issue/PR templates |
+| `research/literature/` | Catálogo, búsquedas y una carpeta por paper revisado |
+| `research/cases/` | Un caso por carpeta: guía, entradas, notebook, utilidades y resultados |
+| `research/synthesis/` | Comparación de métodos y alternativas |
+| `docs/` | Plan, estándares, decisiones, diseños, requisitos académicos y plantillas |
+| `scripts/` | Comprobaciones y exportación de documentación |
+| `tests/` | Pruebas locales sin consumo de modelos |
+| `.github/` | CI y plantillas de issues y PRs |
 
-Each case and reviewed paper has its own folder. The README presents the main study;
-related documents and resources stay beside it. Cases retain their scientific status:
-reorganization does not turn a proposal into an experiment or a pilot into a validated result.
-[Controlled documents](docs/catalog.csv) retain stable IDs when their filenames change.
+Los [IDs](docs/catalog.csv) se conservan aunque cambie una ruta. Las carpetas crecen
+cuando existe una necesidad concreta; véase [evolución del proyecto](docs/project-evolution.md).
+Los PDFs de papers y sus anotaciones permanecen en la biblioteca local.
 
-The [evolution plan](docs/project-evolution.md) records the present structure and the conditions
-for adding shared code, benchmarks, experiment infrastructure or formal deliverables.
-Folders are added when they contain useful work.
+## Trabajo y validación
 
-## Validate a change
+Las tareas se siguen en el [Project](https://github.com/users/jairzinhosantos/projects/2).
+`develop` integra trabajo revisado; `main` conserva baselines formales. Ambas integraciones
+requieren aceptación humana según el [estándar de ramas](docs/standards/std-0003-branching-and-releases.md).
+El [modelo operativo](docs/operating-model.md) define el flujo. El diseño multiagente es una propuesta futura.
 
-Use Python 3.11 or newer. The repository checker uses the standard library; the prompt-search tests also require the case dependencies:
+Python 3.11 o posterior; Node.js 22 para Mermaid:
 
 ```sh
 python3 -m pip install -r research/cases/case-0003-debt-negotiation/requirements.txt
 python3 scripts/check_repository.py
 python3 -m unittest discover -s tests/unit -v
-```
-
-Mermaid rendering requires Node.js 22 and the pinned development dependencies:
-
-```sh
 npm ci
 npm run check:diagrams
 ```
 
-CI runs these checks for `main`, `develop`, and PRs targeting either branch. It validates
-local references, document metadata, catalogs, recurring external-narration phrases,
-Draw.io structure and previews, and Mermaid rendering. It does not run models or consume cloud resources.
+El CI comprueba estructura, enlaces, pruebas locales y diagramas; no valida conclusiones científicas.
+Antes de cambiar contenido, leer [AGENTS.md](AGENTS.md). Documentación en español, nombres
+y código en inglés, traducciones selectivas y decks en inglés.
 
-## Working with agents
+## Alcance público
 
-The [agentic development strategy](docs/designs/doc-0003-agentic-development-strategy.md)
-proposes bounded tasks, a builder, independent QA, and human review. It is a future pilot;
-no persistent agents or scheduled execution are enabled.
-[Progress measurement and HITL options](docs/designs/doc-0004-progress-and-hitl.md)
-remain open for a separate decision.
-
-## Public scope
-
-English is the primary project language. Each paper review also has a linked Spanish
-translation for study; see the [paired-review convention](docs/standards/std-0004-writing-and-diagrams.md#paper-review-translations).
-Private data, credentials, institutional source
-files, and working conversations stay outside this repository. A private extension may
-later consume an identified version of this public core.
-
-## License and citation
-
-Original repository material is licensed under [MIT](LICENSE). Linked papers and external
-software retain their own licenses. Use [CITATION.cff](CITATION.cff) and identify the commit
-or release used when citing this project.
+No se incluyen credenciales, datos privados ni implementaciones institucionales. El material
+original usa [MIT](LICENSE); fuentes externas conservan sus licencias. Para citar el proyecto,
+usar [CITATION.cff](CITATION.cff) e identificar el commit o versión consultados.

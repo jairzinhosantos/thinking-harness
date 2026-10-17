@@ -1,14 +1,10 @@
-# Agent handoff template
+# Plantilla de transferencia de tarea
 
-- Issue:
-- Objective:
-- Scope:
-- Inputs:
-- Allowed files:
-- Reference commit:
-- Acceptance criteria:
-- Budget:
-- Expected output:
-- Evidence:
-- Escalation conditions:
-- Reviewer:
+- Issue y objetivo:
+- Alcance, entradas y archivos permitidos:
+- Commit de referencia:
+- Criterios de aceptación:
+- Presupuesto y condición de parada:
+- Salida y evidencia esperadas:
+- Condiciones de escalamiento:
+- Responsable de revisión:
