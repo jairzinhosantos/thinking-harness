@@ -2,7 +2,7 @@
 translation_of: doc-0005
 language: es
 source: scenarios.md
-source_revision: 6
+source_revision: 7
 title: "Code repair scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
@@ -18,7 +18,7 @@ updated: 2026-10-16
 Para [case-0001](README.es.md), identificar tareas válidas, fallos del baseline
 y una intervención viable mediante análisis exploratorio de datos (EDA).
 **Solo planificado:** sin código, ejecuciones, golden set validado ni resultados. El EDA evalúa viabilidad;
-no demuestra causalidad, mejora o beneficio económico. Analizar el [caso de servicios](../case-0002-service-workflow-harness/scenarios.es.md) por separado.
+no demuestra causalidad, mejora o beneficio económico.
 
 El [diseño ilustrativo](README.es.md#2-un-diseño-posible) separa corregir
 código de tarea de proponer cambios al harness. El piloto de 36 ejecuciones evalúa solo un
@@ -123,7 +123,7 @@ flowchart TD
 ## 6. Revisión y condiciones de ejecución
 
 1. **Aprobar alcance e instrumento:** seleccionar cohorte, revisar requisitos/referencias/particiones, pasar L0 y verificar reinicios.
-2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../../docs/templates/experiment-protocol.md) debe fijar modelo, muestra,
+2. **Aprobar ejecución:** un [protocolo versionado](../../../docs/templates/experiment-protocol.md) debe fijar modelo, muestra,
    tope monetario, tokens/tiempo por ejecución, reintentos/repeticiones y revisión humana. Este plan no autoriza implementación ni gasto.
 3. **Detener:** al primer límite aplicable; detener el lote si falla la integridad del evaluador o el reinicio. Conservar evidencia parcial.
 4. **Revisar EDA:** cobertura, todos los estados, exclusiones, métricas con denominadores, fallos, costo y limitaciones;

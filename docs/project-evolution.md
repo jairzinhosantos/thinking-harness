@@ -11,7 +11,7 @@ an accepted improvement or a completed final comparison.
 | `research/literature/` | Sources, search records and bilingual paper reviews |
 | `research/cases/` | Case definitions, related studies, prototypes and recorded evidence |
 | `research/synthesis/` | Comparisons across papers and research directions |
-| `docs/` | Charter, plan, conventions, decisions, designs and iteration records |
+| `docs/` | Charter, current research plan, conventions, decisions and designs |
 | `docs/academic/` | University requirements and academic traceability |
 | `docs/templates/` | Reusable research and engineering document templates |
 | `scripts/` | Repository checks and document tooling |
@@ -85,8 +85,9 @@ The [naming standard](standards/std-0001-naming-and-lifecycle.md) defines the de
 
 Git retains edits and removed scaffolding. Historical experiment records retain the paths,
 commits and hashes measured at execution time; relocation does not rewrite scientific evidence.
-Negative results remain available. Superseded research stays identifiable without requiring
-an empty archive directory.
+Negative results remain available. Remove superseded material from the active tree after
+recording its replacement and retired IDs in a decision; Git retains earlier contents.
+Do not create an archive for removed drafts or duplicate notes.
 
 ## Structural decisions
 
@@ -96,6 +97,9 @@ an empty archive directory.
 | 2026-10-16 | Use one folder per case and reviewed paper | Keep each research unit understandable in one location |
 | 2026-10-16 | Remove placeholder-only top-level folders | Align the repository with its present stage |
 | 2026-10-16 | Keep academic requirements, templates and design diagrams under `docs/` | Preserve useful material without separate top-level collections |
+
+The [cleanup decision](decisions/dec-0006-active-research-cleanup.md) records retired IDs,
+retention rules and the alignment of protocol, run and prompt naming.
 
 This record describes structural decisions. Work priorities and task progress remain in the
 [GitHub Project](project-links.md).

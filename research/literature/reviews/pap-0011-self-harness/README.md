@@ -317,5 +317,5 @@ benchmark score has been independently reproduced.
 Next, discuss the acceptance example and three questions: which harness surface could be
 bounded, what must remain fixed, and what evidence would justify a change? Record remaining
 questions before accepting the review. Follow with AFlow and Darwin Gödel Machine according
-to the [initial reading plan](../../../../docs/doc-0002-initial-plan.md). Any execution requires
+to the [research plan](../../../../docs/doc-0002-research-plan.md). Any execution requires
 a separate protocol, spending limit, stop condition, and evidence path.

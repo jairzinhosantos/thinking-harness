@@ -20,6 +20,8 @@
 - Put Python modules supporting an implemented case in that case's `utils/` directory.
   Keep its README, notebooks and input/configuration files at the case root. Create `utils/`
   only when needed; repository-wide checks and export tools remain in `scripts/`.
+- Delete superseded drafts and duplicate notes instead of archiving them. Record replacements
+  and retired IDs in docs/decisions; never reuse removed IDs or rewrite historical run evidence.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
   submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.
@@ -31,7 +33,7 @@
   implying that AI assistance constitutes completed personal reading or scientific validation.
 - Apply this voice consistently to documents, summaries, metadata, templates, and diagrams;
   review it manually even when the focused editorial lint passes.
-- Read docs/doc-0002-initial-plan.md and the relevant issue before changing scope.
+- Read docs/doc-0002-research-plan.md and the relevant issue before changing scope.
 - Follow docs/standards/std-0003-branching-and-releases.md. Create short task branches
   from develop, open PRs into develop, and reserve main for explicitly accepted promotions.
 - Agents stop at Review. Only Jairzinho accepts and merges PRs, closes issues as completed,
