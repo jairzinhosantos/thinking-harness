@@ -292,6 +292,39 @@ class PromptSearchTests(unittest.TestCase):
             self.assertEqual(result['mode'],'offline_test_double')
 
 
+    def test_notebook_reading_content_and_diagram_provenance(self):
+        import base64
+        for name in ('prompt-search.ipynb', 'prompt-search.es.ipynb'):
+            notebook = json.loads((CASE/name).read_text())
+            prose = '\n'.join(''.join(c['source']) for c in notebook['cells'] if c['cell_type'] == 'markdown')
+            for internal in ('OPENAI_API_KEY', 'RUN_LIVE', 'REPLAY_REPORT', 'allow_live', '```mermaid', 'Regenerar'):
+                self.assertNotIn(internal, prose)
+            diagrams = [c for c in notebook['cells'] if 'diagram' in c['metadata']]
+            self.assertEqual(len(diagrams), 1)
+            for cell in diagrams:
+                manifest = cell['metadata']['diagram']
+                source = CASE / manifest['source']
+                preview = base64.b64decode(cell['attachments']['workflow.png']['image/png'])
+                self.assertEqual(m.hashlib.sha256(source.read_bytes()).hexdigest(), manifest['source_sha256'])
+                self.assertEqual(m.hashlib.sha256(preview).hexdigest(), manifest['preview_sha256'])
+        guide = (CASE/'README.es.md').read_text()
+        for internal in ('OPENAI_API_KEY', 'RUN_LIVE', 'REPLAY_REPORT', 'allow_live', 'ipykernel install'):
+            self.assertNotIn(internal, guide)
+
+    def test_presentation_escapes_untrusted_prompt_and_judge_text(self):
+        display = types.ModuleType('IPython.display')
+        rendered = []
+        display.display = rendered.append
+        display.HTML = lambda value: value
+        with patch.dict(sys.modules, {'IPython.display': display}):
+            view_spec = importlib.util.spec_from_file_location('case_view_test', CASE/'notebook_view.py')
+            view_module = importlib.util.module_from_spec(view_spec)
+            view_spec.loader.exec_module(view_module)
+            view = view_module.EvidenceView('es')
+            self.assertEqual(view.paragraphs('<script>alert(1)</script>'),
+                             '<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>')
+            self.assertIn('&lt;img', view.table(['Text'], [['<img src=x>']]))
+
     def test_published_live_evidence_is_consistent_and_shared(self):
         notebooks=[json.loads((CASE/name).read_text())
                    for name in ('prompt-search.ipynb','prompt-search.es.ipynb')]

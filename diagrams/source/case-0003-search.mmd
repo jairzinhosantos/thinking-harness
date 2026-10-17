@@ -1,0 +1,14 @@
+---
+config:
+  flowchart:
+    rankSpacing: 26
+    nodeSpacing: 24
+---
+flowchart TD
+    S["Seed p000"] --> B["Generate baseline p001"]
+    B --> V["Validate and select"]
+    V -->|Continue| C["Development failures and new candidate"]
+    C --> V
+    V -->|Search finished| T["Freeze policy and run final test"]
+    V -->|Budget exhausted| X["Incomplete comparison"]
+    T -->|Insufficient budget| X

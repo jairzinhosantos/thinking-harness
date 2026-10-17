@@ -108,6 +108,16 @@ def render_mermaid(root, destination, executable=None):
                 raise RuntimeError(f'{path.relative_to(root)}:{line}: Mermaid rendering failed\n'
                                    + result.stderr + result.stdout)
             print(f'Rendered {path.relative_to(root)}:{line} -> {output.name}')
+    for source in sorted((root / 'diagrams/source').glob('*.mmd')):
+        count += 1
+        output = destination / (str(count).zfill(3) + '-' + source.stem + '.svg')
+        result = subprocess.run([executable, '-i', str(source), '-o', str(output),
+                                 '-b', 'white', '-t', 'neutral', *extra],
+                                capture_output=True, text=True, timeout=120)
+        if result.returncode or not output.exists():
+            raise RuntimeError(f'{source.relative_to(root)}: Mermaid rendering failed\n'
+                               + result.stderr + result.stdout)
+        print(f'Rendered {source.relative_to(root)} -> {output.name}')
     return count
 
 
