@@ -1,0 +1,27 @@
+{
+  "execution": "English notebook executed locally with nbclient",
+  "source_notebook_sha256": "2524e10e95442d30c96e89e3b179694af34d236ae6ed454c5a3e54788ebc6e64",
+  "overrides": {
+    "RUN_LIVE": true,
+    "allow_live": true
+  },
+  "live_runs": 1,
+  "source_commit": "a93b35fc45724aaee349a37eaf3ac753dd43ae38",
+  "run_id": "20261017T011558Z-f5eca942",
+  "source_report_sha256": "3ef9e0a8bc0b75a13a0cb17b2578f34cc5be11518f37a2366d5d2c38f43a532e",
+  "published_report_sha256": "b866a3092addca4e20a6801af58576b629cd687d1e6fc7580d48585362b51df6",
+  "sanitization": [
+    "Replaced absolute evidence_dir with a case-relative path.",
+    "Published usage metadata without provider IDs, request bodies or headers.",
+    "Kept full raw request/response ledger only in ignored local runs."
+  ],
+  "evidence_origin": "One live English notebook execution; bilingual notebooks replay this same report.",
+  "budget_diagnosis": {
+    "binding_limit": "max_total_tokens",
+    "consumed_tokens": 83815,
+    "next_optimizer_reserve_tokens": 24329,
+    "projected_tokens": 108144,
+    "limit": 100000,
+    "method": "Reconstructed the blocked request from the previous candidate request in the same round, changing only candidate_index; no API request sent."
+  }
+}

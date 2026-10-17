@@ -104,10 +104,10 @@ judge evidence, selected/rejected candidates, usage and stop reason. The noteboo
 this sequence with YAML differences and decisions. Both languages can replay one report;
 replay does not call OpenAI. Never compare separate language executions as if they were one run.
 
-Execution and publication are pending. After the live run is reviewed, retain sanitized
-report/prompt evidence and notebook outputs in a dedicated results commit. Do not publish
-`.env`, raw credentials, local absolute paths or unreviewed request logs. Current notebooks
-contain no measured improvement or generated prompt versions.
+The [first live run](results/20261017T011558Z-f5eca942/README.md) is recorded with sanitized report,
+prompt versions, usage metadata and notebook outputs. No candidate was accepted; the token
+reservation guard stopped the search before final testing. Both notebooks replay this one run.
+`.env`, raw credentials, local absolute paths and full request logs remain outside Git.
 
 ## Local setup
 
@@ -123,8 +123,9 @@ cp -n .env.example .env
 Fill `OPENAI_API_KEY` in the local `.env` file. It is ignored by Git. In an editor with notebook
 support, choose the Thinking Harness kernel. Confirm model access, prices and limits in
 [config.yaml](config.yaml). Keep `allow_live: false` until execution is explicitly authorized;
-the notebook also requires `RUN_LIVE = True`. Run only one language version live, then paste
-its relative `runs/<run-id>/report.json` path into `REPLAY_REPORT` in the other notebook.
+the notebook also requires `RUN_LIVE = True`. The committed notebooks default to a published `REPLAY_REPORT`. Clear that path before a
+new live run. Run only one language version live, then paste its relative
+`runs/<run-id>/report.json` path into `REPLAY_REPORT` in the other notebook.
 A replay path and live mode cannot be enabled together.
 
 ## References

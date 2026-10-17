@@ -2,7 +2,7 @@
 translation_of: case-0003
 language: es
 source: README.md
-source_revision: 4
+source_revision: 5
 title: "Synthetic debt negotiation harness"
 status: in-review
 created: 2026-10-16
@@ -56,8 +56,8 @@ flowchart LR
    derivadas, evaluador, regla de selección y límites.
 2. Abrir la [notebook en español](prompt-search.es.ipynb) o la [notebook en inglés](prompt-search.ipynb).
    Ambas usan los mismos YAML, implementación y evidencia de ejecución.
-3. Seguir la [preparación local](modeling.es.md#preparación-local). La ejecución real permanece
-   desactivada hasta completar la clave y la configuración. Aún no se incluyen resultados reales.
+3. Seguir la [preparación local](modeling.es.md#preparación-local). Por defecto se muestra la [primera ejecución real](results/20261017T011558Z-f5eca942/README.es.md)
+   sin llamadas a la API. Una nueva ejecución con costo requiere activación explícita.
 
 El [objetivo](objective.md), [golden set](golden-set.yaml), [prompt inicial](prompt.yaml) y
 la [configuración](config.yaml) están en esta carpeta. El [runtime](prompt_search.py) conserva
@@ -68,4 +68,4 @@ Una extensión con herramientas podría extraer motivos de rechazo, seleccionar 
 y registrar aceptación. Requeriría un protocolo propio. La mejora automática del prompt con
 un optimizador fijo no constituye auto-mejora recursiva.
 
-La revisión 4 separa el caso de su modelo e incorpora notebooks bilingües y archivos YAML.
+La revisión 5 incorpora la primera ejecución medida: ningún candidato aceptado, parada por tokens y prueba final no alcanzada. Ambas notebooks muestran la misma evidencia.
