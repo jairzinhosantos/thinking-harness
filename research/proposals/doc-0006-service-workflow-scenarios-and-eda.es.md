@@ -2,16 +2,20 @@
 translation_of: doc-0006
 language: es
 source: doc-0006-service-workflow-scenarios-and-eda.md
-source_revision: 3
+source_revision: 4
 title: "Service workflow scenario matrix and EDA plan"
-status: draft
+status: superseded
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Matriz de escenarios y plan de EDA para el flujo de servicio
 
 [English](doc-0006-service-workflow-scenarios-and-eda.md) | Español
+
+**Referencia sustituida.** Se conservan su identidad y supuestos originales. El trabajo activo
+del caso de negocio continúa en [case-0003: negociación de deudas](case-0003-debt-negotiation/README.es.md).
+La matriz de escenarios de servicio no se aplica a negociación; no se implica implementación ni resultados.
 
 ## 1. Objetivo
 

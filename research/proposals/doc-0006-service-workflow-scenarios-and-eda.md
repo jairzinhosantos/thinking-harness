@@ -1,15 +1,19 @@
 ---
 id: doc-0006
 title: "Service workflow scenario matrix and EDA plan"
-status: draft
-revision: 3
+status: superseded
+revision: 4
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Service workflow scenario matrix and EDA plan
 
 English | [Español](doc-0006-service-workflow-scenarios-and-eda.es.md)
+
+**Superseded reference.** Retained with its original identity and assumptions. Active business-case
+work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.md).
+The scenario matrix below does not apply to negotiation; no implementation or results are implied.
 
 ## 1. Objective
 

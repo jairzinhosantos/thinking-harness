@@ -2,9 +2,9 @@
 id: std-0001
 title: "Naming and document lifecycle"
 status: accepted
-revision: 3
+revision: 4
 created: 2026-09-29
-updated: 2026-10-01
+updated: 2026-10-16
 ---
 
 # Naming and document lifecycle
@@ -36,6 +36,16 @@ records, bibliographic keys, and reading states remain shared.
 
 See the [translation workflow](std-0004-writing-and-diagrams.md#paper-review-translations).
 
+## Compact case-folder exception
+Case-0003 uses research/proposals/case-0003-debt-negotiation/README.md and README.es.md.
+The primary README retains id: case-0003; the immediate directory carries the same ID.
+Only a matching case ID directly under research/proposals/case-NNNN-description/ may use
+this exception. The translation uses source: README.md and no independent ID.
+The catalog points to the primary README. Future small fixtures and demo code may share
+that directory; no scripts or data are implied by creating the specification.
+See the [proposal index](../../research/proposals/README.md) for the scoped language rules.
+This change does not migrate other cases or adopt the separate STOP study-folder proposal.
+
 ## Revisions
 Keep paths stable during editing; Git records changes. A formal revision increments
 revision and produces an issued r001, r002, or subsequent delivery when appropriate.
@@ -58,6 +68,9 @@ Run `python3 scripts/check_repository.py --write-catalog` to generate docs/catal
 Do not use nested YAML structures in these fields. Quote titles containing a colon.
 
 ## Revision history
+Revision 4 adds the authorized case-0003 folder exception on 2026-10-16. Existing case paths
+remain stable; case-0002 is retained as a superseded reference.
+
 Revision 3 adds paired English and Spanish paper-review filenames and derived translation
 metadata on 2026-10-01; see [dec-0004](../decisions/dec-0004-bilingual-paper-reviews.md).
 
