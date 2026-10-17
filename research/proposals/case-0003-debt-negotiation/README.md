@@ -2,7 +2,7 @@
 id: case-0003
 title: "Synthetic debt negotiation harness"
 status: in-review
-revision: 1
+revision: 2
 created: 2026-10-16
 updated: 2026-10-16
 ---
@@ -143,21 +143,92 @@ negotiation and construction. It would compare a constructor running through `H0
 one running through `Ht`, with the same total budget. That component and protocol remain open.
 A negotiation loop alone therefore does not yet demonstrate RSI.
 
-## 6. Delivery and next steps
+## 6. First executable prototype
 
-Only this bilingual specification and diagrams exist in this folder. Next, refine the
-scenario schema and evaluator examples; then implement `scenarios.json` and `demo.py` here.
-The first demo would calculate features, run a fixed policy against a deterministic customer,
-and print decisions and evaluation. It would not rewrite code or call a model.
+Open [prompt-search.ipynb](prompt-search.ipynb) in Jupyter or a compatible editor with a
+Python 3.10+ kernel. The default Run All path is offline and requires no API key.
+The notebook explains the experiment; [prompt_search.py](prompt_search.py) holds the
+standard-library implementation so its evaluation and budget logic can be tested.
+[objective.md](objective.md) is the fixed task specification, loaded explicitly like a skill;
+[scenarios.json](scenarios.json) contains 18 synthetic next-turn fixtures.
 
-A deterministic baseline may already solve all four proposed profiles. These fixtures first
-check the measurement setup; they do not establish a useful optimization problem. Further
-scenario design must reveal a measurable limitation before testing improvement.
+The broader tool-backed conversation above remains a proposed extension. This prototype
+only optimizes the policy prompt. It evaluates the next reply on fixed local histories;
+it does not implement tools, a customer simulator, code rewriting, or recursive construction.
+The initial prompt is generated once from the objective and development examples. Comparing
+against this one-shot baseline isolates the additional contribution of iterative search.
 
-Later optimization requires a separate approved protocol, resource budget, and stop rule.
-Keep traces of rejected candidates and compare against the fixed baseline. A successful demo
-is a measurement instrument, not a completed self-improvement solution.
+```mermaid
+flowchart TD
+    O[Fixed objective and development examples] --> P[Generate initial prompt]
+    P --> V[Evaluate on validation histories]
+    V --> G{Target or stop limit reached?}
+    G -->|No| D[Evaluate development failures]
+    D --> C[Propose K prompt candidates]
+    C --> E[Evaluate candidates on validation]
+    E --> S[Keep best admissible prompt or incumbent]
+    S --> G
+    G -->|Yes| T[Freeze prompt and compare on reserved test set]
+    T --> R[Human review of results and evidence]
+```
 
-The compact layout is scoped to this case; PRs #26 and #27 remain separate proposals.
-The agent prepares work up to Review. Only Jairzinho decides PR integration, issue completion,
-Done, and Completed date. No automatic closure or merge is enabled.
+### Inputs and measurements
+
+The negotiator sees only the debt table, allowed payment counts, and conversation history.
+Expected decisions and reference replies remain evaluator-only; the optimizer can access
+development labels and failures, never validation or final-test details. The selected prompt
+is still influenced by validation scores. Each profile group stays in one partition, but
+these small fixtures share templates and intent families across partitions. They are not an
+independent benchmark or evidence of real-world effectiveness.
+
+Success requires the expected structured action/plan, no rule violation, and a positive fixed
+judge verdict for consistency, relevance, and clarity. Report the fraction of successful
+next-turn responses and violations separately. This is not agreement rate or recovered money.
+Exact reference wording is unnecessary. The fixed LLM judge checks meaning that numeric rules
+cannot establish; it is not calibrated yet and must be reviewed before scientific claims.
+Repetitions expose some variability; they do not establish statistical significance.
+
+### Search protocol and execution
+
+- Fixed: objective, runtime/schema, scenarios, model, optimizer instructions, evaluator rubric.
+- Mutable: negotiator prompt only. No generated Python is executed.
+- Selection: retain the incumbent unless a candidate has zero validation violations and
+  improves success by at least `min_gain`. Keep rejected candidates and failures.
+- Defaults: three rounds, two candidates per round, two evaluations per example, target 1.0,
+  patience two rounds, minimum gain 0.01. These are editable pilot settings.
+- Stop at target, rounds, patience, token/cost guard, interruption, or provider failure.
+- Freeze selection before final testing of both the one-shot baseline and selected prompt.
+  Final feedback never returns to the optimizer. A baseline already at target skips search.
+
+Live execution requires `RUN_LIVE = True`, an explicit model supporting Responses structured
+outputs, current input/output prices, and `OPENAI_API_KEY` in the environment. No key belongs
+in notebook cells. One model serves three separate roles and stays fixed within a run.
+The notebook shows an upper bound on call count before execution; rounds are not a dollar cost.
+
+The editable example limits are USD 1 and 100,000 tokens across all roles, including final
+testing. Each call reserves a conservative input-byte estimate plus framing allowance and
+maximum output before sending; returned usage replaces that reservation. Prices are supplied
+assumptions and cached input is charged at the full configured rate. This is a local estimated
+budget guard, not a provider-enforced billing cap. Provider failures with uncertain usage stop
+further calls, retain the reservation, and are not retried automatically. If budget runs out
+before final evaluation, the comparison remains explicitly incomplete.
+
+Each run writes ignored local `runs/<timestamp>-<id>/report.json` and `calls.jsonl`, recording
+source hashes, commit, settings, provider-reported models, replies, judge evidence, candidates,
+usage, and stop reason. Review traces before sharing. Re-running starts a separate charged run;
+keep committed notebooks free of outputs and credentials. The helper has no third-party
+runtime dependencies; the notebook frontend provides IPython display support.
+
+No live model evaluation or improvement is claimed by this implementation. Easy fixtures may
+be solved on the first attempt. Next review: inspect fixture coverage and judge calibration,
+then choose a live configuration and budget. The agent prepares work up to Review; only
+Jairzinho decides integration and completion. PRs #26 and #27 remain independent.
+
+### References
+
+- [OpenAI conversation state](https://developers.openai.com/api/docs/guides/conversation-state)
+- [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
+- [Automatic Prompt Optimization](https://arxiv.org/abs/2305.03495)
+- [STOP](https://arxiv.org/abs/2310.02304)
+
+Revision 2 adds the bounded prompt-search prototype and distinguishes it from the broader case.
