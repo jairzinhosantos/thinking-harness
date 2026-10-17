@@ -2,14 +2,14 @@
 id: case-0001
 title: "Code repair harness"
 status: draft
-revision: 5
+revision: 6
 created: 2026-10-02
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Code repair harness
 
-English | [Español](case-0001-code-repair-harness.es.md)
+English | [Español](README.es.md)
 
 [Scenario matrix and EDA plan](doc-0005-code-repair-scenarios-and-eda.md)
 
@@ -22,7 +22,7 @@ organizes context, model calls, tests, and retries. The research compares harnes
 
 Candidate case only: fictional examples, no implementation or results. Start with a small
 local Python package. Full-repository development, deployment, training, and recursive
-optimizer changes are outside the first pilot. Compare with [case-0003](case-0003-debt-negotiation/README.es.md).
+optimizer changes are outside the first pilot. Compare with [case-0003](../case-0003-debt-negotiation/README.es.md).
 
 ## 2. One possible design
 
@@ -193,8 +193,13 @@ Continue if there is a measurable problem and an affordable comparison. Revise o
 if the evaluator is unreliable, the baseline already solves the tasks, or gains depend on test leakage.
 
 Task families, model, search method, and budget remain open. Implementation and execution
-require a separate [protocol](../../templates/experiment-protocol.md). Future locations:
+require a separate [protocol](../../../templates/experiment-protocol.md). Future locations:
 `benchmarks/case-0001/` for tasks/evaluators, `data/` for provenance, `experiments/` for evidence.
 
-Method reference: [STOP](../literature/reviews/pap-0001-stop/README.md).
-Other directions: [research options](../synthesis/research-options.md).
+Method reference: [STOP](../../literature/reviews/pap-0001-stop/README.md).
+Other directions: [research options](../../synthesis/research-options.md).
+
+## Related proposal
+
+[Harness participation in self-improvement](doc-0007-harness-participation-proposal.md)
+is studied as a separate extension. It remains a draft and does not change this case's scope.

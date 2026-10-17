@@ -2,9 +2,9 @@
 id: doc-0007
 title: "Harness participation in self-improvement"
 status: draft
-revision: 1
+revision: 2
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Harness participation in self-improvement
@@ -12,7 +12,7 @@ updated: 2026-10-09
 English | [Español](doc-0007-harness-participation-proposal.es.md)
 
 **Separate proposal for review.** This document explores an extension of
-[case-0001](case-0001-code-repair-harness.md). It does not replace that case, select a thesis
+[case-0001](README.md). It does not replace that case, select a thesis
 method, or assign another case number. Examples are hypothetical; no code or experiment has run.
 
 ## 1. Proposed question
@@ -162,6 +162,6 @@ This is a bounded adaptation of the current-harness construction idea discussed 
 evaluation. The fixed-versus-updated constructor comparison and the invoice example are
 proposals for this project, not reported paper experiments or a reproduction.
 
-See the [partial review](../literature/reviews/pap-0011-self-harness.md) for paper/code
+See the [partial review](../../literature/reviews/pap-0011-self-harness.md) for paper/code
 version differences and evidence limits. Alignment with prior work does not establish novelty;
 the contribution still needs a measurable limitation and comparative evidence.

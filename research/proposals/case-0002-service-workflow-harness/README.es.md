@@ -1,8 +1,8 @@
 ---
 translation_of: case-0002
 language: es
-source: case-0002-service-workflow-harness.md
-source_revision: 4
+source: README.md
+source_revision: 5
 title: "Simulated service workflow harness"
 status: superseded
 created: 2026-10-02
@@ -11,12 +11,12 @@ updated: 2026-10-16
 
 # Harness de un flujo de servicio simulado
 
-[English](case-0002-service-workflow-harness.md) | Español
+[English](README.md) | Español
 
 [Matriz de escenarios y plan de EDA](doc-0006-service-workflow-scenarios-and-eda.es.md)
 
 **Referencia sustituida.** Se conservan su identidad y supuestos originales. El trabajo activo
-del caso de negocio continúa en [case-0003: negociación de deudas](case-0003-debt-negotiation/README.es.md).
+del caso de negocio continúa en [case-0003: negociación de deudas](../case-0003-debt-negotiation/README.es.md).
 La matriz de escenarios de servicio no se aplica a negociación; no se implica implementación ni resultados.
 
 ## 1. Pregunta y alcance
@@ -28,7 +28,7 @@ y decide si consulta el estado, reintenta o escala. Una cancelación exitosa es 
 de una tarea, no evidencia de mejora del harness.
 
 Caso candidato: registros sintéticos, sin pagos reales, datos privados, implementación
-ni resultados. Comparar con [corrección de código](case-0001-code-repair-harness.es.md).
+ni resultados. Comparar con [corrección de código](../case-0001-code-repair-harness/README.es.md).
 
 ## 2. Límites de la investigación
 
@@ -125,9 +125,9 @@ La cobertura sintética no representa la frecuencia de producción.
 
 Siguen pendientes los detalles de política, baseline, modelo y presupuesto. Puede bastar un simulador
 local; Compose es opcional y Azure/Kubernetes no son requisitos. Ejecutar requiere un
-[protocolo](../../templates/experiment-protocol.md) separado.
+[protocolo](../../../templates/experiment-protocol.md) separado.
 
 Ubicaciones futuras: `benchmarks/case-0002/` para escenarios/evaluadores, `data/` para procedencia,
 `experiments/` para evidencia y `environments/compose/` para servicios opcionales.
-Referencia de método: [Self-Harness](../literature/reviews/pap-0011-self-harness.es.md).
-Otras líneas: [opciones de investigación](../synthesis/research-options.md).
+Referencia de método: [Self-Harness](../../literature/reviews/pap-0011-self-harness.es.md).
+Otras líneas: [opciones de investigación](../../synthesis/research-options.md).

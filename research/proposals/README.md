@@ -1,70 +1,44 @@
 # Research proposals
 
-Case specifications define candidate problems, mutable harness components, fixed evaluation,
-and criteria to continue or discard a direction. They do not establish implemented systems
-or select the final thesis contribution. Cases 1-2 and their scenario plans retain English/Spanish pairs. Case-0003 uses one Spanish
-Markdown guide with bilingual notebooks and shared execution evidence. The draft extension
-below retains its paired reading versions.
+Each case folder contains its specification and related studies. The index distinguishes
+active candidates from superseded work; none defines the final thesis contribution.
 
-## Active candidates
-
-| Case | Focus | Reading |
+| Folder | Contents | Status |
 |---|---|---|
-| case-0001 | Code repair: feedback and bounded task-solving loops | [English](case-0001-code-repair-harness.md) / [Español](case-0001-code-repair-harness.es.md) |
-| case-0003 | Synthetic debt negotiation: offers, consent, and bounded prompt optimization | [Español](case-0003-debt-negotiation/README.es.md) |
+| [case-0001-code-repair-harness](case-0001-code-repair-harness/README.md) | Code-repair case, scenario plan and draft harness-participation proposal | Candidate; no executed experiment |
+| [case-0002-service-workflow-harness](case-0002-service-workflow-harness/README.md) | Service-workflow case and scenario plan | Superseded by case-0003 |
+| [case-0003-debt-negotiation](case-0003-debt-negotiation/README.es.md) | Case, model, YAML inputs, bilingual notebooks and recorded evidence | Synthetic pilot; final comparison incomplete |
 
-The code-repair [scenario plan](doc-0005-code-repair-scenarios-and-eda.md)
-([Español](doc-0005-code-repair-scenarios-and-eda.es.md)) remains a proposed feasibility
-study, not executed evidence. Its 36-run sample does not authorize negotiation experiments.
+## Code repair
 
-## Superseded service case
+[Case](case-0001-code-repair-harness/README.md)
+([Español](case-0001-code-repair-harness/README.es.md)) ·
+[Scenario plan](case-0001-code-repair-harness/doc-0005-code-repair-scenarios-and-eda.md)
+([Español](case-0001-code-repair-harness/doc-0005-code-repair-scenarios-and-eda.es.md)) ·
+[Harness-participation proposal](case-0001-code-repair-harness/doc-0007-harness-participation-proposal.md)
+([Español](case-0001-code-repair-harness/doc-0007-harness-participation-proposal.es.md))
 
-[case-0002](case-0002-service-workflow-harness.md)
-([Español](case-0002-service-workflow-harness.es.md)) and its
-[doc-0006 scenario plan](doc-0006-service-workflow-scenarios-and-eda.md)
-([Español](doc-0006-service-workflow-scenarios-and-eda.es.md)) remain readable with their
-original IDs. They describe cancellations and refunds, not negotiation. Their proposed
-42-run sample, evaluation rules, and complexity levels do not transfer to case-0003.
+The scenario plan proposes a 36-run feasibility study. The harness-participation proposal
+explores an extension of the case and remains a separate draft, with its original document ID.
+Neither document establishes implemented behavior or measured results.
 
-## Compact case folder
+## Service workflow
 
-Case-0003 keeps one [Spanish guide](case-0003-debt-negotiation/README.es.md) for its case,
-objective, modeling, setup and observed results. All Markdown in this case uses `.es.md`.
-The guide is the primary controlled document, id: case-0003, with language: es.
-It is not a translation of a separate English document.
+[Case](case-0002-service-workflow-harness/README.md)
+([Español](case-0002-service-workflow-harness/README.es.md)) ·
+[Scenario plan](case-0002-service-workflow-harness/doc-0006-service-workflow-scenarios-and-eda.md)
+([Español](case-0002-service-workflow-harness/doc-0006-service-workflow-scenarios-and-eda.es.md))
 
-```text
-case-0003-debt-negotiation/
-  README.es.md           # Case, objective, model, setup and results
-  golden-set.yaml        # Partitioned synthetic fixtures
-  prompt.yaml            # Mutable policy seed
-  config.yaml            # Model, budget and live opt-in
-  .env.example           # Local credential template
-  requirements.txt       # Notebook dependencies
-  prompt-search.ipynb    # English notebook
-  prompt-search.es.ipynb # Spanish notebook, same evidence
-  prompt_search.py       # Testable runtime and bounded search
-  results/               # Recorded report, YAML versions, usage and provenance
-```
+The superseded case describes cancellations and refunds. Its proposed 42-run sample and
+evaluation rules do not transfer to debt negotiation. Both documents retain their original IDs.
 
-The notebooks default to replaying the saved pilot without API calls. The runtime extracts
-only the marked objective section, excluding measured results. Future runs use protocol v3
-with the Spanish objective; the recorded v2 evidence is unchanged. Live calls require explicit
-opt-in, model access and a budget. No recursive improvement or completed final test is claimed.
+## Debt negotiation
 
-## Review boundaries
+[Spanish guide](case-0003-debt-negotiation/README.es.md) ·
+[English notebook](case-0003-debt-negotiation/prompt-search.ipynb) ·
+[Spanish notebook](case-0003-debt-negotiation/prompt-search.es.ipynb) ·
+[Spanish reading PDF](case-0003-debt-negotiation/prompt-search.es.pdf)
 
-Start with the case model and evaluator examples. A fixed-policy demonstration is distinct
-from an optimization experiment. Scientific execution requires a protocol, budget, and stop
-condition; no proposed sample count is execution approval.
-
-Agents stop at Review. Jairzinho decides integration and manually handles Done, issue
-completion, and Completed date. No status or closure automation is introduced.
-
-## Draft extension
-
-[Harness participation in self-improvement](doc-0007-harness-participation-proposal.md)
-([Español](doc-0007-harness-participation-proposal.es.md)) explores using the current harness
-to construct its next version, compared with a fixed constructor. It is a separate draft,
-not an additional case or a replacement for case-0001. Review whether to extend case-0001, replace
-it, or keep the proposal separate before changing existing case specifications and EDA plans.
+One guide contains the case, objective, model and results. YAML inputs, runtime and evidence
+remain together in its folder. Both notebooks present the same recorded pilot: no candidate
+was accepted and the final comparison was not completed.

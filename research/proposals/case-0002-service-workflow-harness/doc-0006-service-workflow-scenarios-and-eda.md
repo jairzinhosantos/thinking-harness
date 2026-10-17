@@ -2,7 +2,7 @@
 id: doc-0006
 title: "Service workflow scenario matrix and EDA plan"
 status: superseded
-revision: 4
+revision: 5
 created: 2026-10-09
 updated: 2026-10-16
 ---
@@ -12,15 +12,15 @@ updated: 2026-10-16
 English | [Español](doc-0006-service-workflow-scenarios-and-eda.es.md)
 
 **Superseded reference.** Retained with its original identity and assumptions. Active business-case
-work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.es.md).
+work continues in [case-0003: debt negotiation](../case-0003-debt-negotiation/README.es.md).
 The scenario matrix below does not apply to negotiation; no implementation or results are implied.
 
 ## 1. Objective
 
-For [case-0002](case-0002-service-workflow-harness.md), assess scenario coverage, recovery failures,
+For [case-0002](README.md), assess scenario coverage, recovery failures,
 and baseline cost through exploratory data analysis (EDA).
 **Planned only:** fictional references, no simulator, validated golden set, or results.
-EDA does not prove improvement or production economics. The [code case](doc-0005-code-repair-scenarios-and-eda.md) remains a separate alternative.
+EDA does not prove improvement or production economics. The [code case](../case-0001-code-repair-harness/doc-0005-code-repair-scenarios-and-eda.md) remains a separate alternative.
 
 ## 2. Policy and scenario matrix
 
@@ -130,7 +130,7 @@ flowchart TD
 ## 6. Review and execution gates
 
 1. **Approve scope and instrument:** select cohort/policy/faults; review state/message evaluation; pass L0; verify resets and event-based injection.
-2. **Approve execution:** an [exp-NNNN protocol](../../templates/experiment-protocol.md) must set model, monetary cap,
+2. **Approve execution:** an [exp-NNNN protocol](../../../templates/experiment-protocol.md) must set model, monetary cap,
    token/tool/time limits, sample/repetitions, reruns, and human review budget. This plan authorizes no simulator construction or calls.
 3. **Stop:** at the first cap; stop the batch for evaluator leakage, bad resets, or corrupted state. Keep partial traces.
 4. **Review EDA:** coverage, all outcomes with denominators, exclusions, fault traces, cost, uncertainty, and limitations;

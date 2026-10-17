@@ -2,11 +2,11 @@
 translation_of: doc-0007
 language: es
 source: doc-0007-harness-participation-proposal.md
-source_revision: 1
+source_revision: 2
 title: "Harness participation in self-improvement"
 status: draft
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Participación del harness en su propia mejora
@@ -14,7 +14,7 @@ updated: 2026-10-09
 [English](doc-0007-harness-participation-proposal.md) | Español
 
 **Propuesta separada para revisión.** Este documento explora una extensión del
-[case-0001](case-0001-code-repair-harness.es.md). No reemplaza ese caso, no selecciona un
+[case-0001](README.es.md). No reemplaza ese caso, no selecciona un
 método de tesis ni asigna otro número de caso. Los ejemplos son hipotéticos; no se ha ejecutado
 código ni experimentos.
 
@@ -172,7 +172,7 @@ Es una adaptación acotada de la idea de construcción mediante el harness actua
 externa. La comparación entre constructor fijo y actualizado y el ejemplo de facturación
 son propuestas de este proyecto, no experimentos reportados por el paper ni una reproducción.
 
-La [revisión parcial](../literature/reviews/pap-0011-self-harness.es.md) detalla diferencias
+La [revisión parcial](../../literature/reviews/pap-0011-self-harness.es.md) detalla diferencias
 entre versiones del paper y del código y límites de la evidencia. Alinearse con trabajos
 previos no establece novedad; la contribución aún requiere una limitación medible y evidencia
 comparativa.

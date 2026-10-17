@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 7
+revision: 8
 created: 2026-10-16
 updated: 2026-10-16
 ---
@@ -26,7 +26,7 @@ Puede terminar sin acuerdo. Todos los datos son sintéticos; no hay pagos ni dat
 
 **Pregunta de investigación:** ¿mejorar automáticamente el prompt produce mejores decisiones
 que generarlo una sola vez, con el mismo modelo y evaluador?
-El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness.es.md).
+El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness/README.es.md).
 
 ## Objetivo
 

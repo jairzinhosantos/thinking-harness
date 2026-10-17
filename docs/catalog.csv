@@ -1,7 +1,7 @@
 id,title,status,revision,created,updated,path
-case-0001,Code repair harness,draft,5,2026-10-02,2026-10-09,research/proposals/case-0001-code-repair-harness.md
-case-0002,Simulated service workflow harness,superseded,4,2026-10-02,2026-10-16,research/proposals/case-0002-service-workflow-harness.md
-case-0003,Negociación de deudas sintéticas,in-review,7,2026-10-16,2026-10-16,research/proposals/case-0003-debt-negotiation/README.es.md
+case-0001,Code repair harness,draft,6,2026-10-02,2026-10-16,research/proposals/case-0001-code-repair-harness/README.md
+case-0002,Simulated service workflow harness,superseded,5,2026-10-02,2026-10-16,research/proposals/case-0002-service-workflow-harness/README.md
+case-0003,Negociación de deudas sintéticas,in-review,8,2026-10-16,2026-10-16,research/proposals/case-0003-debt-negotiation/README.es.md
 dec-0001,Public research core and private extension,accepted,1,2026-09-29,2026-10-01,docs/decisions/dec-0001-public-research-core.md
 dec-0002,Branching and English-only project content,accepted,1,2026-09-30,2026-10-01,docs/decisions/dec-0002-branching-and-english-standard.md
 dec-0003,Project-author voice,accepted,1,2026-10-01,2026-10-01,docs/decisions/dec-0003-project-author-voice.md
@@ -11,9 +11,9 @@ doc-0001,Research charter,draft,1,2026-09-29,2026-10-01,docs/doc-0001-research-c
 doc-0002,Initial plan,draft,1,2026-09-29,2026-10-01,docs/doc-0002-initial-plan.md
 doc-0003,Agentic development strategy,draft,1,2026-09-29,2026-10-01,docs/designs/doc-0003-agentic-development-strategy.md
 doc-0004,Progress measurement and human review,draft,1,2026-09-29,2026-10-02,docs/designs/doc-0004-progress-and-hitl.md
-doc-0005,Code repair scenario matrix and EDA plan,draft,4,2026-10-09,2026-10-09,research/proposals/doc-0005-code-repair-scenarios-and-eda.md
-doc-0006,Service workflow scenario matrix and EDA plan,superseded,4,2026-10-09,2026-10-16,research/proposals/doc-0006-service-workflow-scenarios-and-eda.md
-doc-0007,Harness participation in self-improvement,draft,1,2026-10-09,2026-10-09,research/proposals/doc-0007-harness-participation-proposal.md
+doc-0005,Code repair scenario matrix and EDA plan,draft,5,2026-10-09,2026-10-16,research/proposals/case-0001-code-repair-harness/doc-0005-code-repair-scenarios-and-eda.md
+doc-0006,Service workflow scenario matrix and EDA plan,superseded,5,2026-10-09,2026-10-16,research/proposals/case-0002-service-workflow-harness/doc-0006-service-workflow-scenarios-and-eda.md
+doc-0007,Harness participation in self-improvement,draft,2,2026-10-09,2026-10-16,research/proposals/case-0001-code-repair-harness/doc-0007-harness-participation-proposal.md
 pap-0001,"STOP: mechanism, code trace, and evaluation",in-review,4,2026-09-29,2026-10-10,research/literature/reviews/pap-0001-stop/README.md
 pap-0011,"Self-Harness: mechanism, code trace, and evaluation",in-review,1,2026-10-01,2026-10-01,research/literature/reviews/pap-0011-self-harness.md
 std-0001,Naming and document lifecycle,in-review,6,2026-09-29,2026-10-16,docs/standards/std-0001-naming-and-lifecycle.md
