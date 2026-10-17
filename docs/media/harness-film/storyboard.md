@@ -4,6 +4,13 @@ A 45-second conceptual sequence about assembling an agent harness, evaluating ch
 and using the selected harness to help construct its successor. Designed for silent
 viewing, with English text and restrained motion.
 
+[Watch the video](thinking-harness.mp4) · [Review gallery](index.html) ·
+[Editable animation](film.html)
+
+The video is 1920 × 1080 at 24 frames per second, encoded as H.264 MP4 without audio.
+Individual components move during assembly and replacement. The selected successor takes
+the construction role only after the illustrated external evaluation.
+
 ## Scope
 
 The film illustrates a research direction. It does not report measured improvement.
@@ -20,13 +27,14 @@ Acceptance requires evidence against the same criteria; a new version is not aut
 
 | Time | Action | On-screen text |
 |---|---|---|
-| 00:00–00:05 | A model core appears on a dark surface. Four separated components enter slowly. | Thinking Harness |
-| 00:05–00:12 | Policy, context, tools and control align around the core. Thin connections form as the parts settle into `H₀`. | A system around the model. |
-| 00:12–00:20 | One component lifts out. Three replacement configurations appear beside the original assembly. Changed parts receive a restrained amber edge. | Propose. |
-| 00:20–00:27 | Each candidate passes through the same evaluator. Two are rejected and fade; the retained candidate becomes `H₁`. This selection is illustrative. | Evaluate. Retain. |
-| 00:27–00:32 | The view follows `H₁`. Its construction process becomes visible as a thin path toward an empty assembly surface. | Improve how the next system is built. |
-| 00:32–00:40 | `H₁`, using the fixed model, helps assemble `H₂`. The candidate goes to the external evaluator. Only if accepted does `H₂` take the constructor position for a subsequent version. | Construct. Evaluate. Repeat. |
-| 00:40–00:45 | Motion settles. The two assemblies remain faintly visible behind the project name and research question. | Thinking Harness / Can a harness improve how it improves? |
+| 00:00–00:02 | The model core and assembly surface appear. | A system around the model. |
+| 00:02–00:11 | Policy, context, tools and control descend independently and settle into `H₀`. | Assemble the harness. |
+| 00:11–00:15 | The policy component lifts out while the other parts remain in place. | Lift one component. Keep the rest fixed. |
+| 00:15–00:19 | Three candidate configurations receive visibly different policy components. | Propose. Evaluate. Retain. |
+| 00:19–00:27 | Each candidate enters the same evaluator. Two fade after rejection; the retained configuration becomes `H₁`. This selection is illustrative. | Retain the qualifying configuration. |
+| 00:27–00:34 | `H₁` participates in assembling `H₂`. The policy is retained and the control component is revised. | Improve how the next system is built. |
+| 00:34–00:40 | `H₂` goes to the fixed external evaluator. After illustrative acceptance, it takes the constructor position and begins the next candidate, `H₃`. | The accepted version takes the construction role. |
+| 00:40–00:45 | Motion settles into the project name and research question. | Thinking Harness / Can a harness improve how it improves? |
 
 The distinction is visible in the final transition: ordinary improvement changes the
 task-solving configuration; the recursive direction lets an accepted configuration
@@ -72,4 +80,6 @@ mutable system. The dashed return path denotes conditional promotion into the co
 The three frames share a 1920 × 1080 canvas. Their authoritative source is
 [storyboard.py](storyboard.py), which generates editable SVGs and the
 [review gallery](index.html). The [renderer](render_storyboard.cjs) produces matching PNGs.
+The animation source is [film.js](film.js), with deterministic time-based component motion.
+[render_film.cjs](render_film.cjs) exports the MP4 and [poster](poster.png) from that source.
 These are motion-design assets rather than repository architecture diagrams.

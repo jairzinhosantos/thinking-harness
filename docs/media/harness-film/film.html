@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thinking Harness | Research film</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b1118; color: #edf3f5; font-family: Arial, sans-serif; }
+  canvas { display: block; width: 100%; height: auto; }
+  nav { display: flex; gap: 20px; align-items: center; padding: 24px 4%; }
+  button { background: #173039; color: #c6f0ec; border: 1px solid #537e81; padding: 10px 22px; cursor: pointer; }
+  input { flex: 1; accent-color: #85d6d1; }
+  output { font: 14px monospace; min-width: 100px; }
+  @media (prefers-reduced-motion: reduce) { canvas { scroll-behavior: auto; } }
+</style>
+<canvas id="film" width="1920" height="1080" aria-label="Conceptual harness assembly, candidate evaluation and recursive construction"></canvas>
+<nav aria-label="Film playback">
+  <button id="play">Play</button>
+  <input id="timeline" aria-label="Time in seconds" type="range" min="0" max="45" step="0.01" value="0">
+  <output id="time">00:00 / 00:45</output>
+</nav>
+<script src="film.js"></script>
+</html>
