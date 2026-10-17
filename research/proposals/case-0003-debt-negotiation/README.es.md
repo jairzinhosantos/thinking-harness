@@ -2,7 +2,7 @@
 translation_of: case-0003
 language: es
 source: README.md
-source_revision: 1
+source_revision: 2
 title: "Synthetic debt negotiation harness"
 status: in-review
 created: 2026-10-16
@@ -152,23 +152,93 @@ que opera mediante `H0` con otro que opera mediante `Ht`, con el mismo presupues
 Ese componente y el protocolo siguen abiertos. Un ciclo de negociación, por tanto, todavía
 no demuestra RSI.
 
-## 6. Entrega y siguientes pasos
+## 6. Primer prototipo ejecutable
 
-En esta carpeta solo existen la especificación bilingüe y los diagramas. El siguiente paso
-es precisar el esquema de escenarios y los ejemplos del evaluador; después se implementarían
-`scenarios.json` y `demo.py` aquí mismo. La primera demostración calcularía características,
-ejecutaría una política fija contra un cliente determinista e imprimiría decisiones y evaluación.
-No reescribiría código ni llamaría a un modelo.
+Abrir [prompt-search.ipynb](prompt-search.ipynb) en Jupyter o un editor compatible con un
+kernel Python 3.10+. La ejecución completa predeterminada es local y no requiere API key.
+La notebook explica el experimento; [prompt_search.py](prompt_search.py) contiene la
+implementación con biblioteca estándar para probar la evaluación y el control de presupuesto.
+[objective.md](objective.md) es la especificación fija, cargada explícitamente como un skill;
+[scenarios.json](scenarios.json) contiene 18 ejemplos sintéticos de la siguiente respuesta.
 
-Una referencia determinista podría resolver ya los cuatro perfiles propuestos. Estos casos
-comprueban primero la medición; no establecen un problema útil de optimización. El diseño
-posterior de escenarios debe revelar una limitación medible antes de probar mejoras.
+La conversación con herramientas descrita arriba sigue siendo una extensión propuesta. Este
+prototipo solo optimiza el prompt de la política. Evalúa la siguiente respuesta sobre historiales
+locales fijos; no implementa herramientas, simulador de cliente, reescritura de código ni construcción
+recursiva. El prompt inicial se genera una vez con el objetivo y los ejemplos de desarrollo.
+La comparación con esa referencia permite distinguir el aporte adicional de la búsqueda iterativa.
 
-La optimización posterior requiere un protocolo aprobado separado, presupuesto y regla de
-parada. Se conservarán las trazas de candidatos rechazados y se comparará con la referencia
-fija. Una demostración que funciona es un instrumento de medición, no una solución completa
-de auto-mejora.
+```mermaid
+flowchart TD
+    O[Objetivo fijo y ejemplos de desarrollo] --> P[Generar prompt inicial]
+    P --> V[Evaluar en historiales de validación]
+    V --> G{¿Se alcanzó la meta o un límite?}
+    G -->|No| D[Evaluar errores de desarrollo]
+    D --> C[Proponer K prompts candidatos]
+    C --> E[Evaluar candidatos en validación]
+    E --> S[Conservar el mejor admisible o el vigente]
+    S --> G
+    G -->|Sí| T[Fijar prompt y comparar en prueba reservada]
+    T --> R[Revisión humana de resultados y evidencia]
+```
 
-La estructura compacta se limita a este caso; los PRs #26 y #27 siguen siendo propuestas
-separadas. El agente prepara el trabajo hasta Review. Solo Jairzinho decide integración de
-PRs, cierre de issues, Done y Completed date. No se habilitan cierres ni merges automáticos.
+### Entradas y mediciones
+
+El negociador solo recibe las deudas, las cantidades de pagos permitidas y el historial.
+Las decisiones esperadas y respuestas de referencia son exclusivas del evaluador; el optimizador
+puede acceder a etiquetas y errores de desarrollo, nunca a detalles de validación o prueba final.
+La selección del prompt sí depende de los resultados de validación. Cada grupo de perfiles queda
+en una partición, pero estos ejemplos pequeños comparten plantillas y familias de intención entre
+particiones. No constituyen un benchmark independiente ni evidencia de efectividad real.
+
+El éxito requiere la acción y el plan estructurados esperados, ausencia de infracciones y un
+veredicto positivo del juez fijo sobre consistencia, pertinencia y claridad. Se reportan por
+separado la proporción de respuestas correctas y las infracciones. No es tasa de acuerdos ni dinero
+recuperado. No se exige la redacción literal de referencia. El juez LLM comprueba aspectos semánticos
+que las reglas numéricas no pueden establecer; todavía no está calibrado y requiere revisión antes
+de formular conclusiones científicas. Las repeticiones exponen parte de la variabilidad, pero no
+establecen significancia estadística.
+
+### Protocolo de búsqueda y ejecución
+
+- Fijos: objetivo, runtime/esquema, ejemplos, modelo, instrucciones del optimizador y rúbrica.
+- Mutable: únicamente el prompt del negociador. No se ejecuta Python generado.
+- Selección: conservar el vigente salvo que un candidato no presente infracciones en validación
+  y mejore la proporción de éxito en al menos `min_gain`. Conservar candidatos rechazados y fallos.
+- Valores iniciales: tres rondas, dos candidatos por ronda, dos evaluaciones por ejemplo, meta 1.0,
+  paciencia de dos rondas y mejora mínima 0.01. Son parámetros editables del piloto.
+- Parada por meta, rondas, paciencia, límites de tokens/costo, interrupción o fallo del proveedor.
+- Fijar la selección antes de evaluar la referencia inicial y el prompt elegido en la prueba
+  reservada. Su feedback no vuelve al optimizador. Si la referencia ya cumple, se omite la búsqueda.
+
+La ejecución real requiere `RUN_LIVE = True`, un modelo explícito compatible con salidas
+estructuradas de Responses, tarifas actuales y `OPENAI_API_KEY` en el entorno. La clave no debe
+estar en celdas. Un modelo cumple tres roles separados y se mantiene fijo durante la ejecución.
+La notebook muestra un límite superior de llamadas antes de ejecutar; rondas no equivale a costo.
+
+Los límites de ejemplo editables son USD 1 y 100,000 tokens para todos los roles, incluida la prueba
+final. Antes de cada llamada se reserva una estimación conservadora de bytes de entrada, un margen
+de formato y el máximo de salida; el uso reportado reemplaza la reserva. Las tarifas son supuestos
+configurados y la entrada en caché se contabiliza a tarifa completa. Es un control local estimado,
+no un límite de facturación impuesto por el proveedor. Los fallos con consumo incierto detienen
+llamadas posteriores, conservan la reserva y no se reintentan automáticamente. Si se agota el
+presupuesto antes de terminar la prueba final, la comparación queda explícitamente incompleta.
+
+Cada ejecución escribe `runs/<timestamp>-<id>/report.json` y `calls.jsonl` localmente, excluidos de
+Git, con hashes, commit, configuración, modelos reportados por el proveedor, respuestas, evidencia
+del juez, candidatos, consumo y motivo de parada. Revisar las trazas antes de compartirlas. Volver
+a ejecutar crea una nueva ejecución con costo; mantener las notebooks versionadas sin salidas ni
+credenciales. El módulo no requiere dependencias externas; el editor de notebooks aporta IPython.
+
+Esta implementación no declara una evaluación real de modelos ni mejoras observadas. Los ejemplos
+sencillos podrían resolverse al primer intento. Siguiente revisión: cobertura y calibración del juez;
+después, elegir configuración y presupuesto para una ejecución real. El agente llega hasta Review;
+solo Jairzinho decide integración y cierre. Los PRs #26 y #27 siguen siendo independientes.
+
+### Referencias
+
+- [Historial en OpenAI](https://developers.openai.com/api/docs/guides/conversation-state)
+- [Salidas estructuradas en OpenAI](https://developers.openai.com/api/docs/guides/structured-outputs)
+- [Automatic Prompt Optimization](https://arxiv.org/abs/2305.03495)
+- [STOP](https://arxiv.org/abs/2310.02304)
+
+La revisión 2 incorpora el prototipo de búsqueda limitada de prompts y lo distingue del caso amplio.
