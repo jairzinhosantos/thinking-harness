@@ -2,7 +2,7 @@
 id: std-0001
 title: "Naming and document lifecycle"
 status: in-review
-revision: 5
+revision: 6
 created: 2026-09-29
 updated: 2026-10-16
 ---
@@ -37,14 +37,17 @@ records, bibliographic keys, and reading states remain shared.
 See the [translation workflow](std-0004-writing-and-diagrams.md#paper-review-translations).
 
 ## Compact case-folder exception
-Case-0003 uses research/proposals/case-0003-debt-negotiation/README.md and README.es.md.
-The primary README retains id: case-0003; the immediate directory carries the same ID.
-Only a matching case ID directly under research/proposals/case-NNNN-description/ may use
-this exception. The translation uses source: README.md and no independent ID.
-The catalog points to the primary README. Future small fixtures and demo code may share
-that directory; no scripts or data are implied by creating the specification.
+Case-0003 uses one Spanish primary file:
+research/proposals/case-0003-debt-negotiation/README.es.md. It retains id: case-0003,
+language: es and its revision sequence. Its title and prose are Spanish; metadata keys and
+status values stay English. The catalog points to this file, not a separate English README.
+Case, objective, modeling, setup and result explanation share this guide. Markdown files
+within this case use `.es.md`; its notebooks remain bilingual and share execution evidence.
+
+The Spanish primary exception is limited to this exact case folder. Other matching case
+READMEs directly under research/proposals/case-NNNN-description/ may retain the established
+README.md layout. This does not migrate other cases or paper reviews.
 See the [proposal index](../../research/proposals/README.md) for the scoped language rules.
-This case exception does not migrate other cases. STOP uses the separate study-folder pilot below.
 
 ## STOP study-folder pilot
 STOP uses `research/literature/reviews/pap-0001-stop/README.md` and `README.es.md` as a
@@ -81,6 +84,9 @@ Run `python3 scripts/check_repository.py --write-catalog` to generate docs/catal
 Do not use nested YAML structures in these fields. Quote titles containing a colon.
 
 ## Revision history
+Revision 6 consolidates case-0003 into a Spanish primary README.es.md on 2026-10-16.
+Its notebooks remain bilingual and historical evidence retains its original protocol.
+
 Revision 5 adds the STOP-only study-folder pilot on 2026-10-16 while preserving the accepted
 case-folder exception from revision 4. Generalizing the study layout remains pending review.
 

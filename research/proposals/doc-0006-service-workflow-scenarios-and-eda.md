@@ -12,7 +12,7 @@ updated: 2026-10-16
 English | [Español](doc-0006-service-workflow-scenarios-and-eda.es.md)
 
 **Superseded reference.** Retained with its original identity and assumptions. Active business-case
-work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.md).
+work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.es.md).
 The scenario matrix below does not apply to negotiation; no implementation or results are implied.
 
 ## 1. Objective

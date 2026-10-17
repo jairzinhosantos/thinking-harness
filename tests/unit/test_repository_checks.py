@@ -155,5 +155,20 @@ class RepositoryChecksTests(unittest.TestCase):
         self.assertTrue(any('duplicate id' in error for error in errors))
 
 
+    def test_spanish_primary_case_is_scoped_to_case_three(self):
+        path=self.case_readme('research/proposals/case-0003-debt-negotiation')
+        path.write_text(path.read_text().replace('id: case-0003', 'id: case-0003\nlanguage: es'))
+        spanish=path.with_name('README.es.md')
+        path.rename(spanish)
+        rows,errors=checks.controlled_documents(self.root)
+        self.assertEqual(errors,[])
+        self.assertEqual(rows[0]['path'],'research/proposals/case-0003-debt-negotiation/README.es.md')
+        spanish.write_text(spanish.read_text().replace('language: es','language: en'))
+        self.assertTrue(checks.controlled_documents(self.root)[1])
+        spanish.unlink()
+        other=self.case_readme('research/proposals/case-0004-example','case-0004')
+        other.rename(other.with_name('README.es.md'))
+        self.assertTrue(checks.controlled_documents(self.root)[1])
+
 if __name__ == '__main__':
     unittest.main()
