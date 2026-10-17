@@ -1,17 +1,17 @@
 ---
 translation_of: case-0001
 language: es
-source: case-0001-code-repair-harness.md
-source_revision: 5
+source: README.md
+source_revision: 6
 title: "Code repair harness"
 status: draft
 created: 2026-10-02
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Harness de corrección de código
 
-[English](case-0001-code-repair-harness.md) | Español
+[English](README.md) | Español
 
 [Matriz de escenarios y plan de EDA](doc-0005-code-repair-scenarios-and-eda.es.md)
 
@@ -25,7 +25,7 @@ compara harnesses sobre varias tareas.
 
 Caso candidato: ejemplos ficticios, sin implementación ni resultados. Empezar con un paquete
 Python pequeño y local. El desarrollo de repositorios completos, despliegue, entrenamiento y
-cambios recursivos del optimizador quedan fuera del primer piloto. Comparar con [case-0003](case-0003-debt-negotiation/README.es.md).
+cambios recursivos del optimizador quedan fuera del primer piloto. Comparar con [case-0003](../case-0003-debt-negotiation/README.es.md).
 
 ## 2. Un diseño posible
 
@@ -196,8 +196,13 @@ Continuar si hay un problema medible y una comparación viable. Ajustar o descar
 es poco fiable, el baseline ya resuelve las tareas o las mejoras dependen de filtraciones de pruebas.
 
 Siguen pendientes las familias de tareas, modelo, método de búsqueda y presupuesto. Implementar y
-ejecutar requiere un [protocolo](../../templates/experiment-protocol.md) separado. Ubicaciones futuras:
+ejecutar requiere un [protocolo](../../../templates/experiment-protocol.md) separado. Ubicaciones futuras:
 `benchmarks/case-0001/` para tareas/evaluadores, `data/` para procedencia, `experiments/` para evidencia.
 
-Referencia de método: [STOP](../literature/reviews/pap-0001-stop/README.es.md).
-Otras líneas: [opciones de investigación](../synthesis/research-options.md).
+Referencia de método: [STOP](../../literature/reviews/pap-0001-stop/README.es.md).
+Otras líneas: [opciones de investigación](../../synthesis/research-options.md).
+
+## Propuesta relacionada
+
+La [participación del harness en su propia mejora](doc-0007-harness-participation-proposal.es.md)
+se estudia como una extensión separada. Sigue en borrador y no modifica el alcance de este caso.

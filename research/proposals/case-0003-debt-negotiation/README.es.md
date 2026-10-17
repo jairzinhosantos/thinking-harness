@@ -3,14 +3,14 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 6
+revision: 8
 created: 2026-10-16
 updated: 2026-10-16
 ---
 
 # Negociación de deudas sintéticas
 
-[Notebook en español](prompt-search.es.ipynb) · [Notebook en inglés](prompt-search.ipynb)
+[Notebook en español](prompt-search.es.ipynb) · [Notebook en inglés](prompt-search.ipynb) · [PDF de lectura](prompt-search.es.pdf)
 
 ## Caso
 
@@ -26,7 +26,7 @@ Puede terminar sin acuerdo. Todos los datos son sintéticos; no hay pagos ni dat
 
 **Pregunta de investigación:** ¿mejorar automáticamente el prompt produce mejores decisiones
 que generarlo una sola vez, con el mismo modelo y evaluador?
-El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness.es.md).
+El caso sigue en estudio junto con [reparación de código](../case-0001-code-repair-harness/README.es.md).
 
 ## Objetivo
 
@@ -78,7 +78,7 @@ Estas son características derivadas; definir entradas, salidas y reglas es mode
 No se entrenan pesos ni se realiza un EDA convencional.
 
 ```mermaid
-flowchart LR
+flowchart TD
     I[Deudas e historial] --> H[Runtime y prompt YAML]
     H --> L[LLM fijo]
     L --> R[Respuesta estructurada]
@@ -115,8 +115,9 @@ flowchart TD
     E --> F[Proponer candidatos YAML]
     F --> G[Evaluar y conservar el mejor admisible]
     G --> D
-    D -->|Sí, con presupuesto| T[Fijar versión y evaluar prueba final]
-    D -->|Sin presupuesto| X[Registrar comparación incompleta]
+    D -->|Meta o límite de rondas| T[Fijar versión y evaluar prueba final]
+    D -->|Presupuesto agotado| X[Comparación incompleta]
+    T -->|Presupuesto insuficiente| X
 ```
 
 `p000` es una semilla didáctica; `p001` es el baseline experimental. Todas las propuestas,
@@ -132,35 +133,11 @@ Los ejemplos comparten plantillas entre particiones, aunque no repiten historial
 El juez no está calibrado. Es un piloto sintético, no un benchmark independiente ni evidencia
 de efectividad real; dos repeticiones no establecen significancia estadística.
 
-## Ejecución
-
-Desde esta carpeta, con Python 3.11+:
-
-```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-cp -n .env.example .env
-.venv/bin/python -m ipykernel install --user --name thinking-harness --display-name "Thinking Harness"
-```
-
-Completar `OPENAI_API_KEY` en `.env`, excluido de Git, y elegir el kernel Thinking Harness.
-Por defecto, ambas notebooks **muestran la ejecución guardada sin llamar a OpenAI**.
-Para otra prueba autorizada: revisar precios y límites, vaciar `REPLAY_REPORT`, activar
-`allow_live` en la configuración y establecer `RUN_LIVE = True`. Ejecutar un solo idioma;
-el otro puede mostrar el mismo reporte mediante `REPLAY_REPORT`.
-
-El [runtime](prompt_search.py) lee únicamente el bloque marcado de **Objetivo**, nunca esta
-sección de resultados. Nuevas ejecuciones usan el protocolo `v3`, con objetivo en español.
-La prueba registrada usó `v2` y el objetivo en inglés del commit `a93b35f`. Sus métricas no se
-atribuyen a esta revisión del objetivo. No se ejecutó otra prueba al reorganizar los documentos.
-
-Las nuevas trazas quedan en `runs/`, excluido de Git. El costo calculado usa los precios
-configurados, sin descontar caché; es una estimación, no un límite de facturación del proveedor.
-Antes de publicar resultados se revisan credenciales, rutas privadas y registros de solicitudes.
-
 ## Resultados registrados
 
-Una ejecución real el 16 de octubre de 2026 (America/Lima; ID en UTC) produjo estas versiones:
+Una ejecución real el 16 de octubre de 2026 (America/Lima; ID en UTC) produjo estas versiones.
+Usó el protocolo `v2`, con el objetivo original en inglés del commit `a93b35f`.
+El objetivo actual está en español (`v3`); sus resultados todavía no se han medido.
 
 | Versión | Etapa | Éxitos en validación | Respuestas con incumplimientos |
 |---|---|---:|---:|
@@ -176,8 +153,8 @@ habría superado el límite de 100 000. Se detuvo antes de completar la ronda do
 a la prueba final. El mayor puntaje observado no demuestra una mejora aceptada ni generalización.
 
 El baseline eligió una deuda menor cuando existía otra mayor viable y, en otro ejemplo,
-ofreció una cuota de 100 con capacidad de 70. Antes de otra prueba corresponde revisar los
-fallos, calibrar el juez y reservar presupuesto para la comparación final.
+ofreció una cuota de 100 con capacidad de 70. Estos fallos limitan la interpretación del
+puntaje agregado.
 
 Evidencia: [reporte](results/20261017T011558Z-f5eca942/report.json),
 [consumo](results/20261017T011558Z-f5eca942/usage.jsonl),

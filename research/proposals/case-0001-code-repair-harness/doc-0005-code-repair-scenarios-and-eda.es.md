@@ -2,11 +2,11 @@
 translation_of: doc-0005
 language: es
 source: doc-0005-code-repair-scenarios-and-eda.md
-source_revision: 4
+source_revision: 5
 title: "Code repair scenario matrix and EDA plan"
 status: draft
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-16
 ---
 
 # Matriz de escenarios y plan de EDA para corrección de código
@@ -15,12 +15,12 @@ updated: 2026-10-09
 
 ## 1. Objetivo
 
-Para [case-0001](case-0001-code-repair-harness.es.md), identificar tareas válidas, fallos del baseline
+Para [case-0001](README.es.md), identificar tareas válidas, fallos del baseline
 y una intervención viable mediante análisis exploratorio de datos (EDA).
 **Solo planificado:** sin código, ejecuciones, golden set validado ni resultados. El EDA evalúa viabilidad;
-no demuestra causalidad, mejora o beneficio económico. Analizar el [caso de servicios](doc-0006-service-workflow-scenarios-and-eda.es.md) por separado.
+no demuestra causalidad, mejora o beneficio económico. Analizar el [caso de servicios](../case-0002-service-workflow-harness/doc-0006-service-workflow-scenarios-and-eda.es.md) por separado.
 
-El [diseño ilustrativo](case-0001-code-repair-harness.es.md#2-un-diseño-posible) separa corregir
+El [diseño ilustrativo](README.es.md#2-un-diseño-posible) separa corregir
 código de tarea de proponer cambios al harness. El piloto de 36 ejecuciones evalúa solo un
 harness fijo; buscar cambios mediante un optimizador requiere otro protocolo y presupuesto.
 Siguen abiertos el método y su ventaja frente a un bucle simple de edición/evaluación con LLM.
@@ -123,7 +123,7 @@ flowchart TD
 ## 6. Revisión y condiciones de ejecución
 
 1. **Aprobar alcance e instrumento:** seleccionar cohorte, revisar requisitos/referencias/particiones, pasar L0 y verificar reinicios.
-2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../templates/experiment-protocol.md) debe fijar modelo, muestra,
+2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../../templates/experiment-protocol.md) debe fijar modelo, muestra,
    tope monetario, tokens/tiempo por ejecución, reintentos/repeticiones y revisión humana. Este plan no autoriza implementación ni gasto.
 3. **Detener:** al primer límite aplicable; detener el lote si falla la integridad del evaluador o el reinicio. Conservar evidencia parcial.
 4. **Revisar EDA:** cobertura, todos los estados, exclusiones, métricas con denominadores, fallos, costo y limitaciones;

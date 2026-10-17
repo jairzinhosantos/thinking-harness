@@ -2,19 +2,19 @@
 id: case-0002
 title: "Simulated service workflow harness"
 status: superseded
-revision: 4
+revision: 5
 created: 2026-10-02
 updated: 2026-10-16
 ---
 
 # Simulated service workflow harness
 
-English | [Español](case-0002-service-workflow-harness.es.md)
+English | [Español](README.es.md)
 
 [Scenario matrix and EDA plan](doc-0006-service-workflow-scenarios-and-eda.md)
 
 **Superseded reference.** Retained with its original identity and assumptions. Active business-case
-work continues in [case-0003: debt negotiation](case-0003-debt-negotiation/README.es.md).
+work continues in [case-0003: debt negotiation](../case-0003-debt-negotiation/README.es.md).
 The scenario matrix below does not apply to negotiation; no implementation or results are implied.
 
 ## 1. Question and scope
@@ -26,7 +26,7 @@ and chooses whether to inspect status, retry, or escalate. One successful cancel
 is a task result, not evidence of harness improvement.
 
 Candidate case only: synthetic records, no real payments, private data, implementation,
-or results. Compare with [code repair](case-0001-code-repair-harness.md).
+or results. Compare with [code repair](../case-0001-code-repair-harness/README.md).
 
 ## 2. Research boundary
 
@@ -121,9 +121,9 @@ changes to backend protections explain apparent gains. Synthetic coverage is not
 
 Policy details, baseline, model, and budget remain open. A local simulator may suffice;
 Compose is optional, and Azure/Kubernetes are not prerequisites. Execution requires a
-separate [protocol](../../templates/experiment-protocol.md).
+separate [protocol](../../../templates/experiment-protocol.md).
 
 Future locations: `benchmarks/case-0002/` for scenarios/evaluators, `data/` for provenance,
 `experiments/` for evidence, and `environments/compose/` for optional services.
-Method reference: [Self-Harness](../literature/reviews/pap-0011-self-harness.md).
-Other directions: [research options](../synthesis/research-options.md).
+Method reference: [Self-Harness](../../literature/reviews/pap-0011-self-harness.md).
+Other directions: [research options](../../synthesis/research-options.md).

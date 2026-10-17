@@ -2,7 +2,7 @@
 translation_of: doc-0006
 language: es
 source: doc-0006-service-workflow-scenarios-and-eda.md
-source_revision: 4
+source_revision: 5
 title: "Service workflow scenario matrix and EDA plan"
 status: superseded
 created: 2026-10-09
@@ -14,15 +14,15 @@ updated: 2026-10-16
 [English](doc-0006-service-workflow-scenarios-and-eda.md) | Español
 
 **Referencia sustituida.** Se conservan su identidad y supuestos originales. El trabajo activo
-del caso de negocio continúa en [case-0003: negociación de deudas](case-0003-debt-negotiation/README.es.md).
+del caso de negocio continúa en [case-0003: negociación de deudas](../case-0003-debt-negotiation/README.es.md).
 La matriz de escenarios de servicio no se aplica a negociación; no se implica implementación ni resultados.
 
 ## 1. Objetivo
 
-Para [case-0002](case-0002-service-workflow-harness.es.md), evaluar cobertura, fallos de recuperación
+Para [case-0002](README.es.md), evaluar cobertura, fallos de recuperación
 y costo del baseline mediante análisis exploratorio de datos (EDA).
 **Solo planificado:** referencias ficticias, sin simulador, golden set validado ni resultados.
-El EDA no demuestra mejora ni rentabilidad en producción. El [caso de código](doc-0005-code-repair-scenarios-and-eda.es.md) sigue siendo una alternativa separada.
+El EDA no demuestra mejora ni rentabilidad en producción. El [caso de código](../case-0001-code-repair-harness/doc-0005-code-repair-scenarios-and-eda.es.md) sigue siendo una alternativa separada.
 
 ## 2. Política y matriz de escenarios
 
@@ -132,7 +132,7 @@ flowchart TD
 ## 6. Revisión y condiciones de ejecución
 
 1. **Aprobar alcance e instrumento:** seleccionar cohorte/política/fallos; revisar evaluación de estado/mensaje; pasar L0; verificar reinicios e inyección por evento.
-2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../templates/experiment-protocol.md) debe fijar modelo, tope monetario,
+2. **Aprobar ejecución:** un [protocolo exp-NNNN](../../../templates/experiment-protocol.md) debe fijar modelo, tope monetario,
    tokens/llamadas/tiempo, muestra/repeticiones, reejecuciones y revisión humana. Este plan no autoriza construir el simulador ni hacer llamadas.
 3. **Detener:** al primer límite; detener el lote por filtraciones al evaluador, reinicios inválidos o estado corrupto. Conservar trazas parciales.
 4. **Revisar EDA:** cobertura, todos los resultados con denominadores, exclusiones, trazas de fallos, costo, incertidumbre y limitaciones;
