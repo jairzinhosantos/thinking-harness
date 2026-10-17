@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 CASE = ROOT / 'research/cases/case-0003-debt-negotiation'
-spec = importlib.util.spec_from_file_location('case3_search', CASE / 'prompt_search.py')
+spec = importlib.util.spec_from_file_location('case3_search', CASE / 'utils/prompt_search.py')
 m = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = m
 spec.loader.exec_module(m)
@@ -244,6 +244,9 @@ class PromptSearchTests(unittest.TestCase):
                 self.assertEqual(m.hashlib.sha256(path.read_bytes()).hexdigest(),version['sha256'])
             self.assertIn('golden-set.yaml',result['source_hashes'])
             self.assertIn('prompt.yaml',result['source_hashes'])
+            self.assertIn('utils/prompt_search.py',result['source_hashes'])
+            for source, digest in result['source_hashes'].items():
+                self.assertEqual(m.hashlib.sha256((CASE/source).read_bytes()).hexdigest(), digest)
         self.assertEqual((CASE/'prompt.yaml').read_bytes(),original)
 
     def test_disabled_live_switch_and_candidate_schema(self):
@@ -317,7 +320,7 @@ class PromptSearchTests(unittest.TestCase):
         display.display = rendered.append
         display.HTML = lambda value: value
         with patch.dict(sys.modules, {'IPython.display': display}):
-            view_spec = importlib.util.spec_from_file_location('case_view_test', CASE/'notebook_view.py')
+            view_spec = importlib.util.spec_from_file_location('case_view_test', CASE/'utils/notebook_view.py')
             view_module = importlib.util.module_from_spec(view_spec)
             view_spec.loader.exec_module(view_module)
             view = view_module.EvidenceView('es')

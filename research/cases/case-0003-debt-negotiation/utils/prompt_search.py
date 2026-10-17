@@ -13,7 +13,7 @@ import uuid
 
 import yaml
 
-HERE = Path(__file__).resolve().parent
+CASE_DIR = Path(__file__).resolve().parents[1]
 DEBTS = {"A": 200, "B": 300, "C": 600}
 PROTOCOL = "case-0003-prompt-search-v3"
 REPLAY_PROTOCOLS = {"case-0003-prompt-search-v2", PROTOCOL}
@@ -107,7 +107,7 @@ def visible(case):
             "history": case["history"]}
 
 
-def load_objective(path=HERE / "README.es.md"):
+def load_objective(path=CASE_DIR / "README.es.md"):
     """Read only the fixed objective, excluding evaluation results and other prose."""
     document = Path(path).read_text()
     start, end = "<!-- objective:start -->", "<!-- objective:end -->"
@@ -121,7 +121,7 @@ def load_objective(path=HERE / "README.es.md"):
     return objective
 
 
-def load_cases(path=HERE / "golden-set.yaml"):
+def load_cases(path=CASE_DIR / "golden-set.yaml"):
     cases = yaml.safe_load(Path(path).read_text())["cases"]
     ids, groups, histories = set(), {}, set()
     for case in cases:
@@ -300,14 +300,14 @@ def run_search(config, output_root=None, client_factory=ResponsesClient):
     cases = load_cases()
     partitions = {s: [c for c in cases if c["split"] == s]
                   for s in ("development", "validation", "test")}
-    root = Path(output_root) if output_root else HERE / "runs"
+    root = Path(output_root) if output_root else CASE_DIR / "runs"
     run_dir = root / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8])
     run_dir.mkdir(parents=True)
     objective = load_objective()
-    hashes = {name: hashlib.sha256((HERE / name).read_bytes()).hexdigest()
-              for name in ("README.es.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "prompt_search.py")}
+    hashes = {name: hashlib.sha256((CASE_DIR / name).read_bytes()).hexdigest()
+              for name in ("README.es.md", "golden-set.yaml", "prompt.yaml", "config.yaml", "utils/prompt_search.py")}
     try:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=HERE, text=True,
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=CASE_DIR, text=True,
                                          stderr=subprocess.DEVNULL).strip()
     except (OSError, subprocess.CalledProcessError):
         commit = "unavailable"
@@ -340,7 +340,7 @@ def run_search(config, output_root=None, client_factory=ResponsesClient):
 
     save()
     try:
-        seed = get_prompt(yaml.safe_load((HERE / "prompt.yaml").read_text()))
+        seed = get_prompt(yaml.safe_load((CASE_DIR / "prompt.yaml").read_text()))
         seed_id = version(seed, None, "seed")
         client = client_factory(config, run_dir)
         current = get_prompt(client.ask("optimizer", OPTIMIZER,

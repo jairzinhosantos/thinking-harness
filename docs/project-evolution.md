@@ -23,6 +23,33 @@ together until an actual shared responsibility emerges. Mermaid sources and othe
 assets stay with their case or design document. No empty implementation or delivery tree is
 required to describe a future direction.
 
+### Implemented cases
+
+Keep the reading and execution entry points at the case root. Put supporting Python modules
+in case-local `utils/`; this is a folder convention, not a shared framework or installable package.
+For example:
+
+```text
+case-0003-debt-negotiation/
+  README.es.md
+  prompt-search.ipynb
+  prompt-search.es.ipynb
+  config.yaml
+  golden-set.yaml
+  prompt.yaml
+  requirements.txt
+  utils/
+    prompt_search.py
+    notebook_view.py
+  diagrams/
+  results/
+```
+
+`prompt_search.py` implements the bounded search; `notebook_view.py` presents its evidence.
+Future implemented cases use the same layout when supporting modules are needed. A Markdown-only
+case needs no empty `utils/`. Keep repository tooling in `scripts/` and offline tests in `tests/`.
+See the [case-utils decision](decisions/dec-0007-case-local-utils.md).
+
 ## Conditions for growth
 
 | Evidence of a need | Possible structural change |

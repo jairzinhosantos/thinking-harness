@@ -1,12 +1,13 @@
 id,title,status,revision,created,updated,path
 case-0001,Code repair harness,draft,7,2026-10-02,2026-10-16,research/cases/case-0001-code-repair-harness/README.md
 case-0002,Simulated service workflow harness,superseded,6,2026-10-02,2026-10-16,research/cases/case-0002-service-workflow-harness/README.md
-case-0003,Negociación de deudas sintéticas,in-review,9,2026-10-16,2026-10-16,research/cases/case-0003-debt-negotiation/README.es.md
+case-0003,Negociación de deudas sintéticas,in-review,10,2026-10-16,2026-10-16,research/cases/case-0003-debt-negotiation/README.es.md
 dec-0001,Public research core and private extension,accepted,1,2026-09-29,2026-10-01,docs/decisions/dec-0001-public-research-core.md
 dec-0002,Branching and English-only project content,accepted,1,2026-09-30,2026-10-01,docs/decisions/dec-0002-branching-and-english-standard.md
 dec-0003,Project-author voice,accepted,1,2026-10-01,2026-10-01,docs/decisions/dec-0003-project-author-voice.md
 dec-0004,Bilingual paper reviews,accepted,1,2026-10-01,2026-10-01,docs/decisions/dec-0004-bilingual-paper-reviews.md
 dec-0005,Human integration and baseline promotion,accepted,1,2026-10-02,2026-10-02,docs/decisions/dec-0005-human-integration-and-promotion.md
+dec-0007,Case-local Python utilities,in-review,1,2026-10-16,2026-10-16,docs/decisions/dec-0007-case-local-utils.md
 doc-0001,Research charter,draft,1,2026-09-29,2026-10-01,docs/doc-0001-research-charter.md
 doc-0002,Initial plan,draft,1,2026-09-29,2026-10-01,docs/doc-0002-initial-plan.md
 doc-0003,Agentic development strategy,draft,1,2026-09-29,2026-10-01,docs/designs/doc-0003-agentic-development-strategy.md
@@ -16,7 +17,7 @@ doc-0006,Service workflow scenario matrix and EDA plan,superseded,6,2026-10-09,2
 doc-0007,Harness participation in self-improvement,draft,3,2026-10-09,2026-10-16,research/cases/case-0001-code-repair-harness/harness-participation.md
 pap-0001,"STOP: mechanism, code trace, and evaluation",in-review,4,2026-09-29,2026-10-10,research/literature/reviews/pap-0001-stop/README.md
 pap-0011,"Self-Harness: mechanism, code trace, and evaluation",in-review,2,2026-10-01,2026-10-16,research/literature/reviews/pap-0011-self-harness/README.md
-std-0001,Naming and document lifecycle,in-review,7,2026-09-29,2026-10-16,docs/standards/std-0001-naming-and-lifecycle.md
+std-0001,Naming and document lifecycle,in-review,8,2026-09-29,2026-10-16,docs/standards/std-0001-naming-and-lifecycle.md
 std-0002,Experiment versioning and resources,accepted,1,2026-09-29,2026-09-30,docs/standards/std-0002-experiment-versioning.md
 std-0003,Branching and formal baselines,accepted,2,2026-09-30,2026-10-02,docs/standards/std-0003-branching-and-releases.md
 std-0004,Writing and diagram conventions,in-review,4,2026-09-30,2026-10-16,docs/standards/std-0004-writing-and-diagrams.md

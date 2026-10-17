@@ -2,7 +2,7 @@
 id: std-0001
 title: "Naming and document lifecycle"
 status: in-review
-revision: 7
+revision: 8
 created: 2026-09-29
 updated: 2026-10-16
 ---
@@ -35,6 +35,10 @@ of its immediate folder. A paper listed in the catalog does not need a folder un
   make a draft extension part of the accepted case specification.
 - Inputs, configuration, notebooks, local implementation and recorded results stay in the case.
   Additional subdirectories contain actual resources, such as `diagrams/` or `results/`.
+- Put supporting Python modules in case-local `utils/`, using snake_case filenames.
+  Keep notebooks, the primary README and input/configuration files at the case root.
+  Create this directory only for implemented cases that need it; shared repository tooling
+  stays in `scripts/`. This convention does not relocate original paper source checkouts.
 
 The catalog maps IDs to current paths. For example, `doc-0005` remains the code-repair
 scenario study even though its filename is now `scenarios.md`. A move does not create a new identity.
@@ -80,6 +84,9 @@ Run `python3 scripts/check_repository.py --write-catalog` to generate docs/catal
 Do not use nested YAML structures in these fields. Quote titles containing a colon.
 
 ## Revision history
+Revision 8 places case-supporting Python modules in `utils/` while retaining case-local inputs,
+notebooks and evidence. See [dec-0007](../decisions/dec-0007-case-local-utils.md).
+
 Revision 7 adopts research-unit folders, descriptive case-study filenames and staged repository
 growth on 2026-10-16. IDs, translation pairs and historical evidence are preserved.
 

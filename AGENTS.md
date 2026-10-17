@@ -17,6 +17,9 @@
   the explicitly scoped Spanish primary. Supporting case studies use descriptive filenames;
   retain existing IDs in metadata and docs/catalog.csv. Follow docs/project-evolution.md:
   add folders for present work, keep case-specific resources together, and preserve run evidence.
+- Put Python modules supporting an implemented case in that case's `utils/` directory.
+  Keep its README, notebooks and input/configuration files at the case root. Create `utils/`
+  only when needed; repository-wide checks and export tools remain in `scripts/`.
 - Preserve exact bibliographic titles and attributed quotations. A university-required
   submission in another language needs an explicitly approved exception.
 - Use sober, concrete language. No emojis, em dashes, promotional claims, or filler.
