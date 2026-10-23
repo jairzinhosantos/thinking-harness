@@ -2,9 +2,9 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 3
+revision: 4
 created: 2026-09-29
-updated: 2026-10-17
+updated: 2026-10-22
 ---
 
 # Plan de investigación
@@ -26,7 +26,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 
 | Frente | Estado |
 |---|---|
-| Literatura | 23 papers catalogados; STOP y Self-Harness con lectura parcial y sin reproducción |
+| Literatura | 35 papers catalogados; STOP y Self-Harness con lectura parcial y sin reproducción |
 | Corrección de código | Caso y escenarios propuestos; participación del harness en su mejora como extensión separada, sin ejecutar |
 | Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
 | Tesis | Caso y comparación principal por seleccionar; colaboración institucional opcional |

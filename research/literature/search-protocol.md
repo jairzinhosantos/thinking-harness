@@ -3,6 +3,9 @@
 Mapear métodos de construcción y mejora de harnesses para seleccionar comparadores.
 Corte inicial: 2026-09-29. La ampliación de 2026-10-11 verificó diez candidatos aprobados;
 no fue una búsqueda exhaustiva ni recuperó resultados de la tarea programada inaccesible.
+La ampliación de 2026-10-22 añadió doce candidatos aprobados tras una búsqueda dirigida:
+siete posteriores al corte anterior y cinco trabajos anteriores recuperados. El catálogo suma
+35 registros. Se verificaron metadatos y resúmenes de arXiv, sin descargar PDFs ni inspeccionar código.
 Actualizar la búsqueda al revisar alcance y antes de la evaluación final.
 
 ## Fuentes y consultas
@@ -45,7 +48,7 @@ Una inspección inicial no acredita lectura completa ni reproducción.
 | `classification_notes` | Motivo y principal incertidumbre |
 | `pdf_filename` | Nombre del PDF original local, no adjunto de GitHub |
 
-Los campos de clasificación se incorporaron en pap-0014 a pap-0023. Vacíos anteriores
+Los campos de clasificación están presentes en pap-0014 a pap-0035. Vacíos anteriores
 indican clasificación pendiente, no menor relevancia. Prioridades y estados no cambian al
 traducir. Véase [mapa de literatura](../synthesis/research-options.md#mapa-de-literatura).
 
