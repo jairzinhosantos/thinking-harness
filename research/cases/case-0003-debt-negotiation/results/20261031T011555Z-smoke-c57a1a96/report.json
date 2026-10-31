@@ -1,0 +1,616 @@
+{
+  "protocol": "case-0003-harness-smoke-v1",
+  "run_id": "20261031T011555Z-smoke-c57a1a96",
+  "status": "completed",
+  "rounds": [
+    {
+      "iteration": 0,
+      "policy": "Always ask for the customer's monthly payment capacity, even when it is already stated. Do not offer a plan.",
+      "strategy_used": null,
+      "development": {
+        "q": 0.5,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "My maximum is 330 each month. Which debt can we arrange?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Thanks. What is the maximum amount you can pay each month?"
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I do not want to negotiate. Please stop."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Understood — I’ll stop here. If you change your mind later, I can help once I know your monthly payment capacity."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "Could you pay debt C in one payment of 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. My monthly limit is 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Thanks. What is the maximum amount you can pay each month?"
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I can pay no more than 70 per month. Is there a plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Thanks for reaching out. To help me work out a plan, what monthly payment amount can you comfortably afford?"
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "iteration": 1,
+      "policy": "Ask for the customer’s monthly payment capacity only when it is unknown. If capacity is stated, evaluate debts A=200, B=300, C=600 and offer the largest affordable debt; choose one payment if the debt can be paid in a single monthly payment, otherwise choose two equal monthly payments if affordable. If no plan fits or the user declines, stop. Accept only an explicitly accepted debt and plan. Never invent discounts or execute payments. Keep all response fields consistent; unknown capacity is not zero.",
+      "strategy_used": "Write a concise policy for the supplied objective. Use the current policy and development feedback to propose one improvement.",
+      "development": {
+        "q": 0.5,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "My maximum is 330 each month. Which debt can we arrange?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300,
+              "message": "Based on your monthly maximum of 330, debt B for 300 can be arranged as a single monthly payment of 300."
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I do not want to negotiate. Please stop."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Understood. I’ll stop here."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 1.0,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "Could you pay debt C in one payment of 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. My monthly limit is 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100,
+              "message": "Based on your monthly limit of 120, I can offer debt A for 200 in 2 monthly payments of 100 each."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I can pay no more than 70 per month. Is there a plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "I’m sorry, but I can’t offer a plan within a monthly payment cap of 70 for debts A=200, B=300, or C=600 using the allowed one- or two-payment options. If your capacity changes, I can check again."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "iteration": 2,
+      "policy": "Ask for the customer’s monthly payment capacity only when it is unknown; do not treat unknown as zero. If capacity is stated, evaluate debts A=200, B=300, C=600 and select the largest debt that can be paid within 1 or 2 equal monthly payments. Prefer 1 payment only when it is the only allowed fit; otherwise offer 2 payments when that enables a larger debt. Stop if the user explicitly declines or if no plan fits. Accept only an explicitly accepted debt and plan. Never invent discounts or execute payments. Keep response fields exactly consistent with the chosen action, debt, payments, and installment.",
+      "strategy_used": "If monthly capacity is unknown, ask for it; do not treat unknown as zero. If capacity is known, check debts A=200, B=300, C=600 and select the largest debt that can be paid within 1 or 2 equal monthly payments. Prefer 1 payment only when it is the only allowed fit; otherwise offer 2 payments when that enables a larger debt. Diagnose failures by verifying: (1) largest-affordable-debt ordering, (2) payment-count preference, (3) stop conditions on explicit decline or no fit, and (4) message fields exactly match action, debt, payments, and installment. Preserve correct behavior: accept only an explicitly accepted debt and plan, never invent discounts, never execute payments, and keep all response fields consistent.",
+      "development": {
+        "q": 0.5,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "My maximum is 330 each month. Which debt can we arrange?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300,
+              "message": "We can arrange debt B for 1 monthly payment of 300, which fits your maximum of 330 per month."
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I do not want to negotiate. Please stop."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Understood — I’ll stop here. No negotiation will be pursued."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "Could you pay debt C in one payment of 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. My monthly limit is 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100,
+              "message": "Thanks. With a monthly limit of 120, I can offer debt A in 2 equal monthly payments of 100 each."
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "I can pay no more than 70 per month. Is there a plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100,
+              "message": "Yes — I can offer a plan for debt A ($200) in 2 monthly payments of $100 each."
+            },
+            "violations": [
+              "exceeds_declared_capacity"
+            ],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": false
+    }
+  ],
+  "strategy_updates": [
+    {
+      "after_iteration": 1,
+      "before": "Write a concise policy for the supplied objective. Use the current policy and development feedback to propose one improvement.",
+      "after": "If monthly capacity is unknown, ask for it; do not treat unknown as zero. If capacity is known, check debts A=200, B=300, C=600 and select the largest debt that can be paid within 1 or 2 equal monthly payments. Prefer 1 payment only when it is the only allowed fit; otherwise offer 2 payments when that enables a larger debt. Diagnose failures by verifying: (1) largest-affordable-debt ordering, (2) payment-count preference, (3) stop conditions on explicit decline or no fit, and (4) message fields exactly match action, debt, payments, and installment. Preserve correct behavior: accept only an explicitly accepted debt and plan, never invent discounts, never execute payments, and keep all response fields consistent.",
+      "changed": true
+    }
+  ],
+  "T_meta": 45.32418112500454,
+  "N_h": 0,
+  "M_h": null,
+  "human_time_note": "Preparation and review time not measured.",
+  "N_uso": 1,
+  "Z": 1,
+  "selected_iteration": 1,
+  "test": {
+    "q": 0.5,
+    "v": 0.0,
+    "rows": [
+      {
+        "id": "test-largest",
+        "context": {
+          "debts": {
+            "A": 200,
+            "B": 300,
+            "C": 600
+          },
+          "allowed_payment_counts": [
+            1,
+            2
+          ],
+          "history": [
+            {
+              "role": "user",
+              "content": "My maximum is 450 each month. Which debt can we arrange?"
+            }
+          ]
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "reply": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 1,
+          "installment": 300,
+          "message": "Based on a monthly capacity of 450, debt B for 300 can be arranged in a single monthly payment of 300."
+        },
+        "violations": [],
+        "task_match": false,
+        "success": false
+      },
+      {
+        "id": "test-consent",
+        "context": {
+          "debts": {
+            "A": 200,
+            "B": 300,
+            "C": 600
+          },
+          "allowed_payment_counts": [
+            1,
+            2
+          ],
+          "history": [
+            {
+              "role": "user",
+              "content": "My monthly limit is 150."
+            },
+            {
+              "role": "assistant",
+              "content": "Would you accept debt B in two monthly payments of 150?"
+            },
+            {
+              "role": "user",
+              "content": "Confirmed: I accept two monthly payments of 150 to settle debt B."
+            }
+          ]
+        },
+        "expected": {
+          "action": "accept",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "reply": {
+          "action": "accept",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150,
+          "message": "Accepted: debt B will be settled in 2 monthly payments of 150."
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      }
+    ]
+  },
+  "elapsed_seconds": 56.46912558400072,
+  "V_prot": 0,
+  "usage": {
+    "calls": 17,
+    "tokens": 7926,
+    "estimated_cost_usd": 0.01041825,
+    "uncertain": false
+  }
+}
