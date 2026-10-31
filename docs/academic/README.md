@@ -43,58 +43,29 @@ El problema y la pregunta anteriores se aplican a las tres filas. Hay **dos obje
 
 ## Cómo leer los indicadores
 
-### Adaptación, controles y trazabilidad
+| Indicador | Qué comprueba |
+|---|---|
+| $N_{\mathrm{uso}}$ | Actualizaciones de instrucciones utilizadas en una propuesta posterior. Guardarlas sin usarlas no cuenta. |
+| $V_{\mathrm{prot}}$ | Cambios en partes que debían quedar fijas: modelo, motor, evaluación y límites. Se exige cero. En la API se controla la versión, no se inspeccionan pesos remotos. |
+| $\rho_{\mathrm{traza}}$ | Propuestas con versión anterior, instrucciones, resultado y decisión recuperables, divididas entre propuestas registradas. Si se recuperan cuatro de cinco: $4/5=0.80$. Sin propuestas, no se calcula. |
 
-- **$N_{\mathrm{uso}}$: actualizaciones utilizadas.** Cuenta cuántas veces se reescriben las instrucciones de mejora y después se usan para proponer otra versión. Guardar instrucciones nuevas sin utilizarlas no cuenta. No demuestra por sí solo que hayan mejorado el resultado.
-- **$V_{\mathrm{prot}}$: cambios detectados en elementos protegidos.** Son partes que deben permanecer fijas para atribuir el resultado a los cambios del harness. Por ejemplo, modificar el evaluador para aceptar una respuesta antes incorrecta invalidaría la comparación. Se exige cero cambios detectados dentro del alcance auditado.
-- **$\rho_{\mathrm{traza}}$: proporción de cambios que se pueden reconstruir.** Para cada propuesta se debe poder recuperar la versión de origen, las instrucciones usadas, la nueva versión, su evaluación y la decisión de conservarla o rechazarla. Esto permite explicar **qué cambió y por qué**; no implica que volver a llamar al LLM produzca exactamente el mismo texto.
-
-| Elemento protegido | Qué significa | Cómo se controla |
-|---|---|---|
-| Modelo y pesos | El modelo utilizado y sus parámetros aprendidos durante el entrenamiento | Mantener el mismo modelo y versión; no entrenar ni cambiar pesos durante la comparación. Con una API se verifica el identificador y la configuración, no se inspeccionan los pesos del proveedor. |
-| Motor | Código que llama al modelo, ejecuta el bucle y selecciona candidatos | Comparar la versión o hash del código antes y después. Un hash identifica el contenido de un archivo. |
-| Evaluación | Reglas, respuestas esperadas y criterio de aceptación | Conservar el evaluador, los escenarios reservados y sus referencias. No reducir el umbral después de observar el resultado. |
-| Presupuesto y flujo | Límites de llamadas, tokens, costo y orden de ejecución | Fijarlos antes de comenzar y registrarlos con la ejecución. |
-
-**Ejemplo de trazabilidad:** se propuso cambiar «preguntar siempre por la capacidad» por «preguntar solo si se desconoce». El registro debe mostrar el prompt anterior, la petición y respuesta del mejorador, el prompt nuevo, sus puntuaciones y si se conservó. Si de cinco cambios registrados se pueden reconstruir cuatro, $\rho_{\mathrm{traza}}=4/5=0.80$. Si no hubo cambios, el indicador queda **no calculable**, no se asigna uno y no se acredita la adaptación de OE1.
-
-El Test 1 usa un control acotado: hashes de los archivos de motor, cliente/evaluador y escenarios, más las peticiones registradas. No certifica la infraestructura ni los pesos remotos. Las propuestas rechazadas también se conservan para poder revisar sus fallos.
-
-### Diferencia entre B2 y B1
-
-Una **búsqueda** es una ejecución completa del proceso de mejora; una **iteración** es uno de sus pasos. Se comparan varias búsquedas completas, no se tratan los pasos de una misma búsqueda como experimentos independientes.
-
-Cada par $j$ contiene una búsqueda B1 y otra B2 con el mismo punto de partida, modelo, escenarios y límite de recursos; se empareja la aleatoriedad cuando el proveedor lo permite. Sobre $m$ pares:
+**Comparación B2 frente a B1:** cada par contiene dos búsquedas completas con el mismo punto de partida, modelo, escenarios y presupuesto. Las iteraciones de una búsqueda no son repeticiones independientes.
 
 $$
-d_{q,j}=\widehat q_{B2,j}-\widehat q_{B1,j},\qquad
-\widehat\Delta_q=\frac{1}{m}\sum_{j=1}^{m}d_{q,j}.
+\widehat\Delta_q=\frac{1}{m}\sum_{j=1}^{m}
+\left(\widehat q_{B2,j}-\widehat q_{B1,j}\right).
 $$
 
-- **$\widehat\Delta_q$:** diferencia media de calidad. Si un par pasa de 0,70 en B1 a 0,78 en B2, aporta $+0,08$: ocho puntos porcentuales.
-- **$\widehat\Delta_v$:** se calcula igual con la tasa de incumplimientos. Un valor negativo favorece B2; uno positivo significa más infracciones.
-
-### Qué significan $L_{95}$ y $U_{95}$
-
-El intervalo de confianza cuantifica la incertidumbre al estimar la **diferencia media**, a partir de varias búsquedas emparejadas:
+- **$m$:** número de pares de búsquedas.
+- **$\Delta_q$:** diferencia media de calidad. $+0.05$ significa cinco puntos porcentuales a favor de B2.
+- **$\Delta_v$:** la misma diferencia para incumplimientos; un valor negativo favorece B2.
+- **$L_{95}$ y $U_{95}$:** límites inferior y superior del intervalo de confianza del 95% de esa diferencia media, no percentiles de las respuestas. [Referencia](https://www.itl.nist.gov/div898/handbook/prc/section1/prc14.htm).
 
 $$
 IC_{95}(\Delta)=[L_{95}(\Delta),\ U_{95}(\Delta)].
 $$
 
-- **$L_{95}$:** extremo inferior del intervalo.
-- **$U_{95}$:** extremo superior del mismo intervalo.
-- **95%:** nivel de confianza del procedimiento. Bajo sus supuestos, al repetir el estudio muchas veces, aproximadamente 95 de cada 100 intervalos construidos así contendrían la diferencia media verdadera. No es el percentil 95 de las respuestas ni la proporción de casos correctos. [Referencia: NIST](https://www.itl.nist.gov/div898/handbook/prc/section1/prc14.htm).
-
-**Ejemplos ilustrativos, no resultados:**
-
-| Intervalo | Lectura |
-|---|---|
-| Calidad: $[0.02,\ 0.12]$ | El límite inferior es positivo: respalda una ventaja media de B2. Además debe comprobarse el criterio separado de al menos cinco puntos observados. |
-| Calidad: $[-0.02,\ 0.12]$ | Incluye cero: la evidencia todavía no permite concluir una ventaja. |
-| Incumplimientos: $[-0.04,\ 0.01]$ | El límite superior permite un aumento de un punto: no cumple el criterio de no aumento. |
-
-El método para calcular estos intervalos, el número de pares y los supuestos se fijarán antes del contraste. El Test 1 solo ejecuta B2; **no calcula diferencias B2 frente a B1 ni intervalos de confianza**. Sus cinco iteraciones no equivalen a cinco pares de búsquedas.
+Se pide $L_{95}(\Delta_q)>0$ para respaldar una ventaja en calidad, y $U_{95}(\Delta_v)\le0$ para descartar un aumento de infracciones según el criterio propuesto. **El Test 1 solo ejecuta B2; no calcula este contraste.**
 
 **Umbrales por definir:**
 

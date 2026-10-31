@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 15
+revision: 16
 created: 2026-10-16
 updated: 2026-10-30
 ---
@@ -22,10 +22,10 @@ El [notebook ejecutado](harness-smoke-test.ipynb) recorre cinco iteraciones de B
 actualiza las instrucciones de mejora y las utiliza en la siguiente propuesta. Explica las variables
 con respuestas de API, criterios de selección y consumo.
 
-Se reutilizaron cuatro actualizaciones. Ninguna propuesta superó la validación y se conservó la
-política inicial; en test resolvió 0/2 escenarios. No se alcanzó la calidad requerida.
-Consumo: 35 llamadas, 19.587 tokens y USD 0,025873 estimados. La evaluación comprueba decisiones
-estructuradas; no se ejecutó B1 ni se acredita una ventaja de la adaptación.
+Se reutilizaron cuatro actualizaciones, con prompts y escenarios en español. Se conservó la propuesta
+2: validación 2/2 y test 2/2, sin incumplimientos detectados. Consumo: 35 llamadas, 24.527 tokens
+y USD 0,032357 estimados. Es una evaluación estructurada sobre seis escenarios; no se ejecutó B1
+ni se midió el efecto del idioma de forma controlada.
 
 ## Extensión propuesta
 

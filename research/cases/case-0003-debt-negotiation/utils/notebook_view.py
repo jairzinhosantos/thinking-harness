@@ -155,7 +155,7 @@ class HarnessTestView(EvidenceView):
         self.show(self.table(headers, [[label(x) for x in row] for row in rows]))
 
     def prompt(self, title, text, collapsed=False):
-        content = '<p><small>Texto original en inglés; entrada o salida del modelo.</small></p>'
+        content = '<p><small>Texto utilizado en esta ejecución; entrada o salida del modelo.</small></p>'
         content += '<div style="font-family:system-ui,sans-serif;white-space:normal;overflow-wrap:break-word">'
         content += self.paragraphs(text) + '</div>'
         if collapsed:
@@ -163,20 +163,22 @@ class HarnessTestView(EvidenceView):
         else:
             self.show('<h4>' + escape(title) + '</h4>' + content)
 
-    def strategy(self, update, reused):
-        index = update['after_iteration']
+    def comparison(self, title, before_label, after_label, before, after):
         def sentences(text):
             return '<ul>' + ''.join('<li>' + escape(x) + '</li>'
                                    for x in re.split(r'(?<=[.!?])\s+', text.strip())) + '</ul>'
-        self.show('<h4>Actualización ' + str(index) + '</h4>'
-                  '<p>Instrucciones que guían la siguiente propuesta. Originales en inglés, '
-                  'separados por oraciones para facilitar la lectura.</p>'
+        self.show('<h4>' + escape(title) + '</h4>'
                   '<table style="width:100%;table-layout:fixed"><thead><tr>'
-                  '<th style="width:50%">Antes: φ' + str(index - 1) + '</th>'
-                  '<th style="width:50%">Después: φ' + str(index) + '</th></tr></thead><tbody><tr>'
-                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(update['before']) + '</td>'
-                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(update['after']) + '</td>'
+                  '<th style="width:50%">' + escape(before_label) + '</th>'
+                  '<th style="width:50%">' + escape(after_label) + '</th></tr></thead><tbody><tr>'
+                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(before) + '</td>'
+                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(after) + '</td>'
                   '</tr></tbody></table>')
+
+    def strategy(self, update, reused):
+        index = update['after_iteration']
+        self.comparison(f'Actualización {index}', f'Antes: φ{index - 1}', f'Después: φ{index}',
+                        update['before'], update['after'])
         self.rows(['Comprobación', 'Resultado'], [
             ['El texto cambió', update['changed']],
             ['Se usó en la propuesta siguiente', reused]])
@@ -234,7 +236,7 @@ def audit_harness_changes(protocol, report, calls):
                                   and row['violations'] == checks['violations']
                                   and row['success'] == (checks['task_match'] and not checks['violations'])
                                   and payload(call + offset) == visible(fixture)
-                                  and requests[call + offset]['instructions'] == RUNTIME + '\nPolicy:\n' + item['policy']
+                                  and requests[call + offset]['instructions'] == protocol.get('runtime', RUNTIME) + protocol.get('policy_separator', '\nPolicy:\n') + item['policy']
                                   and output(call + offset) == row['reply'])
                 evaluated &= item[split]['q'] == sum(r['success'] for r in item[split]['rows']) / len(fixtures)
                 evaluated &= item[split]['v'] == sum(bool(r['violations']) for r in item[split]['rows']) / len(fixtures)

@@ -1,0 +1,108 @@
+version: 1
+language: es
+scope: Spanish translation of six fixed fixtures for Test 1; not a validated benchmark.
+cases:
+- id: development-largest
+  group: development-largest
+  split: development
+  history:
+  - role: user
+    content: Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?
+  declared_capacity: 330
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: C
+    payments: 2
+    installment: 300
+  reference_reply: La deuda C se puede pagar en dos cuotas mensuales de 300. ¿Aceptas
+    ese plan?
+- id: development-declined
+  group: development-declined
+  split: development
+  history:
+  - role: user
+    content: No quiero negociar. Por favor, detente.
+  declared_capacity: null
+  declined: true
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: De acuerdo. Nos detenemos aquí; no se ha realizado ningún acuerdo.
+- id: validation-limited
+  group: validation-limited
+  split: validation
+  history:
+  - role: assistant
+    content: ¿Podrías pagar la deuda C en un pago de 600?
+  - role: user
+    content: No. Mi límite mensual es de 120.
+  declared_capacity: 120
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: A
+    payments: 2
+    installment: 100
+  reference_reply: Podemos ofrecer la deuda A en dos cuotas mensuales de 100. ¿Te
+    sirve ese plan?
+- id: validation-infeasible
+  group: validation-infeasible
+  split: validation
+  history:
+  - role: user
+    content: No puedo pagar más de 70 al mes. ¿Hay algún plan?
+  declared_capacity: 70
+  declined: false
+  accepted_plan: null
+  expected:
+    action: stop
+    debt: null
+    payments: 0
+    installment: 0
+  reference_reply: Ninguno de los planes disponibles se ajusta a ese límite mensual.
+    No se ha realizado ningún acuerdo.
+- id: test-largest
+  group: test-largest
+  split: test
+  history:
+  - role: user
+    content: Mi límite es de 450 al mes. ¿Qué deuda podemos acordar?
+  declared_capacity: 450
+  declined: false
+  accepted_plan: null
+  expected:
+    action: offer
+    debt: C
+    payments: 2
+    installment: 300
+  reference_reply: La deuda C se puede pagar en dos cuotas mensuales de 300. ¿Aceptas
+    ese plan?
+- id: test-consent
+  group: test-consent
+  split: test
+  history:
+  - role: user
+    content: Mi límite mensual es de 150.
+  - role: assistant
+    content: ¿Aceptas la deuda B en dos cuotas mensuales de 150?
+  - role: user
+    content: 'Confirmado: acepto dos cuotas mensuales de 150 para saldar la deuda
+      B.'
+  declared_capacity: 150
+  declined: false
+  accepted_plan:
+  - B
+  - 2
+  expected:
+    action: accept
+    debt: B
+    payments: 2
+    installment: 150
+  reference_reply: Se registra tu aceptación de la deuda B en dos cuotas mensuales
+    de 150 en esta simulación. No se ha ejecutado ningún pago.
