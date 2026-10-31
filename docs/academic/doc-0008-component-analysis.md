@@ -2,22 +2,22 @@
 id: doc-0008
 title: "Variables y análisis de componentes del harness"
 status: in-review
-revision: 2
+revision: 3
 created: 2026-10-30
 updated: 2026-10-30
 ---
 
 # Variables y análisis de componentes del harness
 
-Detalle del [siguiente sprint y su matriz](README.md), aplicado al [caso de negociación sintética](../../research/cases/case-0003-debt-negotiation/README.md).
-Se preparan el diseño y los criterios; todavía no se ejecutan las ablaciones ni la mejora recursiva.
-El piloto registrado conserva su protocolo, entradas y resultados.
+Detalle del [siguiente sprint y su matriz](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md), aplicado al [caso de negociación sintética](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/README.md).
+Se preparan las comparaciones entre componentes. El [Test 1](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb) ya ejecuta el bucle sobre prompts, pero no mide todavía el aporte de cada componente.
 
 ## Qué significa importancia en este caso
 
-Se busca saber qué aporta permitir cambios en una parte del harness. Se repite la búsqueda
-bloqueando un grupo y se compara con la búsqueda completa. Esto se denomina **ablación**.
-Contar cuántas veces se modifica un prompt o se agrega un agente no demuestra su importancia.
+Se busca saber qué se gana al permitir cambios en los prompts o en el workflow. Para ello se repetirá
+la búsqueda dejando fija una de esas partes y se comparará con la búsqueda completa: una **ablación**.
+No se entrenarán pesos ni se calculará importancia de columnas. Se medirá el aporte de estos componentes
+a la calidad, el cumplimiento y el consumo, bajo las mismas condiciones.
 
 | Concepto del curso | Aplicación en este estudio |
 |---|---|
@@ -112,7 +112,7 @@ un umbral provisional no autoriza cambiar la prueba ni descartar búsquedas fall
 
 ## Correspondencia con el plan de tesis
 
-La [matriz de consistencia](README.md) reúne objetivos, hipótesis, variables y criterios.
+La [matriz de consistencia](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md) reúne objetivos, hipótesis, variables y criterios.
 
 - **OE1 / HE1:** configuración que alcanza calidad y cumplimiento sin intervención durante
   el ciclo; en B2, actualización de instrucciones utilizada en una propuesta posterior.
@@ -122,4 +122,4 @@ La [matriz de consistencia](README.md) reúne objetivos, hipótesis, variables y
 
 Las referencias conceptuales son GPTSwarm y GEPA para el espacio editable; AFlow para
 búsqueda de workflows; STOP y MetaSkill-Evolve para adaptar la mejora; Self-Harness y DGM
-para participación en la siguiente versión. Véase el [mapa de literatura](../../research/synthesis/research-options.md).
+para participación en la siguiente versión. Véase el [mapa de literatura](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/synthesis/research-options.md).

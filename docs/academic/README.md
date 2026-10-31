@@ -2,7 +2,9 @@
 
 **Tema:** Mejora recursiva de harnesses agénticos con modelos de pesos abiertos.
 
-Se propone construir y mejorar una configuración agéntica de forma automática, y medir qué aporta adaptar también sus instrucciones de mejora. El [Test 1](../../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb) permite revisar el mecanismo y las variables con una ejecución de API. El [plan de tesis](thesis-plan.pdf) desarrolla la propuesta completa.
+**[Matriz de consistencia en PDF: una página](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/consistency-matrix.pdf)** · [Test 1 ejecutado](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb)
+
+Se busca que el sistema construya y mejore su configuración, y comprobar qué aporta cambiar también sus instrucciones de mejora.
 
 ## Problema y comparación
 
@@ -94,27 +96,38 @@ $$
 
 El método para calcular estos intervalos, el número de pares y los supuestos se fijarán antes del contraste. El Test 1 solo ejecuta B2; **no calcula diferencias B2 frente a B1 ni intervalos de confianza**. Sus cinco iteraciones no equivalen a cinco pares de búsquedas.
 
-**Los umbrales son provisionales.** El 80%, los 5 puntos y el nivel de confianza deben justificarse en factibilidad y fijarse antes de la comparación. Un éxito aislado no acredita fiabilidad general; cero infracciones observadas no demuestra riesgo nulo. No alcanzar un objetivo se reportará como tal. Si falta precisión, el contraste será inconcluso; no se ajustará el umbral para declarar éxito.
+**Umbrales por definir:**
 
-## Siguiente sprint: importancia de componentes
+- Por ahora se propone 80% de éxito válido, una mejora de al menos cinco puntos porcentuales y un intervalo de confianza del 95%.
+- Se revisarán con las pruebas de factibilidad y se fijarán antes de comparar B1 con B2.
+- Una ejecución no basta para concluir que funciona. Se repetirán las búsquedas y se reportarán también los fallos.
+- Si los resultados no permiten distinguir las dos variantes, se dejará como inconcluso. No se cambiará el umbral después para darlo por cumplido.
 
-En este estudio, la importancia se examina mediante **ablaciones**: repetir la búsqueda dejando fija una parte del harness y comparar el resultado. No se entrenan pesos ni se calcula importancia de columnas de un clasificador.
+## Siguiente sprint: aporte de cada componente
 
-| Condición | Prompts | Roles y workflow | Propósito |
+Aquí se busca saber **qué aporta permitir cambios en los prompts y qué aporta cambiar el workflow**. Se probarán tres condiciones:
+
+| Condición | Prompts | Roles y workflow | Qué se compara |
 |---|---|---|---|
-| Espacio completo | Editables | Editables | Referencia |
-| Prompts congelados | Fijos | Editables | Medir qué aporta permitir cambios en instrucciones |
-| Organización congelada | Editables | Fijos | Medir qué aporta permitir cambios en roles y coordinación |
+| Completa | Se pueden cambiar | Se pueden cambiar | Referencia |
+| Prompts fijos | No cambian | Se pueden cambiar | Qué se pierde al impedir cambios en las instrucciones |
+| Workflow fijo | Se pueden cambiar | No cambian | Qué se pierde al impedir cambios en la organización |
 
-En estas tres condiciones se mantiene el mismo $Z$, punto inicial, modelo, datos y presupuesto. El espacio editable es un segundo factor experimental, distinto del contraste principal B2 frente a B1. Los efectos pueden interactuar; no se sumarán como porcentajes de importancia.
+Cada condición empezará desde la misma configuración, con el mismo modelo, régimen B1 o B2 y presupuesto. Se compararán calidad, incumplimientos, tiempo y consumo. Esta forma de dejar fija una parte y comparar se llama **ablación**.
 
-**Entrega prevista:**
+**Relación con feature importance:**
 
-- Esquema YAML y campos protegidos definidos.
-- Matriz de escenarios y criterios de evaluación, con cobertura del alcance acordado.
-- Protocolo de las tres condiciones, particiones separadas y reserva para prueba final.
-- Modelo, número de búsquedas, presupuesto y condición de parada fijados antes de ejecutar.
+- No se entrenarán pesos ni se calculará la importancia de columnas de un clasificador.
+- Sí se estimará el aporte de cada grupo de componentes, en el caso y las condiciones que se prueben.
+- Por ejemplo, si la calidad pasa de 0,80 a 0,65 al fijar los prompts, la diferencia observada es de 15 puntos. Es un ejemplo; todavía no se ha medido.
+- Los prompts y el workflow pueden depender entre sí. Esas diferencias no se sumarán como porcentajes de una importancia total.
 
-**Cierre del sprint:** diseño preparado y revisado. Las ejecuciones y sus resultados corresponden a una etapa posterior. El [detalle del análisis](doc-0008-component-analysis.md) incluye el flujo, la estimación del aporte y las referencias.
+**Para el siguiente sprint:**
 
-[Plan de tesis completo (PDF)](thesis-plan.pdf) · [Caso y evidencia previa](../../research/cases/case-0003-debt-negotiation/README.md)
+- Definir los campos YAML que podrán cambiar y los que quedarán fijos.
+- Preparar los escenarios y el criterio de evaluación.
+- Fijar las tres condiciones, el modelo, las repeticiones y el presupuesto.
+
+El Test 1 comprueba el bucle sobre prompts; todavía no compara componentes. El [diseño de las ablaciones](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/doc-0008-component-analysis.md) desarrolla esta parte.
+
+[Matriz en PDF](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/consistency-matrix.pdf) · [Caso y ejecuciones](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/README.md)
