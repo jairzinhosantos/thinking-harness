@@ -1,6 +1,8 @@
 # Documentación
 
-- **[Entrega académica](academic/README.md):** matriz de consistencia, variables, siguiente sprint y plan de tesis en PDF.
-- **[Test 1: cinco iteraciones](../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb):** recorrido de las variables, cambios de prompt e instrucciones de mejora, evaluación y consumo. Incluye resultados reales de API y sus límites.
-- **[Índice del proyecto](../README.md):** estructura, casos de estudio y revisiones de papers.
-- **[Catálogo de documentos](catalog.csv):** identificadores, versiones y estado de la documentación controlada.
+- **[Matriz de consistencia](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md):** objetivos, hipótesis, variables y siguiente sprint.
+- **[Matriz en PDF: una página](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/consistency-matrix.pdf):** versión para lectura o descarga.
+- **[Test 1](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb):** cinco iteraciones ejecutadas, resultados y consumo.
+- **[Índice del proyecto](https://github.com/jairzinhosantos/thinking-harness/blob/develop/README.md):** casos, papers y estructura.
+
+La entrega se consulta en `develop`. `main` se actualizará al cerrar el siguiente baseline.
