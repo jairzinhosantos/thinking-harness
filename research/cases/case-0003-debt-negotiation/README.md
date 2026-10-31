@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 18
+revision: 19
 created: 2026-10-16
 updated: 2026-10-31
 ---
@@ -27,77 +27,64 @@ Se reutilizaron cuatro actualizaciones, con prompts y escenarios en español. Se
 y USD 0,032357 estimados. Es una evaluación estructurada sobre seis escenarios; no se ejecutó B1
 ni se midió el efecto del idioma de forma controlada.
 
-## Test 2: modelos locales y longitud
+## Test 2: Qwen3 de 4B y 8B
 
-El [notebook ejecutado](local-model-test.ipynb) registra inferencia con MLX en una Mac M5 Max
-de 48 GB. Se probaron los modelos de NLP sin sus adaptadores: Qwen2.5 de 1,5B y Gemma 2
-de 2B, ambos a 4 bits. Después se añadió Qwen3 de 4B, también a 4 bits y sin razonamiento extendido.
+El [notebook ejecutado](local-model-test.ipynb) compara ambos modelos a 4 bits con MLX,
+sin entrenamiento ni API. Cada modelo realiza los tres papeles del bucle. B1 conserva
+las instrucciones de mejora; B2 puede actualizarlas. Se permiten tres propuestas por condición.
 
-| Modelo | Resultado | Pico MLX | Tiempo |
-|---|---|---:|---:|
-| Qwen2.5 1,5B | Dos propuestas sin mejora; actualización posterior con esquema inválido | 1,73 GB | 8,1 s |
-| Gemma 2 2B | Primera propuesta sin JSON válido; ejecución detenida | 2,23 GB | 5,6 s |
-| Qwen3 4B | Tres propuestas rechazadas; se conserva H0 | 3,19 GB | 21,8 s |
+El protocolo **v5** añade dos ajustes manuales, fijos durante la búsqueda:
 
-Qwen3 completó 23 llamadas. H0 obtuvo 0/2 en validación y 1/2 en test; el resultado final
-no corresponde a una política mejorada. Solo una de las dos llamadas al actualizador cambió φ;
-la segunda devolvió el mismo texto. No hubo llamadas a API ni entrenamiento.
+- **Decisión y mensaje separados.** El modelo devuelve acción, deuda, pagos y cuota.
+  Python redacta el mensaje desde esos valores, sin corregir decisiones ni montos.
+- **Historial y duplicados.** El mejorador recibe sus dos intentos recientes y los fallos
+  de desarrollo. Una política idéntica, normalizando Unicode y espacios, no se reevalúa
+  ni se acepta como mejora nueva. No se detectan paráfrasis equivalentes.
 
-Se mide `longitud = len(tokenizer.encode(texto, add_special_tokens=False))` por separado
-para H y φ, más los tokens de entrada completa y salida de cada llamada. En Qwen3, las
-políticas candidatas tuvieron 177, 110 y 110 tokens frente a 28 de H0, sin mejora en validación.
-La longitud queda como medida descriptiva de consumo, no como criterio de calidad o claridad.
+| Condición | Aceptadas | Validación | Casos nuevos | Llamadas | Tokens | Tiempo | Pico MLX |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 4B, B1 fija | 0 | 0/2 | 0/6 | 19 | 11.288 | 14,1 s | 3,18 GB |
+| 4B, B2 adaptativa | 0 | 0/2 | 0/6 | 25 | 16.098 | 19,4 s | 3,22 GB |
+| 8B, B1 fija | 0 | 0/2 | 2/6 | 19 | 11.578 | 42,2 s | 5,61 GB |
+| 8B, B2 adaptativa | 0 | 0/2 | 2/6 | 21 | 13.868 | 47,0 s | 5,66 GB |
 
-**Límites:** seis escenarios, una ejecución por modelo, sin comparación B1/B2. El JSON se
-solicita por prompt, sin decodificación restringida. Gemma 2 integra las instrucciones en `user`
-porque su plantilla no admite `system`. No es una comparación equivalente a la API con salida
-estructurada. El pico es memoria registrada por MLX, no la RAM total; el tiempo incluye carga,
-no descarga. El antecedente de mT5/MPS era entrenamiento, distinto de esta prueba de inferencia.
+Se conservó **H0 en las cuatro condiciones**. El resultado de los casos nuevos corresponde
+al punto de partida, no a una política mejorada. Estos [seis casos](local-transfer-cases.yaml)
+se prepararon antes de ejecutar el contraste y se consultaron solo al finalizar la selección.
+El test reutilizado de dos casos dio 1/2 en las cuatro condiciones.
 
-El [script](utils/local_model_test.py) fija versiones de modelos, presupuesto y parada.
-Instalar [requirements-local.txt](requirements-local.txt) con Python 3.12 en Apple Silicon;
-los pesos deben estar en la caché local de Hugging Face. Para repetir desde esta carpeta:
+Se detectaron siete propuestas duplicadas y se omitieron sus 28 llamadas de evaluación.
+El modelo todavía repite algunas propuestas; el control evita reevaluarlas. La longitud
+se registra con el tokenizer nativo para H y φ por separado; no selecciona candidatos
+ni mide claridad.
+
+**Siguiente paso propuesto:** mantener 4B para depurar el harness y 8B como contraste. 8B cabe en la Mac M5 Max
+con 48 GB, pero esta prueba no justifica sustituir 4B ni subir a modelos mayores. Antes de ampliar
+la búsqueda, se necesita una política de referencia que resuelva la tarea para separar fallos
+del negociador y del mejorador.
+
+**Límites:** una ejecución por condición, pocos escenarios y orden 4B antes de 8B.
+Los tiempos son orientativos e incluyen carga, no descarga. El pico mide asignaciones MLX,
+no toda la RAM. Se cambian varias partes entre v4 y v5; no se atribuye el efecto a una sola.
+El contraste actual comparte v5, sin conclusión de superioridad ni generalización.
+
+El [script](utils/local_model_test.py) fija revisiones, presupuesto y parada. Instalar
+[requirements-local.txt](requirements-local.txt) con Python 3.12 en Apple Silicon y disponer
+de los snapshots fijados en la caché de Hugging Face. Ejecutar uno a la vez desde esta carpeta:
 
 ```sh
-HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 --contract explicit --strategy adaptive
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 --contract decision --strategy fixed
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3-8b --contract decision --strategy adaptive
 ```
 
-Admite también `qwen` y `gemma`. Cada ejecución crea su propio registro en `results/`, con
-protocolos, respuestas, métricas y hashes. Los pesos no se incluyen en GitHub. Se conserva el
-intento inicial `20261031T052541Z-local-qwen`: falló antes de generar texto por un cambio de
-API del tokenizer; sus contadores no se usan para medir tokens ni rendimiento.
+Cambiar `--strategy` permite ejecutar las otras condiciones. Cada ejecución guarda protocolo,
+respuestas, métricas, script y hashes en `results/`. Los pesos permanecen fuera de GitHub.
+El notebook también enlaza las pruebas previas de Qwen y Gemma, los intentos fallidos y la
+corrección de contexto del protocolo v4; su evidencia no se modifica.
 
 Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
-[Qwen2.5 MLX](https://huggingface.co/mlx-community/Qwen2.5-1.5B-Instruct-4bit),
-[Gemma 2 MLX](https://huggingface.co/mlx-community/gemma-2-2b-it-4bit) y
-[Qwen3](https://huggingface.co/Qwen/Qwen3-4B).
-Qwen tiene licencia Apache 2.0; Gemma usa la licencia Gemma. Se distinguen pesos disponibles
-de licencia abierta sin restricciones adicionales.
-
-### Continuación con Qwen3: mejora fija y adaptativa
-
-Se aclaró manualmente el contrato de salida: significado de cada acción y campos del plan.
-Con una misma política manual, ambos contratos resolvieron 1/2 casos de desarrollo. El cambio
-no bastó para corregir inconsistencias entre el mensaje y los campos numéricos.
-
-También se corrigió una omisión del código local: el feedback al mejorador no incluía el
-historial del caso. El protocolo **v4** lo incorpora, sin enviar validación ni test al mejorador.
-Las ejecuciones v3 previas quedan como diagnóstico con contexto incompleto. Las nuevas ejecuciones
-conservan una copia del script, su protocolo, respuestas y hashes.
-
-| Condición v4, tres propuestas | Aceptadas | Validación de H0 conservada | Test reutilizado de H0 | Llamadas | Tokens |
-|---|---:|---:|---:|---:|---:|
-| B1: instrucciones de mejora fijas | 0 | 0/2 | 1/2 | 21 | 14.593 |
-| B2: instrucciones adaptativas | 0 | 0/2 | 1/2 | 23 | 16.128 |
-
-B2 cambió las instrucciones una vez; la siguiente actualización devolvió el mismo texto.
-No mejoró el resultado y consumió 1.535 tokens más. B1 repitió la misma propuesta al conservar
-la entrada y usar temperatura cero. Este control mínimo todavía necesita un mecanismo común
-para evitar repeticiones antes de una comparación más amplia.
-
-Para B1, usar `--strategy fixed`; `--calibrate` compara los contratos solo en desarrollo,
-sin búsqueda. Se reutilizaron escenarios conocidos para depuración: no son resultados de
-generalización ni una prueba de superioridad de B1 o B2. La longitud sigue siendo descriptiva.
+[Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) y
+[Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B).
 
 ## Extensión propuesta
 

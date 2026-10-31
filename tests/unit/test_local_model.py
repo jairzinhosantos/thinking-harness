@@ -15,6 +15,25 @@ from prompt_search import PROMPT_SCHEMA, REPLY_SCHEMA
 
 
 class LocalTransportTests(unittest.TestCase):
+    def test_renderer_preserves_bad_decisions_for_evaluator_to_reject(self):
+        case = local.smoke.select_cases()['development'][0]
+        decision = {'action': 'offer', 'debt': 'C', 'payments': 1, 'installment': 600}
+        reply = local.render_decision(decision)
+        self.assertEqual({k: reply[k] for k in decision}, decision)
+        self.assertIn('600', reply['message'])
+        self.assertIn('exceeds_declared_capacity', local.rule_check(case, reply)['violations'])
+        decision = {'action': 'offer', 'debt': 'C', 'payments': 2, 'installment': 300}
+        reply = local.render_decision(decision)
+        self.assertTrue(local.rule_check(case, reply)['task_match'])
+        self.assertEqual(local.rule_check(case, reply)['violations'], [])
+
+    def test_decision_schema_and_policy_identity(self):
+        text = '{"action":"ask","debt":null,"payments":0,"installment":0}'
+        self.assertIsNone(local.parse_reply(text, local.DECISION_SCHEMA)[1])
+        self.assertEqual(local.parse_reply(text, REPLY_SCHEMA)[1], 'invalid_schema')
+        self.assertEqual(local.policy_key('Dos  cuotas.\n'), local.policy_key('Dos cuotas.'))
+        self.assertNotEqual(local.policy_key('Dos cuotas.'), local.policy_key('Una cuota.'))
+
     def test_template_is_encoded_as_ids_without_duplicate_special_tokens(self):
         class Tokenizer:
             def apply_chat_template(inner, messages, **kwargs):
@@ -110,7 +129,7 @@ class LocalLoopTests(unittest.TestCase):
 
     def check_search(self, strategy_mode):
         requests = []
-        cases = [c for group in local.smoke.select_cases().values() for c in group]
+        cases = [c for group in local.smoke.select_cases().values() for c in group] + local.transfer_cases()
 
         class Client:
             def __init__(self, *args):
@@ -140,11 +159,16 @@ class LocalLoopTests(unittest.TestCase):
             path = local.run('stub', directory, Client, contract='explicit', strategy_mode=strategy_mode)
             report = json.loads((path / 'report.json').read_text())
         self.assertEqual(report['status'], 'completed')
-        self.assertEqual(report['calls'], 23 if strategy_mode == 'adaptive' else 21)
+        self.assertEqual(report['calls'], 27 if strategy_mode == 'adaptive' else 25)
+        self.assertEqual([r['duplicate_of'] for r in report['rounds'][1:]], [None, 1, 1])
         self.assertEqual(report['selected_iteration'], 1)
         self.assertEqual([r.get('parent_iteration') for r in report['rounds'][1:]], [0, 1, 1])
         self.assertEqual(report['test']['q'], 1)
         proposals = [r for r in requests if r[0] == 'proposer']
+        self.assertEqual(proposals[0][2]['recent_attempts'], [])
+        self.assertEqual(proposals[1][2]['recent_attempts'][0]['policy'], 'Política propuesta')
+        self.assertEqual(len(report['transfer']['selected']['rows']), 6)
+        self.assertEqual(report['transfer']['selected']['q'], 1)
         if strategy_mode == 'adaptive':
             self.assertIn('Estrategia actualizada', proposals[1][1])
         else:
@@ -155,6 +179,7 @@ class LocalLoopTests(unittest.TestCase):
             if role != 'negotiator':
                 self.assertNotIn('validation-', json.dumps(payload))
                 self.assertNotIn('test-', json.dumps(payload))
+                self.assertNotIn('transfer-', json.dumps(payload))
                 for feedback in payload['development_feedback']:
                     original = next(c for c in cases if c['id'] == feedback['id'])
                     self.assertEqual(feedback['context'], local.visible(original))
