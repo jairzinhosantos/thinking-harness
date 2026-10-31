@@ -9,7 +9,7 @@ updated: 2026-10-30
 
 # Variables y análisis de componentes del harness
 
-Propuesta del siguiente sprint para el [caso de negociación sintética](README.md).
+Propuesta del siguiente sprint para el [caso de negociación sintética](../../research/cases/case-0003-debt-negotiation/README.md).
 Se preparan el diseño y los criterios; todavía no se ejecutan las ablaciones ni la mejora recursiva.
 El piloto registrado conserva su protocolo, entradas y resultados.
 
@@ -119,4 +119,4 @@ un umbral provisional no autoriza cambiar la prueba ni descartar búsquedas fall
 
 Las referencias conceptuales son GPTSwarm y GEPA para el espacio editable; AFlow para
 búsqueda de workflows; STOP y MetaSkill-Evolve para adaptar la mejora; Self-Harness y DGM
-para participación en la siguiente versión. Véase el [mapa de literatura](../../synthesis/research-options.md).
+para participación en la siguiente versión. Véase el [mapa de literatura](../../research/synthesis/research-options.md).

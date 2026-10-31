@@ -36,7 +36,7 @@ y el [índice de casos](../research/cases/README.md). No reinterpretar resultado
 
 ## Próximo sprint académico
 
-Se prepara el [análisis de variables y componentes](../research/cases/case-0003-debt-negotiation/component-analysis.md)
+Se prepara el [análisis de variables y componentes](academic/doc-0008-component-analysis.md)
 para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
 La entrega define cómo medir; todavía no ejecuta búsquedas recursivas ni demuestra importancia.
 No modifica los protocolos ni los resultados del piloto.

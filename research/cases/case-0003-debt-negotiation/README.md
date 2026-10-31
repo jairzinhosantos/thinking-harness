@@ -10,7 +10,7 @@ updated: 2026-10-30
 
 # Negociación de deudas sintéticas
 
-[Notebook](prompt-search.ipynb) · [PDF de lectura](prompt-search.pdf) · [Variables y próximo sprint](component-analysis.md)
+[Notebook](prompt-search.ipynb) · [PDF de lectura](prompt-search.pdf) · [Variables y próximo sprint](../../../docs/academic/doc-0008-component-analysis.md)
 
 El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
 [presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
@@ -18,7 +18,7 @@ en la raíz del caso; `results/` conserva las ejecuciones registradas.
 
 ## Extensión propuesta
 
-El [análisis de componentes](component-analysis.md) prepara una comparación de prompts y workflows,
+El [análisis de componentes](../../../docs/academic/doc-0008-component-analysis.md) prepara una comparación de prompts y workflows,
 con mejora fija o adaptativa. Es un diseño posterior al piloto; no cambia su objetivo ni sus resultados.
 
 ## Caso
