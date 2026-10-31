@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 5
+revision: 6
 created: 2026-09-29
 updated: 2026-10-30
 ---
@@ -29,14 +29,14 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Literatura | 35 papers catalogados; STOP y Self-Harness con lectura parcial y sin reproducción |
 | Corrección de código | Caso y escenarios propuestos; participación del harness en su mejora como extensión separada, sin ejecutar |
 | Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
-| Tesis | Caso y comparación principal por seleccionar; colaboración institucional opcional |
+| Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
 y el [índice de casos](../research/cases/README.md). No reinterpretar resultados v2 como evidencia v3.
 
 ## Próximo sprint académico
 
-Se prepara el [análisis de variables y componentes](academic/doc-0008-component-analysis.md)
+Se prepara el [entrega académica: matriz y siguiente sprint](academic/README.md)
 para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
 La entrega define cómo medir; todavía no ejecuta búsquedas recursivas ni demuestra importancia.
 No modifica los protocolos ni los resultados del piloto.

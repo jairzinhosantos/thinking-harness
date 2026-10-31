@@ -2,14 +2,14 @@
 id: doc-0008
 title: "Variables y análisis de componentes del harness"
 status: in-review
-revision: 1
+revision: 2
 created: 2026-10-30
 updated: 2026-10-30
 ---
 
 # Variables y análisis de componentes del harness
 
-Propuesta del siguiente sprint para el [caso de negociación sintética](../../research/cases/case-0003-debt-negotiation/README.md).
+Detalle del [siguiente sprint y su matriz](README.md), aplicado al [caso de negociación sintética](../../research/cases/case-0003-debt-negotiation/README.md).
 Se preparan el diseño y los criterios; todavía no se ejecutan las ablaciones ni la mejora recursiva.
 El piloto registrado conserva su protocolo, entradas y resultados.
 
@@ -112,10 +112,13 @@ un umbral provisional no autoriza cambiar la prueba ni descartar búsquedas fall
 
 ## Correspondencia con el plan de tesis
 
-- **OE1 / HE1:** diagnóstico de fallos y diferencia entre escenarios simples y complejos.
-- **OE2 / HE2:** configuración ejecutable sin edición humana durante el ciclo; en B2,
-  actualización de instrucciones utilizada en una propuesta posterior.
-- **OE3 / HE3:** ventaja o límites de B2 frente a B1; las ablaciones complementan esta comparación.
+La [matriz de consistencia](README.md) reúne objetivos, hipótesis, variables y criterios.
+
+- **OE1 / HE1:** configuración que alcanza calidad y cumplimiento sin intervención durante
+  el ciclo; en B2, actualización de instrucciones utilizada en una propuesta posterior.
+- **OE2 / HE2:** mejora de calidad frente a B1, sin aumentar incumplimientos y con el mismo
+  tope de recursos. Las ablaciones complementan esta comparación.
+- El diagnóstico de fallos y la delimitación del espacio son actividades de preparación.
 
 Las referencias conceptuales son GPTSwarm y GEPA para el espacio editable; AFlow para
 búsqueda de workflows; STOP y MetaSkill-Evolve para adaptar la mejora; Self-Harness y DGM

@@ -1,6 +1,6 @@
 id,title,status,revision,created,updated,path
 case-0001,Harness de corrección de código,draft,8,2026-10-02,2026-10-17,research/cases/case-0001-code-repair-harness/README.md
-case-0003,Negociación de deudas sintéticas,in-review,12,2026-10-16,2026-10-30,research/cases/case-0003-debt-negotiation/README.md
+case-0003,Negociación de deudas sintéticas,in-review,13,2026-10-16,2026-10-30,research/cases/case-0003-debt-negotiation/README.md
 dec-0001,Núcleo público y extensión privada,accepted,2,2026-09-29,2026-10-17,docs/decisions/dec-0001-public-research-core.md
 dec-0002,Ramas e idioma: decisión inicial,accepted,2,2026-09-30,2026-10-17,docs/decisions/dec-0002-branching-and-english-standard.md
 dec-0003,Voz del proyecto,accepted,2,2026-10-01,2026-10-17,docs/decisions/dec-0003-project-author-voice.md
@@ -9,12 +9,12 @@ dec-0005,Integración y promoción con revisión humana,accepted,2,2026-10-02,20
 dec-0006,Limpieza y conservación de evidencia,in-review,2,2026-10-16,2026-10-17,docs/decisions/dec-0006-active-research-cleanup.md
 dec-0007,Utilidades Python dentro del caso,in-review,2,2026-10-16,2026-10-17,docs/decisions/dec-0007-case-local-utils.md
 dec-0008,Español principal y notas de investigación,in-review,1,2026-10-17,2026-10-17,docs/decisions/dec-0008-spanish-primary-documentation.md
-doc-0002,Plan de investigación,in-review,5,2026-09-29,2026-10-30,docs/doc-0002-research-plan.md
+doc-0002,Plan de investigación,in-review,6,2026-09-29,2026-10-30,docs/doc-0002-research-plan.md
 doc-0003,Estrategia de desarrollo con agentes,draft,2,2026-09-29,2026-10-17,docs/designs/doc-0003-agentic-development-strategy.md
 doc-0004,Progreso y revisión humana,draft,2,2026-09-29,2026-10-17,docs/designs/doc-0004-progress-and-hitl.md
 doc-0005,Matriz de escenarios y plan de EDA para corrección de código,draft,8,2026-10-09,2026-10-17,research/cases/case-0001-code-repair-harness/scenarios.md
 doc-0007,Participación del harness en su propia mejora,draft,4,2026-10-09,2026-10-17,research/cases/case-0001-code-repair-harness/harness-participation.md
-doc-0008,Variables y análisis de componentes del harness,in-review,1,2026-10-30,2026-10-30,docs/academic/doc-0008-component-analysis.md
+doc-0008,Variables y análisis de componentes del harness,in-review,2,2026-10-30,2026-10-30,docs/academic/doc-0008-component-analysis.md
 pap-0001,"STOP: mecanismo, correspondencia con el código y evaluación",in-review,5,2026-09-29,2026-10-17,research/literature/reviews/pap-0001-stop/README.md
 pap-0011,"Self-Harness: mecanismo, recorrido del código y evaluación",in-review,3,2026-10-01,2026-10-17,research/literature/reviews/pap-0011-self-harness/README.md
 std-0001,Nombres y ciclo de vida documental,in-review,10,2026-09-29,2026-10-17,docs/standards/std-0001-naming-and-lifecycle.md
