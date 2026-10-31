@@ -2,9 +2,9 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 9
+revision: 10
 created: 2026-09-29
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Plan de investigación
@@ -30,6 +30,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Corrección de código | Caso y escenarios propuestos; participación del harness en su mejora como extensión separada, sin ejecutar |
 | Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
 | Adaptación mínima | [Test 1](../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb): cinco propuestas en español y cuatro actualizaciones reutilizadas; propuesta 2 conservada, validación 2/2 y test 2/2 con reglas estructuradas; sin comparación B1/B2 |
+| Modelos locales | [Test 2](../research/cases/case-0003-debt-negotiation/local-model-test.ipynb): Qwen3 4B completó tres propuestas sin mejora; Qwen2.5 1,5B y Gemma 2B se detuvieron por errores de salida. Longitud registrada con el tokenizer; sin llamadas a API |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)

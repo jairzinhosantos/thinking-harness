@@ -3,9 +3,9 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 16
+revision: 17
 created: 2026-10-16
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Negociación de deudas sintéticas
@@ -26,6 +26,53 @@ Se reutilizaron cuatro actualizaciones, con prompts y escenarios en español. Se
 2: validación 2/2 y test 2/2, sin incumplimientos detectados. Consumo: 35 llamadas, 24.527 tokens
 y USD 0,032357 estimados. Es una evaluación estructurada sobre seis escenarios; no se ejecutó B1
 ni se midió el efecto del idioma de forma controlada.
+
+## Test 2: modelos locales y longitud
+
+El [notebook ejecutado](local-model-test.ipynb) registra inferencia con MLX en una Mac M5 Max
+de 48 GB. Se probaron los modelos de NLP sin sus adaptadores: Qwen2.5 de 1,5B y Gemma 2
+de 2B, ambos a 4 bits. Después se añadió Qwen3 de 4B, también a 4 bits y sin razonamiento extendido.
+
+| Modelo | Resultado | Pico MLX | Tiempo |
+|---|---|---:|---:|
+| Qwen2.5 1,5B | Dos propuestas sin mejora; actualización posterior con esquema inválido | 1,73 GB | 8,1 s |
+| Gemma 2 2B | Primera propuesta sin JSON válido; ejecución detenida | 2,23 GB | 5,6 s |
+| Qwen3 4B | Tres propuestas rechazadas; se conserva H0 | 3,19 GB | 21,8 s |
+
+Qwen3 completó 23 llamadas. H0 obtuvo 0/2 en validación y 1/2 en test; el resultado final
+no corresponde a una política mejorada. Solo una de las dos llamadas al actualizador cambió φ;
+la segunda devolvió el mismo texto. No hubo llamadas a API ni entrenamiento.
+
+Se mide `longitud = len(tokenizer.encode(texto, add_special_tokens=False))` por separado
+para H y φ, más los tokens de entrada completa y salida de cada llamada. En Qwen3, las
+políticas candidatas tuvieron 177, 110 y 110 tokens frente a 28 de H0, sin mejora en validación.
+La longitud queda como medida descriptiva de consumo, no como criterio de calidad o claridad.
+
+**Límites:** seis escenarios, una ejecución por modelo, sin comparación B1/B2. El JSON se
+solicita por prompt, sin decodificación restringida. Gemma 2 integra las instrucciones en `user`
+porque su plantilla no admite `system`. No es una comparación equivalente a la API con salida
+estructurada. El pico es memoria registrada por MLX, no la RAM total; el tiempo incluye carga,
+no descarga. El antecedente de mT5/MPS era entrenamiento, distinto de esta prueba de inferencia.
+
+El [script](utils/local_model_test.py) fija versiones de modelos, presupuesto y parada.
+Instalar [requirements-local.txt](requirements-local.txt) con Python 3.12 en Apple Silicon;
+los pesos deben estar en la caché local de Hugging Face. Para repetir desde esta carpeta:
+
+```sh
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3
+```
+
+Admite también `qwen` y `gemma`. Cada ejecución crea su propio registro en `results/`, con
+protocolos, respuestas, métricas y hashes. Los pesos no se incluyen en GitHub. Se conserva el
+intento inicial `20261031T052541Z-local-qwen`: falló antes de generar texto por un cambio de
+API del tokenizer; sus contadores no se usan para medir tokens ni rendimiento.
+
+Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
+[Qwen2.5 MLX](https://huggingface.co/mlx-community/Qwen2.5-1.5B-Instruct-4bit),
+[Gemma 2 MLX](https://huggingface.co/mlx-community/gemma-2-2b-it-4bit) y
+[Qwen3](https://huggingface.co/Qwen/Qwen3-4B).
+Qwen tiene licencia Apache 2.0; Gemma usa la licencia Gemma. Se distinguen pesos disponibles
+de licencia abierta sin restricciones adicionales.
 
 ## Extensión propuesta
 
