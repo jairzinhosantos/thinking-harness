@@ -260,7 +260,8 @@ class PromptSearchTests(unittest.TestCase):
             with self.assertRaises(m.ProviderFailure): m.get_prompt(candidate)
 
     def test_canonical_spanish_notebook_and_local_links(self):
-        self.assertEqual(sorted(p.name for p in CASE.glob('*.ipynb')), ['harness-smoke-test.ipynb', 'prompt-search.ipynb'])
+        self.assertEqual(sorted(p.name for p in CASE.glob('*.ipynb')),
+                         ['harness-smoke-test.ipynb', 'local-model-test.ipynb', 'prompt-search.ipynb'])
         notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
         first_code=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code')
         self.assertIn("LANGUAGE = 'es'", first_code)

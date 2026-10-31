@@ -1,0 +1,97 @@
+{
+  "protocol": "case-0003-local-model-v2",
+  "model_key": "gemma",
+  "status": "stopped",
+  "rounds": [
+    {
+      "iteration": 0,
+      "policy": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan.",
+      "policy_tokens": 25,
+      "strategy_tokens": 25,
+      "strategy_used": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "development": {
+        "q": 0.0,
+        "v": 1.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": null,
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "task_match": false,
+            "violations": [
+              "invalid_schema"
+            ],
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": null,
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "task_match": false,
+            "violations": [
+              "invalid_schema"
+            ],
+            "success": false
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 1.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "reply": null,
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "task_match": false,
+            "violations": [
+              "invalid_schema"
+            ],
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "reply": null,
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "task_match": false,
+            "violations": [
+              "invalid_schema"
+            ],
+            "success": false
+          }
+        ]
+      },
+      "accepted": true
+    }
+  ],
+  "strategy_updates": [],
+  "selected_iteration": 0,
+  "stop_type": "ProviderFailure",
+  "stop_reason": "Invalid proposer output: invalid_json",
+  "elapsed_seconds": 5.57849654200254,
+  "calls": 5,
+  "tokens": 2566,
+  "load_seconds": 1.2678692499976023,
+  "peak_mlx_gb": 2.227000202,
+  "protected_source_changes": 0
+}

@@ -3,9 +3,9 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 16
+revision: 20
 created: 2026-10-16
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Negociación de deudas sintéticas
@@ -26,6 +26,80 @@ Se reutilizaron cuatro actualizaciones, con prompts y escenarios en español. Se
 2: validación 2/2 y test 2/2, sin incumplimientos detectados. Consumo: 35 llamadas, 24.527 tokens
 y USD 0,032357 estimados. Es una evaluación estructurada sobre seis escenarios; no se ejecutó B1
 ni se midió el efecto del idioma de forma controlada.
+
+## Test 2: Qwen3 de 4B y 8B
+
+El [notebook ejecutado](local-model-test.ipynb) compara ambos modelos a 4 bits con MLX,
+sin entrenamiento ni API. Cada modelo realiza los tres papeles del bucle. B1 conserva
+las instrucciones de mejora; B2 puede actualizarlas. Se permiten tres propuestas por condición.
+
+El protocolo **v5** añade dos ajustes manuales, fijos durante la búsqueda:
+
+- **Decisión y mensaje separados.** El modelo devuelve acción, deuda, pagos y cuota.
+  Python redacta el mensaje desde esos valores, sin corregir decisiones ni montos.
+- **Historial y duplicados.** El mejorador recibe sus dos intentos recientes y los fallos
+  de desarrollo. Una política idéntica, normalizando Unicode y espacios, no se reevalúa
+  ni se acepta como mejora nueva. No se detectan paráfrasis equivalentes.
+
+| Condición | Aceptadas | Validación | Casos nuevos | Llamadas | Tokens | Tiempo | Pico MLX |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 4B, B1 fija | 0 | 0/2 | 0/6 | 19 | 11.288 | 14,1 s | 3,18 GB |
+| 4B, B2 adaptativa | 0 | 0/2 | 0/6 | 25 | 16.098 | 19,4 s | 3,22 GB |
+| 8B, B1 fija | 0 | 0/2 | 2/6 | 19 | 11.578 | 42,2 s | 5,61 GB |
+| 8B, B2 adaptativa | 0 | 0/2 | 2/6 | 21 | 13.868 | 47,0 s | 5,66 GB |
+
+Se conservó **H0 en las cuatro condiciones**. El resultado de los casos nuevos corresponde
+al punto de partida, no a una política mejorada. Estos [seis casos](local-transfer-cases.yaml)
+se prepararon antes de ejecutar el contraste y se consultaron solo al finalizar la selección.
+El test reutilizado de dos casos dio 1/2 en las cuatro condiciones.
+
+Se detectaron siete propuestas duplicadas y se omitieron sus 28 llamadas de evaluación.
+El modelo todavía repite algunas propuestas; el control evita reevaluarlas. La longitud
+se registra con el tokenizer nativo para H y φ por separado; no selecciona candidatos
+ni mide claridad.
+
+**Control posterior con política manual:** el negociador también falla sin mejorador.
+Con el mismo contrato y evaluador, se ejecutaron 12 casos por modelo, sin búsqueda:
+
+| Modelo | Desarrollo | Validación | Test reutilizado | Seis casos v5 | Total | Casos con incumplimientos |
+|---|---:|---:|---:|---:|---:|---:|
+| 4B | 2/2 | 0/2 | 2/2 | 3/6 | 7/12 | 4 |
+| 8B | 1/2 | 0/2 | 1/2 | 4/6 | 6/12 | 0 |
+
+4B ofrece cuotas superiores a la capacidad. 8B evita esas violaciones, pero a veces pregunta
+o se detiene cuando corresponde otro turno. Ambos proponen dos pagos cuando cabe uno.
+La política manual no consiguió resolver validación; no es una referencia de funcionamiento
+correcto ni una mejora descubierta por el sistema. Se redactó después de revisar fallos previos.
+Los 12 casos son conocidos: este control no mide generalización ni aísla toda la causa del fallo.
+
+El [notebook, sección 7](local-model-test.ipynb) muestra la política exacta y cada respuesta.
+La prueba usó 24 llamadas locales: 10.085 tokens con 4B y 10.022 con 8B.
+**Siguiente paso propuesto:** separar lectura de capacidad, elección de deuda y cálculo de cuota
+antes de retomar la búsqueda. No hay evidencia suficiente para sustituir 4B por 8B.
+
+**Límites:** una ejecución por condición, pocos escenarios y orden 4B antes de 8B.
+Los tiempos son orientativos e incluyen carga, no descarga. El pico mide asignaciones MLX,
+no toda la RAM. Se cambian varias partes entre v4 y v5; no se atribuye el efecto a una sola.
+El contraste actual comparte v5, sin conclusión de superioridad ni generalización.
+
+El [script](utils/local_model_test.py) fija revisiones, presupuesto y parada. Instalar
+[requirements-local.txt](requirements-local.txt) con Python 3.12 en Apple Silicon y disponer
+de los snapshots fijados en la caché de Hugging Face. Ejecutar uno a la vez desde esta carpeta:
+
+```sh
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 --contract decision --strategy fixed
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3-8b --contract decision --strategy adaptive
+```
+
+Cambiar `--strategy` permite ejecutar las otras condiciones. Para repetir el control manual,
+sustituir `--strategy fixed/adaptive` por `--reference`, conservando `--contract decision`. Cada ejecución guarda protocolo,
+respuestas, métricas, script y hashes en `results/`. Los pesos permanecen fuera de GitHub.
+El notebook también enlaza las pruebas previas de Qwen y Gemma, los intentos fallidos y la
+corrección de contexto del protocolo v4; su evidencia no se modifica.
+
+Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
+[Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) y
+[Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B).
 
 ## Extensión propuesta
 

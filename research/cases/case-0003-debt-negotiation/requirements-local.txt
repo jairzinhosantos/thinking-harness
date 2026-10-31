@@ -1,0 +1,6 @@
+# Python 3.12 on Apple Silicon; inference only.
+-r requirements.txt
+mlx==0.29.3
+mlx-lm==0.29.1
+transformers==5.22.1
+tokenizers==0.23.3

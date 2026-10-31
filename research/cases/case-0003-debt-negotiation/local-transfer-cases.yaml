@@ -1,0 +1,52 @@
+version: 1
+language: es
+scope: Six diagnostic transfer fixtures frozen before the v5 model comparison; never used for proposal or selection.
+cases:
+- id: transfer-unknown
+  history:
+  - role: user
+    content: Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes.
+  declared_capacity: null
+  declined: false
+  accepted_plan: null
+  expected: {action: ask, debt: null, payments: 0, installment: 0}
+- id: transfer-capacity-150
+  history:
+  - role: user
+    content: Puedo destinar como máximo 150 al mes. ¿Qué plan me puedes ofrecer?
+  declared_capacity: 150
+  declined: false
+  accepted_plan: null
+  expected: {action: offer, debt: B, payments: 2, installment: 150}
+- id: transfer-capacity-300
+  history:
+  - role: user
+    content: Mi presupuesto mensual es exactamente 300. Quiero saldar la mayor deuda posible.
+  declared_capacity: 300
+  declined: false
+  accepted_plan: null
+  expected: {action: offer, debt: C, payments: 2, installment: 300}
+- id: transfer-capacity-600
+  history:
+  - role: user
+    content: Tengo disponibles 600 cada mes para pagar. ¿Qué me propones?
+  declared_capacity: 600
+  declined: false
+  accepted_plan: null
+  expected: {action: offer, debt: C, payments: 1, installment: 600}
+- id: transfer-declined
+  history:
+  - role: user
+    content: Aunque podría pagar 300 al mes, no quiero negociar. Termina la conversación.
+  declared_capacity: 300
+  declined: true
+  accepted_plan: null
+  expected: {action: stop, debt: null, payments: 0, installment: 0}
+- id: transfer-insufficient
+  history:
+  - role: user
+    content: Solo tengo un máximo de 95 mensuales. ¿Se puede hacer algún acuerdo?
+  declared_capacity: 95
+  declined: false
+  accepted_plan: null
+  expected: {action: stop, debt: null, payments: 0, installment: 0}
