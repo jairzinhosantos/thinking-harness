@@ -1,5 +1,6 @@
 """Offline controls for the illustrative adaptive-prompt experiment."""
 import contextlib
+import copy
 import io
 import json
 import re
@@ -30,7 +31,7 @@ class FakeClient:
         if role == 'proposer':
             return {'prompt': 'Revised policy'}
         if role == 'strategy_update':
-            return {'prompt': 'Revised improvement strategy'}
+            return {'prompt': f'Revised improvement strategy {self.calls}'}
         if smoke.INITIAL_POLICY in instructions:
             return {'action': 'ask', 'debt': None, 'payments': 0, 'installment': 0, 'message': 'Capacity?'}
         case = next(c for cs in smoke.select_cases().values() for c in cs if c['history'] == payload['history'])
@@ -44,13 +45,17 @@ class SmokeTests(unittest.TestCase):
             result = json.loads((path / 'report.json').read_text())
             client = FakeClient.instances[-1]
             self.assertEqual(result['status'], 'completed')
-            self.assertEqual(client.calls, 17)
-            self.assertEqual(result['N_uso'], 1)
+            self.assertEqual(client.calls, 35)
+            self.assertEqual(result['N_uso'], 4)
             self.assertEqual(result['selected_iteration'], 1)
             self.assertFalse(result['rounds'][2]['accepted'])
             self.assertIsNotNone(result['T_meta'])
             proposers = [r for r in client.requests if r[0] == 'proposer']
-            self.assertIn('Revised improvement strategy', proposers[1][1])
+            self.assertEqual(len(proposers), 5)
+            self.assertEqual(len(result['strategy_updates']), 4)
+            for i, update in enumerate(result['strategy_updates'], start=1):
+                self.assertIn(update['after'], proposers[i][1])
+                self.assertEqual(update['after_iteration'], i)
             for role, instructions, payload in client.requests:
                 if role in ('proposer', 'strategy_update'):
                     self.assertNotIn('validation-', json.dumps(payload))
@@ -97,6 +102,35 @@ class SmokeTests(unittest.TestCase):
         self.assertFalse(scope['RUN_LIVE'])
         self.assertEqual(scope['report']['protocol'], smoke.PROTOCOL)
         self.assertEqual(scope['rho'], 1)
+
+    def test_trace_audit_rejects_missing_origins_and_false_evaluations(self):
+        from notebook_view import audit_harness_changes
+        notebook = json.loads((CASE / 'harness-smoke-test.ipynb').read_text())
+        directory = (CASE / notebook['metadata']['evidence']['report']).parent
+        protocol, report = smoke.load_run(directory)
+        calls = [json.loads(x) for x in (directory / 'calls.jsonl').read_text().splitlines()]
+        self.assertTrue(all(ok for _, ok in audit_harness_changes(protocol, report, calls)))
+        broken = copy.deepcopy(report)
+        broken['rounds'][1]['parent_iteration'] = 99
+        self.assertFalse(audit_harness_changes(protocol, broken, calls)[0][1])
+        broken = copy.deepcopy(report)
+        broken['rounds'][1]['validation']['q'] = 0.123
+        self.assertFalse(audit_harness_changes(protocol, broken, calls)[0][1])
+
+    def test_prompt_display_escapes_text_and_uses_readable_comparison(self):
+        from notebook_view import HarnessTestView
+        view = HarnessTestView()
+        with patch('notebook_view.display') as show:
+            view.strategy({'after_iteration': 1, 'before': '<script>bad()</script>',
+                           'after': 'Inspect failures. Preserve correct behavior.', 'changed': True}, True)
+        html = ''.join(call.args[0].data for call in show.call_args_list)
+        self.assertNotIn('<script>', html)
+        self.assertIn('&lt;script&gt;', html)
+        self.assertIn('Antes: φ0', html)
+        self.assertIn('Después: φ1', html)
+        self.assertIn('<li>Inspect failures.</li>', html)
+        self.assertIn('Sí', html)
+        self.assertNotIn('True', html)
 
     def test_evidence_tampering_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -138,3 +138,121 @@ class EvidenceView:
             self.show('<p>' + self.t('Observed final score difference: ', 'Diferencia observada del puntaje final: ') + f'{delta:+.1%}</p>')
         else:
             self.show('<p>' + self.t('The incomplete final comparison does not establish an improvement.', 'La comparación final incompleta no permite establecer una mejora.') + '</p>')
+
+
+class HarnessTestView(EvidenceView):
+    """Compact Spanish views; preserve English experimental prompts verbatim."""
+    def __init__(self):
+        super().__init__('es')
+
+    def rows(self, headers, rows):
+        def label(value):
+            if value is True:
+                return 'Sí'
+            if value is False:
+                return 'No'
+            return 'No registrado' if value is None else value
+        self.show(self.table(headers, [[label(x) for x in row] for row in rows]))
+
+    def prompt(self, title, text, collapsed=False):
+        content = '<p><small>Texto original en inglés; entrada o salida del modelo.</small></p>'
+        content += '<div style="font-family:system-ui,sans-serif;white-space:normal;overflow-wrap:break-word">'
+        content += self.paragraphs(text) + '</div>'
+        if collapsed:
+            self.show('<details><summary>' + escape(title) + '</summary>' + content + '</details>')
+        else:
+            self.show('<h4>' + escape(title) + '</h4>' + content)
+
+    def strategy(self, update, reused):
+        index = update['after_iteration']
+        def sentences(text):
+            return '<ul>' + ''.join('<li>' + escape(x) + '</li>'
+                                   for x in re.split(r'(?<=[.!?])\s+', text.strip())) + '</ul>'
+        self.show('<h4>Actualización ' + str(index) + '</h4>'
+                  '<p>Instrucciones que guían la siguiente propuesta. Originales en inglés, '
+                  'separados por oraciones para facilitar la lectura.</p>'
+                  '<table style="width:100%;table-layout:fixed"><thead><tr>'
+                  '<th style="width:50%">Antes: φ' + str(index - 1) + '</th>'
+                  '<th style="width:50%">Después: φ' + str(index) + '</th></tr></thead><tbody><tr>'
+                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(update['before']) + '</td>'
+                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(update['after']) + '</td>'
+                  '</tr></tbody></table>')
+        self.rows(['Comprobación', 'Resultado'], [
+            ['El texto cambió', update['changed']],
+            ['Se usó en la propuesta siguiente', reused]])
+
+    def evaluation_rows(self, evaluation):
+        names = {'ask': 'Preguntar', 'offer': 'Ofrecer', 'stop': 'Detener', 'accept': 'Aceptar'}
+        violations = {'exceeds_declared_capacity': 'Cuota superior a la capacidad',
+                      'incorrect_installment': 'Cuota que no corresponde a la deuda',
+                      'ignores_explicit_stop': 'Ignora el rechazo a negociar',
+                      'fabricated_acceptance': 'Aceptación no autorizada',
+                      'unauthorized_plan': 'Plan no permitido',
+                      'unexpected_plan_fields': 'Plan en una respuesta sin oferta'}
+        self.rows(['Escenario', 'Acción', 'Deuda', 'Pagos', 'Cuota', 'Éxito', 'Incumplimientos'], [
+            [r['id'], names.get(r['reply']['action'], r['reply']['action']), r['reply']['debt'],
+             r['reply']['payments'], r['reply']['installment'], r['success'],
+             '; '.join(violations.get(v, v) for v in r['violations']) or 'Ninguno detectado']
+            for r in evaluation['rows']])
+
+
+def audit_harness_changes(protocol, report, calls):
+    """Check parent, request, output, evaluation and selection links for each proposal."""
+    import json
+    from prompt_search import rule_check, visible, RUNTIME
+    requests = {x['call']: x['request'] for x in calls if x['stage'] == 'started'}
+    responses = {x['call']: x['response'] for x in calls if x['stage'] == 'received'}
+
+    def output(call):
+        response = responses[call]
+        text = ''.join(p.get('text', '') for item in response.get('output', [])
+                       if item.get('type') == 'message' for p in item.get('content', [])
+                       if p.get('type') == 'output_text')
+        return json.loads(text)
+
+    def payload(call):
+        return json.loads(requests[call]['input'][0]['content'])
+
+    versions = {r['iteration']: r for r in report['rounds']}
+    rows = []
+    for item in report['rounds'][1:]:
+        try:
+            parent = versions[item['parent_iteration']]
+            call = item['proposal_call']
+            before = payload(call)['current_policy'] == parent['policy']
+            instructions = requests[call]['instructions'].endswith(item['strategy_used'])
+            after = output(call)['prompt'].strip() == item['policy']
+            evaluated = True
+            offset = 0
+            for split in ('development', 'validation'):
+                fixtures = protocol['cases'][split]
+                evaluated &= len(item[split]['rows']) == len(fixtures)
+                for fixture, row in zip(fixtures, item[split]['rows']):
+                    offset += 1
+                    checks = rule_check(fixture, row['reply'])
+                    evaluated &= (row['id'] == fixture['id'] and row['expected'] == fixture['expected']
+                                  and row['violations'] == checks['violations']
+                                  and row['success'] == (checks['task_match'] and not checks['violations'])
+                                  and payload(call + offset) == visible(fixture)
+                                  and requests[call + offset]['instructions'] == RUNTIME + '\nPolicy:\n' + item['policy']
+                                  and output(call + offset) == row['reply'])
+                evaluated &= item[split]['q'] == sum(r['success'] for r in item[split]['rows']) / len(fixtures)
+                evaluated &= item[split]['v'] == sum(bool(r['violations']) for r in item[split]['rows']) / len(fixtures)
+            selected = item['accepted'] == (item['validation']['v'] == 0 and
+                item['validation']['q'] >= parent['validation']['q'] + protocol['config']['min_gain'])
+            ok = all([before, instructions, after, evaluated, selected])
+        except (KeyError, ValueError, TypeError):
+            ok = False
+        rows.append([f"Política propuesta {item['iteration']}", bool(ok)])
+    for update in report['strategy_updates']:
+        try:
+            call = update['update_call']
+            candidate = versions[update['after_iteration']]
+            ok = (payload(call)['current_strategy'] == update['before']
+                  and payload(call)['candidate_policy'] == candidate['policy']
+                  and payload(call)['development_feedback'] == candidate['development']['rows']
+                  and output(call)['prompt'].strip() == update['after'])
+        except (KeyError, ValueError, TypeError):
+            ok = False
+        rows.append([f"Instrucciones actualizadas {update['after_iteration']}", bool(ok)])
+    return rows
