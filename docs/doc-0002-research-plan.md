@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 6
+revision: 7
 created: 2026-09-29
 updated: 2026-10-30
 ---
@@ -29,6 +29,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Literatura | 35 papers catalogados; STOP y Self-Harness con lectura parcial y sin reproducción |
 | Corrección de código | Caso y escenarios propuestos; participación del harness en su mejora como extensión separada, sin ejecutar |
 | Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
+| Adaptación mínima | [Prueba B2 ejecutada](../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb): dos propuestas, una actualización de instrucciones reutilizada; validación seleccionada 2/2 y test 1/2 con reglas estructuradas; sin comparación B1/B2 |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
@@ -38,7 +39,7 @@ y el [índice de casos](../research/cases/README.md). No reinterpretar resultado
 
 Se prepara el [entrega académica: matriz y siguiente sprint](academic/README.md)
 para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
-La entrega define cómo medir; todavía no ejecuta búsquedas recursivas ni demuestra importancia.
+La entrega define cómo medir; la prueba B2 permite observar el mecanismo mínimo, pero todavía no demuestra importancia ni ventaja comparativa.
 No modifica los protocolos ni los resultados del piloto.
 
 ## Próximas decisiones

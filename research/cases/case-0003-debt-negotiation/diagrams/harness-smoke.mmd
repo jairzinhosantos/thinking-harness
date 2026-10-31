@@ -1,0 +1,13 @@
+flowchart TD
+    H0["H0: prompt inicial incompleto"] --> E0["Medir q y v con reglas fijas"]
+    E0 --> P1["Proponer H1 con instrucciones phi0"]
+    P1 --> E1["Medir H1 en desarrollo y validación"]
+    E1 --> S1["Conservar H1 solo si mejora q y v = 0"]
+    E1 -. "Solo trazas de desarrollo" .-> U["LLM reescribe phi0 → phi1"]
+    S1 --> P2["Proponer H2 usando phi1"]
+    U --> P2
+    P2 --> E2["Medir H2 y seleccionar con la misma regla"]
+    E2 --> T["Evaluar el prompt elegido en test una sola vez"]
+    C["Fijos: modelo, evaluador, datos, límite y flujo"] -.-> E0
+    C -.-> E1
+    C -.-> E2
