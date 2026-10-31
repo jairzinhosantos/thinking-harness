@@ -2,7 +2,7 @@
 id: doc-0008
 title: "Variables y análisis de componentes del harness"
 status: in-review
-revision: 3
+revision: 4
 created: 2026-10-30
 updated: 2026-10-30
 ---
@@ -16,7 +16,7 @@ Se preparan las comparaciones entre componentes. El [Test 1](https://github.com/
 
 Se busca saber qué se gana al permitir cambios en los prompts o en el workflow. Para ello se repetirá
 la búsqueda dejando fija una de esas partes y se comparará con la búsqueda completa: una **ablación**.
-No se entrenarán pesos ni se calculará importancia de columnas. Se medirá el aporte de estos componentes
+Estas ablaciones no entrenan pesos ni calculan importancia de columnas. Un análisis de atributos del prompt sería complementario y todavía no forma parte del protocolo. Se medirá el aporte de estos componentes
 a la calidad, el cumplimiento y el consumo, bajo las mismas condiciones.
 
 | Concepto del curso | Aplicación en este estudio |
@@ -81,8 +81,7 @@ Se priorizará un régimen para la ablación según factibilidad, antes de abrir
 
 ## Indicadores
 
-`q` es la proporción de ejecuciones correctas que cumplen todas las restricciones críticas.
-`v` es la proporción con alguna infracción crítica. No son complementos.
+`q` mide respuestas con acción, deuda, pagos y cuota correctos, sin infracciones; `v`, respuestas con alguna infracción. Las [definiciones y reglas del caso](README.md#qué-se-considera-un-resultado-correcto) precisan formato, plan, capacidad, rechazo y consentimiento. No son complementos.
 
 Para `m` pares de búsquedas independientes, el aporte estimado de permitir el grupo `g` será:
 
@@ -114,7 +113,7 @@ un umbral provisional no autoriza cambiar la prueba ni descartar búsquedas fall
 
 La [matriz de consistencia](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md) reúne objetivos, hipótesis, variables y criterios.
 
-- **OE1 / HE1:** configuración que alcanza calidad y cumplimiento sin intervención durante
+- **OE1 / HE1:** configuración con al menos 80% de decisiones correctas en test y ninguna infracción observada, sin edición humana durante
   el ciclo; en B2, actualización de instrucciones utilizada en una propuesta posterior.
 - **OE2 / HE2:** mejora de calidad frente a B1, sin aumentar incumplimientos y con el mismo
   tope de recursos. Las ablaciones complementan esta comparación.

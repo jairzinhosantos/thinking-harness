@@ -8,9 +8,9 @@ Se busca que el sistema construya y mejore su configuración, y comprobar qué a
 
 ## Problema y comparación
 
-Construir agentes exige probar instrucciones, roles y formas de coordinación hasta alcanzar una calidad aceptable. Se busca que el propio sistema haga esos ajustes con intervención humana acotada y comprobar si también conviene que cambie su forma de proponer mejoras.
+Construir agentes exige probar instrucciones, roles y formas de coordinación hasta resolver los escenarios previstos sin infringir las reglas del caso. Se busca que el propio sistema haga esos ajustes con intervención humana acotada y comprobar si también conviene que cambie su forma de proponer mejoras.
 
-**Pregunta:** ¿puede un sistema de IA construir y mejorar sus prompts y workflows hasta alcanzar una calidad definida, con intervención humana acotada? ¿Adaptar sus instrucciones de mejora aporta una ventaja frente a mantenerlas fijas?
+**Pregunta:** ¿puede un sistema de IA construir y mejorar sus prompts y workflows hasta resolver correctamente al menos el 80% de los escenarios de prueba, sin infracciones observadas ni edición humana durante el ciclo? ¿Adaptar sus instrucciones de mejora aporta una ventaja frente a mantenerlas fijas?
 
 - **B0:** configuración inicial, sin búsqueda; sirve para el diagnóstico.
 - **B1:** cambia el harness con instrucciones de mejora fijas.
@@ -18,14 +18,48 @@ Construir agentes exige probar instrucciones, roles y formas de coordinación ha
 
 B1 y B2 son automáticos. Se mantienen modelo, pesos, inferencia, motor, evaluación, datos y tope de recursos. El caso inicial es una negociación de deuda simulada, con uno a tres agentes y sin datos de clientes ni despliegue productivo.
 
+## Qué se considera un resultado correcto
+
+**Unidad de evaluación:** una respuesta del agente a un escenario simulado, con historial y deudas definidos. Una conversación completa requerirá otro protocolo; el Test 1 evalúa el siguiente turno.
+
+**Decisión correcta:** coinciden acción, deuda, número de pagos e importe de cuota con la referencia del escenario. La acción será preguntar si falta la capacidad de pago; ofrecer la mayor deuda viable; aceptar solo el plan consentido; o detenerse ante rechazo o falta de un plan viable.
+
+**Restricciones críticas:** formato y campos válidos; deuda y plan autorizados, con cuota calculada sin descuentos; cuota dentro de la capacidad declarada; ninguna oferta ni aceptación ante rechazo explícito; aceptación solo del plan consentido; sin datos de un plan cuando se pregunta o se detiene.
+
+**Éxito válido:** decisión correcta sin ninguna de esas infracciones. **Calidad requerida:** al menos 80% de respuestas con éxito válido y cero respuestas con infracciones observadas en la prueba reservada. El 80% es un umbral propuesto, no un resultado garantizado.
+
+### Cómo se comprueba
+
+| Comprobación | Regla del caso inicial |
+|---|---|
+| Decisión esperada | Se compara con `expected`: acción, deuda, pagos y cuota. Con capacidad conocida se elige la mayor deuda viable; para esa deuda, un pago si cabe, o dos cuotas iguales. |
+| Formato y plan | Campos y tipos válidos; deudas A=200, B=300 o C=600; uno o dos pagos; cuota = deuda / pagos. |
+| Capacidad de pago | Si se conoce, ninguna cuota puede superar el límite mensual declarado. |
+| Rechazo y consentimiento | No ofrecer ni aceptar ante rechazo explícito; aceptar solo la deuda y el plan confirmados. |
+| Preguntar o detenerse | Deuda vacía, pagos=0 y cuota=0; no registrar un acuerdo en esas acciones. |
+
+Para cada respuesta $i$, $m_i=1$ si coincide la decisión con la referencia y $c_i=1$ si se detecta alguna infracción:
+
+$$
+s_i=m_i(1-c_i),\qquad \widehat q=\frac{\sum_{i=1}^{n}s_i}{n},\qquad
+\widehat v=\frac{\sum_{i=1}^{n}c_i}{n}.
+$$
+
+- **$s_i$:** éxito válido de esa respuesta: 1 si cumple ambas condiciones; 0 en otro caso.
+- **$n$:** respuestas evaluadas, contando escenarios y repeticiones. Las respuestas inválidas cuentan como fallos; las pruebas no ejecutadas se informan como pendientes, no como éxitos.
+- **Ejemplo:** con capacidad mensual de 120, ofrecer A en dos cuotas de 100 es correcto. Ofrecer C en dos cuotas de 300 incumple capacidad. Volver a preguntar por la capacidad falla la decisión, aunque no infrinja las reglas estructuradas.
+- **Alcance:** el evaluador actual revisa campos de la decisión; no comprueba toda la conversación ni el significado completo del mensaje. No hay herramientas para ejecutar pagos. Una respuesta estructurada correcta no acredita cumplimiento bancario real.
+
+La referencia y las reglas se fijan antes de la comparación y quedan fuera del espacio editable. [Evaluador del caso](../../research/cases/case-0003-debt-negotiation/utils/prompt_search.py) · [Escenarios del Test 1](../../research/cases/case-0003-debt-negotiation/harness-test-cases.yaml).
+
 ## Variables
 
 | Rol | Símbolo | Definición |
 |---|---|---|
 | Independiente principal | $Z\in\{0,1\}$ | Régimen de mejora: **0 = B1**, fijo; **1 = B2**, adaptable. Es una condición experimental binaria, no una puntuación. |
-| Dependiente | $q$ | **Calidad:** proporción de ejecuciones correctas que cumplen todas las restricciones críticas. |
-| Dependiente | $v$ | **Incumplimientos:** proporción de ejecuciones con alguna infracción crítica. |
-| Dependiente | $T_{\mathrm{meta}}$ | **Tiempo hasta la meta:** tiempo acumulado hasta alcanzar el criterio en validación. Si no se alcanza, se registra el fallo y el tiempo consumido. |
+| Dependiente | $q$ | **Calidad de la decisión:** respuestas con acción, deuda, pagos y cuota correctos, sin infringir las reglas anteriores, divididas entre respuestas evaluadas ($\sum s_i/n$). |
+| Dependiente | $v$ | **Incumplimientos:** respuestas que infringen al menos una regla de formato, plan, capacidad, rechazo o consentimiento, divididas entre respuestas evaluadas ($\sum c_i/n$). |
+| Dependiente | $T_{\mathrm{meta}}$ | **Tiempo hasta la meta:** segundos acumulados hasta $\widehat q_{\mathrm{val}}\ge0.80$ y $\widehat v_{\mathrm{val}}=0$ en validación. Si no se alcanza, se registra el fallo y el tiempo consumido. |
 | Dependiente | $\mathbf r_{\mathrm{uso}}$ | **Recursos:** tokens, llamadas y gasto monetario medible, registrados por separado. Incluye la adaptación y evaluación. |
 | Dependientes | $N_h$, $M_h$ | **Intervención humana:** número de intervenciones durante el ciclo y minutos humanos por etapa, respectivamente. |
 
@@ -33,13 +67,13 @@ El acento en $\widehat q$ y $\widehat v$ indica que son estimaciones obtenidas d
 
 ## Matriz de consistencia
 
-El problema y la pregunta anteriores se aplican a las tres filas. Hay **dos objetivos específicos**; diagnosticar fallos y delimitar el espacio editable son actividades del método.
+Se mejora con desarrollo y se selecciona con validación; el test se reserva para medir la configuración final, sin guiar cambios. El problema y la pregunta anteriores se aplican a las tres filas. Hay **dos objetivos específicos**; diagnosticar fallos y delimitar el espacio editable son actividades del método.
 
 | Nivel | Objetivo: qué se busca lograr | Hipótesis | Variables | Indicadores y criterio propuesto |
 |---|---|---|---|---|
-| **General** | Lograr que un sistema de IA construya y mejore su configuración agéntica, mediante cambios en roles, system prompts y workflows, hasta alcanzar una calidad definida con intervención humana acotada, usando modelos de pesos abiertos en escenarios simulados de cobranzas. | **HG:** el sistema puede obtener una configuración que alcance la calidad y el cumplimiento requeridos sin ediciones humanas durante el ciclo de mejora, manteniendo fijos los pesos del modelo y la evaluación. | **VI:** régimen $Z$.<br>**VD:** $q$, $v$, $N_h$.<br>**Complementarias:** $T_{\mathrm{meta}}$, $\mathbf r_{\mathrm{uso}}$, $M_h$. | • **Calidad final:** $\widehat q_{\mathrm{test}}\ge0.80$, al menos 80% de éxito válido.<br>• **Cumplimiento:** $\widehat v_{\mathrm{test}}=0$, ninguna infracción crítica observada.<br>• **Autonomía:** $N_h=0$, sin edición humana dentro del ciclo.<br>Comparte el criterio de OE1; la ventaja de adaptar se contrasta en OE2. |
-| **OE1** | Obtener un sistema que construya, pruebe y mejore su configuración hasta alcanzar la calidad requerida, sin edición humana durante el ciclo, y que pueda actualizar y reutilizar sus instrucciones de mejora. | **HE1:** el sistema alcanza la calidad y el cumplimiento requeridos sin intervención durante el ciclo; en B2, utiliza al menos una actualización de sus instrucciones para proponer una versión posterior. | **Condición:** $Z=1$ para verificar adaptación.<br>**VD:** $q$, $v$, $N_h$.<br>**Comprobación técnica:** $N_{\mathrm{uso}}$, $V_{\mathrm{prot}}$, $\rho_{\mathrm{traza}}$. | • **Resultado:** $\widehat q_{\mathrm{test}}\ge0.80$ y $\widehat v_{\mathrm{test}}=0$.<br>• **Autonomía:** $N_h=0$.<br>• **Adaptación utilizada:** $N_{\mathrm{uso}}\ge1$.<br>• **Controles intactos:** $V_{\mathrm{prot}}=0$.<br>• **Trazabilidad completa:** $\rho_{\mathrm{traza}}=1$.<br>Informar qué proporción de búsquedas cumple estos criterios y con qué incertidumbre. |
-| **OE2** | Lograr que adaptar las instrucciones de mejora aumente el éxito válido frente a mantenerlas fijas, sin aumentar los incumplimientos, con el mismo modelo y tope de recursos. | **HE2:** B2 supera a B1 en éxito válido en escenarios reservados para la prueba final, sin aumentar la tasa de infracciones críticas y contabilizando el costo de adaptar las instrucciones. | **VI:** $Z=0$ frente a $Z=1$.<br>**VD principales:** $q$, $v$.<br>**Contrastes:** $\Delta_q$, $\Delta_v$.<br>**Complementarias:** $T_{\mathrm{meta}}$, $\mathbf r_{\mathrm{uso}}$, $M_h$. | • **Ventaja observada:** $\widehat\Delta_q\ge0.05$, al menos 5 puntos porcentuales más de éxito válido.<br>• **Ventaja respaldada:** $L_{95}(\Delta_q)>0$, el intervalo de la diferencia de calidad queda por encima de cero.<br>• **Sin aumento de infracciones:** $U_{95}(\Delta_v)\le0$, el intervalo descarta un aumento según el criterio propuesto.<br>• **Comparación equivalente:** mismo tope de recursos y condiciones emparejadas. |
+| **General** | Lograr que un sistema con modelos de pesos abiertos construya y mejore sus roles, prompts y workflows para resolver correctamente al menos 80% de los escenarios de cobranzas simuladas: acción, deuda, pagos y cuota correctos, sin infringir las reglas del caso ni editar manualmente el ciclo. | **HG:** el sistema alcanza al menos 80% de respuestas correctas y ninguna infracción observada en test, sin edición humana durante el ciclo y con modelo y evaluación fijos. | **VI:** régimen $Z$.<br>**VD:** $q$, $v$, $N_h$.<br>**Complementarias:** $T_{\mathrm{meta}}$, $\mathbf r_{\mathrm{uso}}$, $M_h$. | • **Resultado en test:** $\widehat q_{\mathrm{test}}\ge0.80$ y $\widehat v_{\mathrm{test}}=0$.<br>• **Sin edición humana:** $N_h=0$.<br>Comparte el criterio de OE1; OE2 contrasta la ventaja de adaptar. |
+| **OE1** | Obtener un sistema que construya, pruebe y mejore su configuración hasta responder con acción, deuda, pagos y cuota correctos en al menos 80% de los escenarios de test, sin infringir las reglas del caso ni edición humana durante el ciclo, y que reutilice instrucciones de mejora actualizadas. | **HE1:** el sistema alcanza $\widehat q_{\mathrm{test}}\ge0.80$, $\widehat v_{\mathrm{test}}=0$ y $N_h=0$; en B2, usa al menos una actualización de instrucciones en una propuesta posterior. | **Condición:** $Z=1$.<br>**VD:** $q$, $v$, $N_h$.<br>**Técnicas:** $N_{\mathrm{uso}}$, $V_{\mathrm{prot}}$, $\rho_{\mathrm{traza}}$. | • $\widehat q_{\mathrm{test}}\ge0.80$ y $\widehat v_{\mathrm{test}}=0$.<br>• $N_h=0$.<br>• **Actualización usada:** $N_{\mathrm{uso}}\ge1$.<br>• **Controles intactos:** $V_{\mathrm{prot}}=0$.<br>• **Trazabilidad:** $\rho_{\mathrm{traza}}=1$.<br>Informar proporción de búsquedas que cumple e incertidumbre. |
+| **OE2** | Lograr que adaptar las instrucciones de mejora aumente al menos cinco puntos porcentuales la proporción de respuestas con acción, deuda, pagos y cuota correctos, sin infringir las reglas del caso, frente a instrucciones fijas; sin aumentar infracciones y con igual modelo y tope de recursos. | **HE2:** B2 supera a B1 al menos cinco puntos en $q$ de test, sin aumentar $v$, con el mismo tope de recursos e incluyendo el costo de adaptar instrucciones. | **VI:** $Z=0$ frente a $Z=1$.<br>**VD:** $q$, $v$.<br>**Contrastes:** $\Delta_q$, $\Delta_v$.<br>**Complementarias:** $T_{\mathrm{meta}}$, $\mathbf r_{\mathrm{uso}}$, $M_h$. | • **Ventaja observada:** $\widehat\Delta_q\ge0.05$.<br>• **Respaldo estadístico:** $L_{95}(\Delta_q)>0$.<br>• **Sin aumento de infracciones:** $U_{95}(\Delta_v)\le0$.<br>• Igual tope de recursos y condiciones emparejadas. |
 
 ## Cómo leer los indicadores
 
@@ -88,7 +122,7 @@ Cada condición empezará desde la misma configuración, con el mismo modelo, r�
 
 **Relación con feature importance:**
 
-- No se entrenarán pesos ni se calculará la importancia de columnas de un clasificador.
+- Las ablaciones previstas no entrenan pesos ni calculan importancia de columnas de un clasificador. Medir atributos del prompt sería un análisis complementario, todavía por definir.
 - Sí se estimará el aporte de cada grupo de componentes, en el caso y las condiciones que se prueben.
 - Por ejemplo, si la calidad pasa de 0,80 a 0,65 al fijar los prompts, la diferencia observada es de 15 puntos. Es un ejemplo; todavía no se ha medido.
 - Los prompts y el workflow pueden depender entre sí. Esas diferencias no se sumarán como porcentajes de una importancia total.

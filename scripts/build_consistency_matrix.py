@@ -81,14 +81,18 @@ def build(font_dir=None):
              Paragraph('Matriz de consistencia', heading),
              Paragraph('Mejora recursiva de harnesses agénticos con modelos de pesos abiertos', title), Spacer(1, 8),
              Paragraph('<b>Problema.</b> Construir agentes exige ajustar instrucciones, roles y coordinación por ensayo y error. '
-                       'Se busca que el sistema haga esos ajustes y comprobar si conviene que también cambie su forma de proponer mejoras.', style), Spacer(1, 6)]
+                       'Se estudia su mejora automática y la adaptación de sus instrucciones de mejora.', style), Spacer(1, 6)]
+    definitions = [next(line for line in document.splitlines() if line.startswith(prefix))
+                   for prefix in ('**Decisión correcta:**', '**Restricciones críticas:**')]
+    story += [Paragraph(rich(text), small) for text in definitions]
+    story += [Spacer(1, 6)]
     cells = [[Paragraph(x, th) for x in ['Nivel', 'Objetivo', 'Hipótesis', 'Variables', 'Indicadores y criterios']]]
     cells += [[Paragraph(rich(value.strip().replace('**General**', '**OG**')), style) for value in row] for row in rows]
-    table = Table(cells, colWidths=[40, 180, 176, 120, usable - 516], repeatRows=1)
+    table = Table(cells, colWidths=[42, 214, 155, 110, usable - 521], repeatRows=1)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), navy), ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('LEFTPADDING', (0, 0), (-1, -1), 7), ('RIGHTPADDING', (0, 0), (-1, -1), 7),
-        ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 6), ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#F3F5F7'), colors.white]),
         ('LINEBELOW', (0, 0), (-1, 0), 1, burgundy), ('INNERGRID', (0, 1), (-1, -1), .3, line),
         ('BOX', (0, 1), (-1, -1), .4, line),
@@ -96,13 +100,16 @@ def build(font_dir=None):
     story += [table, Spacer(1, 7),
               Paragraph('<b>OG:</b> objetivo general. <b>Comparación:</b> B1 cambia el harness con instrucciones de mejora fijas (Z=0). '
                         'B2 también puede actualizar esas instrucciones (Z=1). Modelo, evaluación y presupuesto se mantienen iguales.', small), Spacer(1, 4),
-              Paragraph('<b>Lectura:</b> q: éxito válido; v: incumplimientos; N<sub>h</sub>: intervenciones humanas; '
+              Paragraph('<b>Lectura:</b> q = respuestas correctas sin infracciones / respuestas evaluadas; '
+                        'v = respuestas con infracciones / respuestas evaluadas. N<sub>h</sub>: intervenciones humanas; '
                         'T<sub>meta</sub>: tiempo hasta la meta; r<sub>uso</sub>: tokens, llamadas y costo; M<sub>h</sub>: minutos humanos. '
                         'N<sub>uso</sub>: actualizaciones reutilizadas; V<sub>prot</sub>: cambios en partes protegidas; '
                         'ρ<sub>traza</sub>: propuestas reconstruibles / registradas.', small), Spacer(1, 4),
               Paragraph('Δ<sub>q</sub> y Δ<sub>v</sub>: diferencias medias B2 menos B1; L<sub>95</sub> y U<sub>95</sub>: '
                         'límites inferior y superior del intervalo de confianza del 95%. Los valores medidos son estimaciones. '
-                        '<b>Los umbrales se revisarán en factibilidad y se fijarán antes del contraste.</b>', small)]
+                        '<b>Umbrales propuestos, por fijar antes del contraste.</b> '
+                        'La búsqueda usa desarrollo/validación; test se reserva al final. '
+                        'El Test 1 revisa decisiones estructuradas, no conversaciones completas ni cumplimiento bancario real.', small)]
     content_height = sum(flowable.wrap(usable, height)[1] for flowable in story)
     if content_height > height - 58:
         raise ValueError(f'Content needs {content_height:.1f} pt; available {height - 58:.1f}; edit content rather than overflow')
