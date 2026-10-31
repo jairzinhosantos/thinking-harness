@@ -1,6 +1,6 @@
 id,title,status,revision,created,updated,path
 case-0001,Harness de corrección de código,draft,8,2026-10-02,2026-10-17,research/cases/case-0001-code-repair-harness/README.md
-case-0003,Negociación de deudas sintéticas,in-review,14,2026-10-16,2026-10-30,research/cases/case-0003-debt-negotiation/README.md
+case-0003,Negociación de deudas sintéticas,in-review,15,2026-10-16,2026-10-30,research/cases/case-0003-debt-negotiation/README.md
 dec-0001,Núcleo público y extensión privada,accepted,2,2026-09-29,2026-10-17,docs/decisions/dec-0001-public-research-core.md
 dec-0002,Ramas e idioma: decisión inicial,accepted,2,2026-09-30,2026-10-17,docs/decisions/dec-0002-branching-and-english-standard.md
 dec-0003,Voz del proyecto,accepted,2,2026-10-01,2026-10-17,docs/decisions/dec-0003-project-author-voice.md
@@ -9,7 +9,7 @@ dec-0005,Integración y promoción con revisión humana,accepted,2,2026-10-02,20
 dec-0006,Limpieza y conservación de evidencia,in-review,2,2026-10-16,2026-10-17,docs/decisions/dec-0006-active-research-cleanup.md
 dec-0007,Utilidades Python dentro del caso,in-review,2,2026-10-16,2026-10-17,docs/decisions/dec-0007-case-local-utils.md
 dec-0008,Español principal y notas de investigación,in-review,1,2026-10-17,2026-10-17,docs/decisions/dec-0008-spanish-primary-documentation.md
-doc-0002,Plan de investigación,in-review,7,2026-09-29,2026-10-30,docs/doc-0002-research-plan.md
+doc-0002,Plan de investigación,in-review,8,2026-09-29,2026-10-30,docs/doc-0002-research-plan.md
 doc-0003,Estrategia de desarrollo con agentes,draft,2,2026-09-29,2026-10-17,docs/designs/doc-0003-agentic-development-strategy.md
 doc-0004,Progreso y revisión humana,draft,2,2026-09-29,2026-10-17,docs/designs/doc-0004-progress-and-hitl.md
 doc-0005,Matriz de escenarios y plan de EDA para corrección de código,draft,8,2026-10-09,2026-10-17,research/cases/case-0001-code-repair-harness/scenarios.md

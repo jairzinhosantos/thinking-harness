@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 14
+revision: 15
 created: 2026-10-16
 updated: 2026-10-30
 ---
@@ -16,16 +16,16 @@ El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.p
 [presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
 en la raíz del caso; `results/` conserva las ejecuciones registradas.
 
-## Prueba breve de adaptación
+## Test 1: adaptación de instrucciones
 
-El [notebook ejecutado](harness-smoke-test.ipynb) recorre dos iteraciones de B2: propone una política,
+El [notebook ejecutado](harness-smoke-test.ipynb) recorre cinco iteraciones de B2: propone una política,
 actualiza las instrucciones de mejora y las utiliza en la siguiente propuesta. Explica las variables
-con respuestas reales de API y conserva protocolo, prompts, trazas y consumo en `results/`.
+con respuestas de API, criterios de selección y consumo.
 
-En esta ejecución, la primera propuesta resolvió 2/2 casos de validación; la segunda incurrió en
-un incumplimiento y fue rechazada. La política conservada resolvió 1/2 en test. Costo estimado:
-USD 0,010418, con 17 llamadas. Es una prueba del mecanismo con evaluación estructurada;
-no una comparación B1/B2 ni una reproducción de un paper. El piloto descrito abajo permanece intacto.
+Se reutilizaron cuatro actualizaciones. Ninguna propuesta superó la validación y se conservó la
+política inicial; en test resolvió 0/2 escenarios. No se alcanzó la calidad requerida.
+Consumo: 35 llamadas, 19.587 tokens y USD 0,025873 estimados. La evaluación comprueba decisiones
+estructuradas; no se ejecutó B1 ni se acredita una ventaja de la adaptación.
 
 ## Extensión propuesta
 

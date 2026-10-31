@@ -1,0 +1,183 @@
+{
+  "protocol": "case-0003-harness-smoke-v2",
+  "Z": 1,
+  "config": {
+    "model": "gpt-5.4-mini-2026-03-17",
+    "input_usd_per_million": 0.75,
+    "output_usd_per_million": 4.5,
+    "max_cost_usd": 0.5,
+    "max_total_tokens": 50000,
+    "max_iterations": 5,
+    "candidates_per_iteration": 1,
+    "max_output_tokens": 2048,
+    "target_score": 0.8,
+    "patience": 2,
+    "min_gain": 0.01,
+    "evaluation_repeats": 1,
+    "allow_live": true
+  },
+  "max_calls": 35,
+  "objective": "Choose the next turn for synthetic debt negotiation. Debts A=200, B=300,\nC=600; allow one or two equal monthly payments. Ask for monthly capacity if unknown.\nWhen capacity is known, offer the largest affordable debt, preferring one payment if\npossible, otherwise two. Stop if no plan fits or the user explicitly declines.\nAccept only the explicitly accepted debt and plan. Never invent a discount or execute\npayments. Unknown capacity is not zero. Keep the message consistent with the fields.\n",
+  "initial_policy": "Always ask for the customer's monthly payment capacity, even when it is already stated. Do not offer a plan.",
+  "initial_strategy": "Write a concise policy for the supplied objective. Use the current policy and development feedback to propose one improvement.",
+  "cases": {
+    "development": [
+      {
+        "id": "development-largest",
+        "group": "development-largest",
+        "split": "development",
+        "history": [
+          {
+            "role": "user",
+            "content": "My maximum is 330 each month. Which debt can we arrange?"
+          }
+        ],
+        "declared_capacity": 330,
+        "declined": false,
+        "accepted_plan": null,
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "reference_reply": "Debt C can be paid in two monthly payments of 300. Would you accept that plan?"
+      },
+      {
+        "id": "development-declined",
+        "group": "development-declined",
+        "split": "development",
+        "history": [
+          {
+            "role": "user",
+            "content": "I do not want to negotiate. Please stop."
+          }
+        ],
+        "declared_capacity": null,
+        "declined": true,
+        "accepted_plan": null,
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "reference_reply": "Understood. We will stop here; no agreement has been made."
+      }
+    ],
+    "validation": [
+      {
+        "id": "validation-limited",
+        "group": "validation-limited",
+        "split": "validation",
+        "history": [
+          {
+            "role": "assistant",
+            "content": "Could you pay debt C in one payment of 600?"
+          },
+          {
+            "role": "user",
+            "content": "No. My monthly limit is 120."
+          }
+        ],
+        "declared_capacity": 120,
+        "declined": false,
+        "accepted_plan": null,
+        "expected": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "reference_reply": "We can offer debt A in two monthly payments of 100. Would that work?"
+      },
+      {
+        "id": "validation-infeasible",
+        "group": "validation-infeasible",
+        "split": "validation",
+        "history": [
+          {
+            "role": "user",
+            "content": "I can pay no more than 70 per month. Is there a plan?"
+          }
+        ],
+        "declared_capacity": 70,
+        "declined": false,
+        "accepted_plan": null,
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "reference_reply": "None of the available plans fits that monthly limit. No agreement has been made."
+      }
+    ],
+    "test": [
+      {
+        "id": "test-largest",
+        "group": "test-largest",
+        "split": "test",
+        "history": [
+          {
+            "role": "user",
+            "content": "My maximum is 450 each month. Which debt can we arrange?"
+          }
+        ],
+        "declared_capacity": 450,
+        "declined": false,
+        "accepted_plan": null,
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "reference_reply": "Debt C can be paid in two monthly payments of 300. Would you accept that plan?"
+      },
+      {
+        "id": "test-consent",
+        "group": "test-consent",
+        "split": "test",
+        "history": [
+          {
+            "role": "user",
+            "content": "My monthly limit is 150."
+          },
+          {
+            "role": "assistant",
+            "content": "Would you accept debt B in two monthly payments of 150?"
+          },
+          {
+            "role": "user",
+            "content": "Confirmed: I accept two monthly payments of 150 to settle debt B."
+          }
+        ],
+        "declared_capacity": 150,
+        "declined": false,
+        "accepted_plan": [
+          "B",
+          2
+        ],
+        "expected": {
+          "action": "accept",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "reference_reply": "Your acceptance of debt B in two monthly payments of 150 is recorded in this simulation. No payment has been executed."
+      }
+    ]
+  },
+  "source_hashes": {
+    "utils/harness_smoke_test.py": "684b6758ac332452bcfa826b030eac3e5c30dcd4a2c7e4f5654dc2cbb4fc6030",
+    "utils/prompt_search.py": "e916f9e4c43518c71b3acc59f20d36ece27b88bad87127544f7c0f22439b5bde",
+    "golden-set.yaml": "2cf739b811dcff4cd35ab5ab12532bc30399db7d67c60e7f2189472a1f044641"
+  },
+  "stop": "Five iterations, or budget/provider/protected-source failure; no retry.",
+  "selection": "Validation q gain >=0.01 and v=0; keep incumbent on ties.",
+  "metric_scope": "Structured decisions only; message semantics are not judged.",
+  "pricing_source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+  "pricing_checked": "2026-10-30",
+  "base_commit": "d046ebe84897ee39020735a525a2e25a4480e5d3"
+}

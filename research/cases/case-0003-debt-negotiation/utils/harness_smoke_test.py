@@ -1,4 +1,4 @@
-"""Two-iteration B2 demonstration. No network on import or evidence replay."""
+"""Five-iteration B2 test. No network on import or evidence replay."""
 from dataclasses import asdict
 from datetime import datetime, timezone
 import hashlib
@@ -12,8 +12,9 @@ from prompt_search import (CASE_DIR, Config, ResponsesClient, BudgetStop, Provid
                            REPLY_SCHEMA, PROMPT_SCHEMA, RUNTIME, get_prompt,
                            load_cases, rule_check, visible)
 
-PROTOCOL = "case-0003-harness-smoke-v1"
-MAX_CALLS = 17
+PROTOCOL = "case-0003-harness-smoke-v2"
+REPLAY_PROTOCOLS = {"case-0003-harness-smoke-v1", PROTOCOL}
+MAX_CALLS = 35
 OBJECTIVE = """Choose the next turn for synthetic debt negotiation. Debts A=200, B=300,
 C=600; allow one or two equal monthly payments. Ask for monthly capacity if unknown.
 When capacity is known, offer the largest affordable debt, preferring one payment if
@@ -56,7 +57,7 @@ def select_cases():
 def default_config():
     return Config(model="gpt-5.4-mini-2026-03-17", input_usd_per_million=0.75,
                   output_usd_per_million=4.50, max_cost_usd=0.50,
-                  max_total_tokens=50000, max_iterations=2, candidates_per_iteration=1,
+                  max_total_tokens=50000, max_iterations=5, candidates_per_iteration=1,
                   max_output_tokens=2048, target_score=0.80, min_gain=0.01,
                   evaluation_repeats=1, allow_live=True)
 
@@ -82,7 +83,7 @@ def run(output_root=None, client_factory=ResponsesClient):
     protocol = {"protocol": PROTOCOL, "Z": 1, "config": asdict(cfg), "max_calls": MAX_CALLS,
                 "objective": OBJECTIVE, "initial_policy": INITIAL_POLICY,
                 "initial_strategy": INITIAL_STRATEGY, "cases": cases, "source_hashes": hashes,
-                "stop": "Two iterations, or budget/provider/protected-source failure; no retry.",
+                "stop": "Five iterations, or budget/provider/protected-source failure; no retry.",
                 "selection": "Validation q gain >=0.01 and v=0; keep incumbent on ties.",
                 "metric_scope": "Structured decisions only; message semantics are not judged.",
                 "pricing_source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
@@ -130,13 +131,14 @@ def run(output_root=None, client_factory=ResponsesClient):
         if incumbent["validation"]["q"] >= cfg.target_score and incumbent["validation"]["v"] == 0:
             report["T_meta"] = time.monotonic() - started
         checkpoint()
-        for iteration in (1, 2):
+        for iteration in range(1, cfg.max_iterations + 1):
             proposal = get_prompt(ask("proposer", PROPOSAL_CONTRACT + strategy,
                 {"objective": OBJECTIVE, "current_policy": policy,
                  "development_feedback": incumbent["development"]["rows"]}, PROMPT_SCHEMA))
-            if iteration == 2 and report["strategy_updates"][-1]["changed"]:
+            if iteration > 1 and report["strategy_updates"][-1]["changed"]:
                 report["N_uso"] += 1
-            candidate = {"iteration": iteration, "policy": proposal, "strategy_used": strategy,
+            candidate = {"iteration": iteration, "parent_iteration": incumbent["iteration"],
+                         "proposal_call": client.calls, "policy": proposal, "strategy_used": strategy,
                          "development": evaluate(proposal, "development"),
                          "validation": evaluate(proposal, "validation")}
             candidate["accepted"] = choose(candidate["validation"], incumbent["validation"], cfg.min_gain)
@@ -148,12 +150,12 @@ def run(output_root=None, client_factory=ResponsesClient):
                     and incumbent["validation"]["v"] == 0):
                 report["T_meta"] = time.monotonic() - started
             checkpoint()
-            if iteration == 1:
+            if iteration < cfg.max_iterations:
                 updated = get_prompt(ask("strategy_update", UPDATE_CONTRACT,
                     {"objective": OBJECTIVE, "current_strategy": strategy,
                      "candidate_policy": proposal,
                      "development_feedback": candidate["development"]["rows"]}, PROMPT_SCHEMA))
-                report["strategy_updates"].append({"after_iteration": 1, "before": strategy,
+                report["strategy_updates"].append({"after_iteration": iteration, "update_call": client.calls, "before": strategy,
                                                    "after": updated, "changed": updated != strategy})
                 strategy = updated
                 checkpoint()
@@ -187,6 +189,6 @@ def load_run(directory):
             raise ValueError("Evidence hash mismatch")
     report = json.loads((directory / "report.json").read_text())
     protocol = json.loads((directory / "protocol.json").read_text())
-    if report["protocol"] != PROTOCOL or protocol["protocol"] != PROTOCOL:
+    if report["protocol"] not in REPLAY_PROTOCOLS or protocol["protocol"] != report["protocol"]:
         raise ValueError("Unexpected protocol")
     return protocol, report
