@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 17
+revision: 18
 created: 2026-10-16
 updated: 2026-10-31
 ---
@@ -59,7 +59,7 @@ Instalar [requirements-local.txt](requirements-local.txt) con Python 3.12 en App
 los pesos deben estar en la caché local de Hugging Face. Para repetir desde esta carpeta:
 
 ```sh
-HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 --contract explicit --strategy adaptive
 ```
 
 Admite también `qwen` y `gemma`. Cada ejecución crea su propio registro en `results/`, con
@@ -73,6 +73,31 @@ Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
 [Qwen3](https://huggingface.co/Qwen/Qwen3-4B).
 Qwen tiene licencia Apache 2.0; Gemma usa la licencia Gemma. Se distinguen pesos disponibles
 de licencia abierta sin restricciones adicionales.
+
+### Continuación con Qwen3: mejora fija y adaptativa
+
+Se aclaró manualmente el contrato de salida: significado de cada acción y campos del plan.
+Con una misma política manual, ambos contratos resolvieron 1/2 casos de desarrollo. El cambio
+no bastó para corregir inconsistencias entre el mensaje y los campos numéricos.
+
+También se corrigió una omisión del código local: el feedback al mejorador no incluía el
+historial del caso. El protocolo **v4** lo incorpora, sin enviar validación ni test al mejorador.
+Las ejecuciones v3 previas quedan como diagnóstico con contexto incompleto. Las nuevas ejecuciones
+conservan una copia del script, su protocolo, respuestas y hashes.
+
+| Condición v4, tres propuestas | Aceptadas | Validación de H0 conservada | Test reutilizado de H0 | Llamadas | Tokens |
+|---|---:|---:|---:|---:|---:|
+| B1: instrucciones de mejora fijas | 0 | 0/2 | 1/2 | 21 | 14.593 |
+| B2: instrucciones adaptativas | 0 | 0/2 | 1/2 | 23 | 16.128 |
+
+B2 cambió las instrucciones una vez; la siguiente actualización devolvió el mismo texto.
+No mejoró el resultado y consumió 1.535 tokens más. B1 repitió la misma propuesta al conservar
+la entrada y usar temperatura cero. Este control mínimo todavía necesita un mecanismo común
+para evitar repeticiones antes de una comparación más amplia.
+
+Para B1, usar `--strategy fixed`; `--calibrate` compara los contratos solo en desarrollo,
+sin búsqueda. Se reutilizaron escenarios conocidos para depuración: no son resultados de
+generalización ni una prueba de superioridad de B1 o B2. La longitud sigue siendo descriptiva.
 
 ## Extensión propuesta
 

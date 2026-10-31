@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 10
+revision: 11
 created: 2026-09-29
 updated: 2026-10-31
 ---
@@ -31,6 +31,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Negociación sintética | Piloto v2 con optimizador fijo, detenido por presupuesto, sin candidato aceptado ni comparación final; objetivo v3 sin medir |
 | Adaptación mínima | [Test 1](../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb): cinco propuestas en español y cuatro actualizaciones reutilizadas; propuesta 2 conservada, validación 2/2 y test 2/2 con reglas estructuradas; sin comparación B1/B2 |
 | Modelos locales | [Test 2](../research/cases/case-0003-debt-negotiation/local-model-test.ipynb): Qwen3 4B completó tres propuestas sin mejora; Qwen2.5 1,5B y Gemma 2B se detuvieron por errores de salida. Longitud registrada con el tokenizer; sin llamadas a API |
+| Contraste local mínimo | Qwen3 4B, protocolo v4 con contexto de desarrollo completo: tres propuestas fijas y tres adaptativas, ninguna aceptada. B2 consumió más tokens; B1 repitió propuestas. Escenarios reutilizados, sin conclusión de superioridad |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
@@ -40,7 +41,9 @@ y el [índice de casos](../research/cases/README.md). No reinterpretar resultado
 
 Se prepara el [entrega académica: matriz y siguiente sprint](academic/README.md)
 para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
-La entrega define cómo medir; la prueba B2 permite observar el mecanismo mínimo, pero todavía no demuestra importancia ni ventaja comparativa.
+La entrega define cómo medir. Las pruebas muestran el mecanismo y sus fallos, pero todavía
+no demuestran importancia de componentes ni ventaja comparativa. Antes de ampliar el contraste,
+se revisará la coherencia de las decisiones y la repetición de propuestas.
 No modifica los protocolos ni los resultados del piloto.
 
 ## Próximas decisiones

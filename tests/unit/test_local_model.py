@@ -49,6 +49,38 @@ class LocalTransportTests(unittest.TestCase):
 
 
 class LocalLoopTests(unittest.TestCase):
+    def test_calibration_uses_only_development_and_no_optimizer(self):
+        requests = []
+        development = local.smoke.select_cases()['development']
+
+        class Client:
+            def __init__(self, *args):
+                self.calls = self.tokens = 0
+                self.load_seconds = 0
+                self.mx = type('Memory', (), {'get_peak_memory': staticmethod(lambda: 0)})
+
+            def length(self, text):
+                return len(text.split())
+
+            def ask(self, role, instructions, payload, schema):
+                self.calls += 1
+                requests.append((role, instructions, payload))
+                case = next(c for c in development if c['history'] == payload['history'])
+                return {**case['expected'], 'message': 'Control sintético'}, None
+
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.dict(local.MODELS, {'stub': ('test/missing', 'test')}, clear=True), \
+                patch.object(local.importlib.metadata, 'version', return_value='test-only'):
+            path = local.run('stub', directory, Client, calibration=True)
+            report = json.loads((path / 'report.json').read_text())
+        self.assertEqual(report['calls'], 4)
+        self.assertEqual(report['status'], 'completed')
+        self.assertEqual(report['rounds'], [])
+        self.assertNotIn('test', report)
+        self.assertEqual([r['contract'] for r in report['calibration']], ['original', 'explicit'])
+        self.assertTrue(all(role == 'negotiator' and local.smoke.OBJECTIVE in instructions
+                            for role, instructions, _ in requests))
+
     def test_recorded_runs_have_intact_manifests_and_balanced_token_counts(self):
         for directory in sorted((CASE / 'results').glob('*-local-*')):
             manifest = json.loads((directory / 'manifest.json').read_text())
@@ -57,6 +89,9 @@ class LocalLoopTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256((directory / name).read_bytes()).hexdigest(), expected)
             protocol = json.loads((directory / 'protocol.json').read_text())
             report = json.loads((directory / 'report.json').read_text())
+            if (directory / 'source.py').exists():
+                self.assertEqual(hashlib.sha256((directory / 'source.py').read_bytes()).hexdigest(),
+                                 protocol['source_hashes']['utils/local_model_test.py'])
             if protocol['protocol'].endswith('-v1'):
                 self.assertEqual(report['rounds'], [])
                 continue  # Tokenizer compatibility failure, not an inference measurement.
@@ -65,9 +100,15 @@ class LocalLoopTests(unittest.TestCase):
             self.assertEqual(report['tokens'], sum(c['input_tokens'] + c['output_tokens'] for c in calls))
             self.assertLessEqual(report['tokens'], protocol['limits']['total_tokens'])
             self.assertEqual(report['protected_source_changes'], 0)
-            self.assertEqual('test' in report, report['status'] == 'completed')
+            self.assertEqual('test' in report, report['status'] == 'completed' and protocol.get('kind') != 'calibration')
 
     def test_selection_reuses_strategy_and_excludes_held_out_feedback(self):
+        self.check_search('adaptive')
+
+    def test_fixed_search_never_updates_strategy(self):
+        self.check_search('fixed')
+
+    def check_search(self, strategy_mode):
         requests = []
         cases = [c for group in local.smoke.select_cases().values() for c in group]
 
@@ -96,19 +137,27 @@ class LocalLoopTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory, \
                 patch.dict(local.MODELS, {'stub': ('test/missing', 'test')}, clear=True), \
                 patch.object(local.importlib.metadata, 'version', return_value='test-only'):
-            path = local.run('stub', directory, Client)
+            path = local.run('stub', directory, Client, contract='explicit', strategy_mode=strategy_mode)
             report = json.loads((path / 'report.json').read_text())
         self.assertEqual(report['status'], 'completed')
-        self.assertEqual(report['calls'], 23)
+        self.assertEqual(report['calls'], 23 if strategy_mode == 'adaptive' else 21)
         self.assertEqual(report['selected_iteration'], 1)
         self.assertEqual([r.get('parent_iteration') for r in report['rounds'][1:]], [0, 1, 1])
         self.assertEqual(report['test']['q'], 1)
         proposals = [r for r in requests if r[0] == 'proposer']
-        self.assertIn('Estrategia actualizada', proposals[1][1])
+        if strategy_mode == 'adaptive':
+            self.assertIn('Estrategia actualizada', proposals[1][1])
+        else:
+            self.assertEqual(report['strategy_updates'], [])
+            self.assertTrue(all(local.smoke.INITIAL_STRATEGY in p[1] for p in proposals))
+            self.assertFalse(any(r[0] == 'strategy_update' for r in requests))
         for role, _, payload in requests:
             if role != 'negotiator':
                 self.assertNotIn('validation-', json.dumps(payload))
                 self.assertNotIn('test-', json.dumps(payload))
+                for feedback in payload['development_feedback']:
+                    original = next(c for c in cases if c['id'] == feedback['id'])
+                    self.assertEqual(feedback['context'], local.visible(original))
 
 
 if __name__ == '__main__':
