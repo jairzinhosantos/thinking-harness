@@ -64,6 +64,31 @@ class SmokeTests(unittest.TestCase):
                     self.assertEqual(set(payload), {'debts', 'allowed_payment_counts', 'history'})
             self.assertEqual(result['V_prot'], 0)
 
+    def test_spanish_fixtures_preserve_splits_and_expected_decisions(self):
+        original = {item['id']: item for item in smoke.load_cases()}
+        translated = smoke.select_cases()
+        self.assertEqual({split: len(items) for split, items in translated.items()},
+                         {'development': 2, 'validation': 2, 'test': 2})
+        for split, items in translated.items():
+            for item in items:
+                source = original[item['id']]
+                for field in ('split', 'group', 'expected', 'declared_capacity', 'declined', 'accepted_plan'):
+                    self.assertEqual(item[field], source[field])
+                self.assertNotEqual(item['history'], source['history'])
+                self.assertEqual([t['role'] for t in item['history']], [t['role'] for t in source['history']])
+        with tempfile.TemporaryDirectory() as directory:
+            path = smoke.run(directory, FakeClient)
+            protocol = json.loads((path / 'protocol.json').read_text())
+            self.assertEqual(protocol['language'], 'es')
+            for role, instructions, payload in FakeClient.instances[-1].requests:
+                if role == 'negotiator':
+                    self.assertTrue(instructions.startswith(protocol['runtime']))
+                    self.assertIn(protocol['policy_separator'], instructions)
+                if role == 'proposer':
+                    self.assertTrue(instructions.startswith(protocol['proposal_contract']))
+                if role == 'strategy_update':
+                    self.assertEqual(instructions, protocol['update_contract'])
+
     def test_quality_and_violations_are_not_complements(self):
         row = {'success': False, 'violations': []}
         self.assertEqual(smoke.summarize([row]), {'q': 0, 'v': 0, 'rows': [row]})
