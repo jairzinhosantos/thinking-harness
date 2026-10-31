@@ -2,9 +2,9 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 4
+revision: 5
 created: 2026-09-29
-updated: 2026-10-22
+updated: 2026-10-30
 ---
 
 # Plan de investigación
@@ -33,6 +33,13 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
 y el [índice de casos](../research/cases/README.md). No reinterpretar resultados v2 como evidencia v3.
+
+## Próximo sprint académico
+
+Se prepara el [análisis de variables y componentes](../research/cases/case-0003-debt-negotiation/component-analysis.md)
+para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
+La entrega define cómo medir; todavía no ejecuta búsquedas recursivas ni demuestra importancia.
+No modifica los protocolos ni los resultados del piloto.
 
 ## Próximas decisiones
 
