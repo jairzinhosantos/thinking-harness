@@ -141,7 +141,7 @@ class EvidenceView:
 
 
 class HarnessTestView(EvidenceView):
-    """Compact Spanish views; preserve English experimental prompts verbatim."""
+    """Compact Spanish views; preserve recorded experimental prompts verbatim."""
     def __init__(self):
         super().__init__('es')
 
@@ -154,34 +154,84 @@ class HarnessTestView(EvidenceView):
             return 'No registrado' if value is None else value
         self.show(self.table(headers, [[label(x) for x in row] for row in rows]))
 
-    def prompt(self, title, text, collapsed=False):
-        content = '<p><small>Texto utilizado en esta ejecución; entrada o salida del modelo.</small></p>'
-        content += '<div style="font-family:system-ui,sans-serif;white-space:normal;overflow-wrap:break-word">'
-        content += self.paragraphs(text) + '</div>'
+    def prompt(self, title, text, collapsed=False, description=None):
+        content = ('<p>' + escape(description) + '</p>') if description else ''
+        content += '<blockquote style="text-align:left;margin:12px 0;padding:8px 16px;border-left:3px solid #8296a8">'
+        content += self.paragraphs(text) + '</blockquote>'
         if collapsed:
-            self.show('<details><summary>' + escape(title) + '</summary>' + content + '</details>')
+            self.show('<details><summary><strong>' + escape(title) + '</strong></summary>' + content + '</details>')
         else:
             self.show('<h4>' + escape(title) + '</h4>' + content)
 
-    def comparison(self, title, before_label, after_label, before, after):
+    def comparison(self, title, before_label, after_label, before, after, collapsed=False):
         def sentences(text):
-            return '<ul>' + ''.join('<li>' + escape(x) + '</li>'
+            return '<ul style="text-align:left;padding-left:20px">' + ''.join('<li>' + escape(x) + '</li>'
                                    for x in re.split(r'(?<=[.!?])\s+', text.strip())) + '</ul>'
-        self.show('<h4>' + escape(title) + '</h4>'
-                  '<table style="width:100%;table-layout:fixed"><thead><tr>'
-                  '<th style="width:50%">' + escape(before_label) + '</th>'
-                  '<th style="width:50%">' + escape(after_label) + '</th></tr></thead><tbody><tr>'
-                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(before) + '</td>'
-                  '<td style="vertical-align:top;overflow-wrap:break-word">' + sentences(after) + '</td>'
+        cell_style = 'text-align:left;vertical-align:top;width:50%;padding:12px;overflow-wrap:break-word'
+        content = ('<table style="width:100%;table-layout:fixed"><thead><tr>'
+                  '<th align="left" style="' + cell_style + '">' + escape(before_label) + '</th>'
+                  '<th align="left" style="' + cell_style + '">' + escape(after_label) + '</th></tr></thead><tbody><tr>'
+                  '<td align="left" style="' + cell_style + '">' + sentences(before) + '</td>'
+                  '<td align="left" style="' + cell_style + '">' + sentences(after) + '</td>'
                   '</tr></tbody></table>')
+        if collapsed:
+            self.show('<details><summary><strong>' + escape(title) + '</strong></summary>' + content + '</details>')
+        else:
+            self.show('<h4>' + escape(title) + '</h4>' + content)
 
-    def strategy(self, update, reused):
+    def setup(self, protocol):
+        self.rows(['Llamada al LLM', 'System prompt: parte fija + parte editable', 'Entrada (user)', 'Salida'], [
+            ['Negociador', 'Contrato de respuesta fijo + política H', 'Deudas e historial', 'Decisión y mensaje'],
+            ['Mejorador de política', 'Contrato de propuesta fijo + instrucciones φ',
+             'Objetivo, H conservada y sus fallos de desarrollo', 'Política candidata H nueva'],
+            ['Actualizador de instrucciones', 'Contrato de actualización fijo',
+             'Objetivo, φ actual, H candidata y sus fallos de desarrollo', 'Instrucciones φ nuevas'],
+        ])
+        self.show('<p><strong>H guía al negociador. φ guía al mejorador.</strong> '
+                  'Son funciones distintas del mismo modelo, en llamadas separadas. '
+                  'Python evalúa y decide qué política conserva.</p>')
+        self.prompt('H0 · Parte editable del system prompt del negociador', protocol['initial_policy'],
+                    description='Política inicial: indica cómo actuar frente al cliente.')
+        self.prompt('φ0 · Parte editable del system prompt del mejorador', protocol['initial_strategy'],
+                    description='Instrucciones iniciales: indican cómo proponer una política nueva.')
+        for title, text, note in [
+            ('Contrato fijo del negociador', protocol['runtime'], 'Se combina con H. No cambia durante el bucle.'),
+            ('Contrato fijo del mejorador', protocol['proposal_contract'], 'Se combina con φ. No cambia durante el bucle.'),
+            ('System prompt fijo del actualizador', protocol['update_contract'], 'Recibe φ como dato de entrada y devuelve su reemplazo.'),
+        ]:
+            self.prompt(title, text, collapsed=True, description=note)
+        self.show('<p><strong>Composición:</strong> contrato fijo + texto editable forman un system prompt. '
+                  '<strong>Actualización:</strong> se sustituye el texto editable; no se añade una lista de versiones anteriores.</p>')
+
+    def proposal(self, item, parent):
+        index, parent_index = item['iteration'], parent['iteration']
+        retained = index if item['accepted'] else parent_index
+        self.show(f'<h3>Propuesta {index} · ' + ('Aceptada' if item['accepted'] else 'Rechazada') + '</h3>')
+        self.rows(['Entrada al mejorador', 'Salida del LLM', 'Decisión de Python'], [[
+            f'H{parent_index} conservada + φ{index - 1} + fallos de desarrollo de H{parent_index}',
+            f'H{index}: política candidata',
+            f'Sustituir H{parent_index} por H{index}' if item['accepted'] else f'Conservar H{parent_index}; descartar H{index}',
+        ]])
+        self.show(f'<p><strong>Política vigente después de evaluar: H{retained}.</strong> '
+                  'El contrato fijo del negociador se mantiene.</p>')
+        self.comparison(f'Política: H{parent_index} → candidata H{index}',
+                        f'Antes: H{parent_index} conservada', f'Propuesta: H{index}',
+                        parent['policy'], item['policy'], collapsed=True)
+        self.prompt(f'φ{index - 1} · Instrucciones usadas para generar H{index}', item['strategy_used'],
+                    collapsed=True, description='Parte editable del system prompt del mejorador; no es la política del negociador.')
+
+    def strategy(self, update, reused, collapsed=False):
         index = update['after_iteration']
-        self.comparison(f'Actualización {index}', f'Antes: φ{index - 1}', f'Después: φ{index}',
-                        update['before'], update['after'])
-        self.rows(['Comprobación', 'Resultado'], [
-            ['El texto cambió', update['changed']],
-            ['Se usó en la propuesta siguiente', reused]])
+        self.show(f'<h4>Instrucciones del mejorador · φ{index - 1} → φ{index}</h4>')
+        self.rows(['Entrada al actualizador', 'Salida del LLM', 'Uso posterior'], [[
+            f'φ{index - 1} + candidata H{index} + sus fallos de desarrollo',
+            f'φ{index}: reemplazo completo de φ{index - 1}',
+            f'Usada para proponer H{index + 1}' if reused else 'No se verificó su uso posterior',
+        ]])
+        self.comparison('Comparar instrucciones anteriores y nuevas', f'Antes: φ{index - 1}', f'Después: φ{index}',
+                        update['before'], update['after'], collapsed=collapsed)
+        self.rows(['Comprobación', 'Resultado'], [['El texto cambió', update['changed']],
+                                               ['Se usó en la propuesta siguiente', reused]])
 
     def evaluation_rows(self, evaluation):
         names = {'ask': 'Preguntar', 'offer': 'Ofrecer', 'stop': 'Detener', 'accept': 'Aceptar'}
