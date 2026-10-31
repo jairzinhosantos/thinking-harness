@@ -68,6 +68,41 @@ class LocalTransportTests(unittest.TestCase):
 
 
 class LocalLoopTests(unittest.TestCase):
+    def test_reference_runs_only_negotiator_without_labels_or_search(self):
+        requests = []
+        cases = [c for group in local.smoke.select_cases().values() for c in group] + local.transfer_cases()
+
+        class Client:
+            def __init__(self, *args):
+                self.calls = self.tokens = self.load_seconds = 0
+                self.mx = type('Memory', (), {'get_peak_memory': staticmethod(lambda: 0)})
+            def length(self, text):
+                return len(text.split())
+            def ask(self, role, instructions, payload, schema):
+                self.calls += 1
+                requests.append((role, instructions, payload, schema))
+                case = next(c for c in cases if c['history'] == payload['history'])
+                return dict(case['expected']), None
+
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.dict(local.MODELS, {'stub': ('test/missing', 'test')}, clear=True), \
+                patch.object(local.importlib.metadata, 'version', return_value='test-only'):
+            path = local.run('stub', directory, Client, contract='decision', reference=True)
+            report = json.loads((path / 'report.json').read_text())
+            protocol = json.loads((path / 'protocol.json').read_text())
+        self.assertEqual(report['status'], 'completed')
+        self.assertEqual(report['calls'], 12)
+        self.assertEqual(protocol['limits']['calls'], 12)
+        self.assertEqual(report['rounds'], [])
+        self.assertEqual(report['strategy_updates'], [])
+        self.assertIsNone(report['selected_iteration'])
+        self.assertTrue(all(group['q'] == 1 for group in report['reference']['splits'].values()))
+        for role, instructions, payload, schema in requests:
+            self.assertEqual(role, 'negotiator')
+            self.assertEqual(instructions, local.DECISION_RUNTIME + local.smoke.POLICY_SEPARATOR + local.REFERENCE_POLICY)
+            self.assertEqual(set(payload), {'debts', 'history', 'allowed_payment_counts'})
+            self.assertEqual(schema, local.DECISION_SCHEMA)
+
     def test_calibration_uses_only_development_and_no_optimizer(self):
         requests = []
         development = local.smoke.select_cases()['development']
@@ -111,7 +146,7 @@ class LocalLoopTests(unittest.TestCase):
             if (directory / 'source.py').exists():
                 self.assertEqual(hashlib.sha256((directory / 'source.py').read_bytes()).hexdigest(),
                                  protocol['source_hashes']['utils/local_model_test.py'])
-            if protocol['protocol'].endswith('-v1'):
+            if protocol['protocol'] == 'case-0003-local-model-v1':
                 self.assertEqual(report['rounds'], [])
                 continue  # Tokenizer compatibility failure, not an inference measurement.
             calls = [json.loads(line) for line in (directory / 'calls.jsonl').read_text().splitlines()]
@@ -119,7 +154,7 @@ class LocalLoopTests(unittest.TestCase):
             self.assertEqual(report['tokens'], sum(c['input_tokens'] + c['output_tokens'] for c in calls))
             self.assertLessEqual(report['tokens'], protocol['limits']['total_tokens'])
             self.assertEqual(report['protected_source_changes'], 0)
-            self.assertEqual('test' in report, report['status'] == 'completed' and protocol.get('kind') != 'calibration')
+            self.assertEqual('test' in report, report['status'] == 'completed' and protocol.get('kind') not in {'calibration', 'reference'})
 
     def test_selection_reuses_strategy_and_excludes_held_out_feedback(self):
         self.check_search('adaptive')

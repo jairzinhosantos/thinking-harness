@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 19
+revision: 20
 created: 2026-10-16
 updated: 2026-10-31
 ---
@@ -58,10 +58,24 @@ El modelo todavía repite algunas propuestas; el control evita reevaluarlas. La 
 se registra con el tokenizer nativo para H y φ por separado; no selecciona candidatos
 ni mide claridad.
 
-**Siguiente paso propuesto:** mantener 4B para depurar el harness y 8B como contraste. 8B cabe en la Mac M5 Max
-con 48 GB, pero esta prueba no justifica sustituir 4B ni subir a modelos mayores. Antes de ampliar
-la búsqueda, se necesita una política de referencia que resuelva la tarea para separar fallos
-del negociador y del mejorador.
+**Control posterior con política manual:** el negociador también falla sin mejorador.
+Con el mismo contrato y evaluador, se ejecutaron 12 casos por modelo, sin búsqueda:
+
+| Modelo | Desarrollo | Validación | Test reutilizado | Seis casos v5 | Total | Casos con incumplimientos |
+|---|---:|---:|---:|---:|---:|---:|
+| 4B | 2/2 | 0/2 | 2/2 | 3/6 | 7/12 | 4 |
+| 8B | 1/2 | 0/2 | 1/2 | 4/6 | 6/12 | 0 |
+
+4B ofrece cuotas superiores a la capacidad. 8B evita esas violaciones, pero a veces pregunta
+o se detiene cuando corresponde otro turno. Ambos proponen dos pagos cuando cabe uno.
+La política manual no consiguió resolver validación; no es una referencia de funcionamiento
+correcto ni una mejora descubierta por el sistema. Se redactó después de revisar fallos previos.
+Los 12 casos son conocidos: este control no mide generalización ni aísla toda la causa del fallo.
+
+El [notebook, sección 7](local-model-test.ipynb) muestra la política exacta y cada respuesta.
+La prueba usó 24 llamadas locales: 10.085 tokens con 4B y 10.022 con 8B.
+**Siguiente paso propuesto:** separar lectura de capacidad, elección de deuda y cálculo de cuota
+antes de retomar la búsqueda. No hay evidencia suficiente para sustituir 4B por 8B.
 
 **Límites:** una ejecución por condición, pocos escenarios y orden 4B antes de 8B.
 Los tiempos son orientativos e incluyen carga, no descarga. El pico mide asignaciones MLX,
@@ -77,7 +91,8 @@ HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 -
 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3-8b --contract decision --strategy adaptive
 ```
 
-Cambiar `--strategy` permite ejecutar las otras condiciones. Cada ejecución guarda protocolo,
+Cambiar `--strategy` permite ejecutar las otras condiciones. Para repetir el control manual,
+sustituir `--strategy fixed/adaptive` por `--reference`, conservando `--contract decision`. Cada ejecución guarda protocolo,
 respuestas, métricas, script y hashes en `results/`. Los pesos permanecen fuera de GitHub.
 El notebook también enlaza las pruebas previas de Qwen y Gemma, los intentos fallidos y la
 corrección de contexto del protocolo v4; su evidencia no se modifica.

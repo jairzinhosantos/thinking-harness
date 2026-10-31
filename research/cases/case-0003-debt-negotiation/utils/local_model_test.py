@@ -67,6 +67,27 @@ probadas y de la actual. Usa sus fallos de desarrollo para cambiar una regla con
 no basta cambiar espacios. No memorices los identificadores de los casos.\n"""
 
 
+REFERENCE_POLICY = """Aplica estas reglas en orden usando el historial completo y la tabla de deudas:
+1. Si el cliente pide terminar o rechaza toda negociación, responde stop.
+   Rechazar una oferta concreta no significa rechazar toda negociación.
+2. Identifica la capacidad mensual más reciente. Si no está indicada, responde ask.
+   No la supongas igual a cero ni vuelvas a preguntarla si ya se conoce.
+3. Si el cliente acepta explícitamente una deuda y un plan ofrecidos, confirma con accept
+   solo ese plan, siempre que su cuota respete la capacidad. Una propuesta del asistente
+   por sí sola no constituye aceptación.
+4. Si no hay aceptación, recorre las deudas de mayor a menor monto. Para cada deuda,
+   prueba primero un pago: cuota = monto. Si supera la capacidad mensual, prueba dos
+   pagos: cuota = monto / 2. La cuota debe ser menor o igual a la capacidad.
+   En cuanto encuentres un plan viable, responde offer con esa deuda, cantidad de pagos
+   y cuota calculada. No elijas una deuda menor si una mayor cabe en dos pagos.
+5. Si ninguna deuda admite uno o dos pagos dentro de la capacidad, responde stop.
+Para ask y stop: debt=null, payments=0, installment=0.
+Para offer y accept: debt identifica la deuda; payments indica 1 o 2;
+installment es el monto de la deuda dividido entre payments, no la capacidad mensual.
+No inventes descuentos, no ejecutes pagos ni alteres la tabla de deudas.
+"""
+
+
 def policy_key(text):
     return " ".join(unicodedata.normalize("NFC", text).split())
 
@@ -190,9 +211,12 @@ class LocalClient:
 
 
 def run(key, output_root=None, client_factory=LocalClient, *, contract="original",
-        strategy_mode="adaptive", calibration=False):
+        strategy_mode="adaptive", calibration=False, reference=False):
     if contract not in CONTRACTS or strategy_mode not in {"fixed", "adaptive"}:
         raise ValueError("Unknown experiment condition")
+    if reference and (calibration or contract != "decision"):
+        raise ValueError("Reference requires the decision contract and no calibration")
+    protocol_id = "case-0003-local-reference-v1" if reference else PROTOCOL
     runtime = CONTRACTS[contract]
     repo, revision = MODELS[key]
     snapshot = Path.home() / ".cache/huggingface/hub" / ("models--" + repo.replace("/", "--")) / "snapshots" / revision
@@ -200,7 +224,7 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
         raise FileNotFoundError("Pinned weights not cached; download separately before running")
     directory = Path(output_root or CASE_DIR / "results") / (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-local-" + key
-        + ("-calibration" if calibration else "-" + contract + "-" + strategy_mode))
+        + ("-reference" if reference else "-calibration" if calibration else "-" + contract + "-" + strategy_mode))
     directory.mkdir(parents=True, exist_ok=False)
     sources = [Path(__file__), Path(smoke.__file__), Path(__file__).with_name("prompt_search.py"),
                CASE_DIR / "harness-test-cases.yaml", CASE_DIR / "local-transfer-cases.yaml"]
@@ -208,10 +232,10 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
     model_hashes = {p.name: smoke.digest(p) for p in snapshot.iterdir() if p.is_file()} if snapshot.exists() else {}
     cases = smoke.select_cases()
     cases["transfer"] = transfer_cases()
-    protocol = {"protocol": PROTOCOL, "model": repo, "revision": revision,
+    protocol = {"protocol": protocol_id, "model": repo, "revision": revision,
                 "model_files_sha256": model_hashes, "limits": LIMITS, "cases": cases,
                 "runtime": runtime, "contract": contract, "strategy_mode": strategy_mode,
-                "kind": "calibration" if calibration else "search",
+                "kind": "reference" if reference else "calibration" if calibration else "search",
                 "calibration_contracts": CONTRACTS if calibration else None,
                 "calibration_policy": smoke.OBJECTIVE if calibration else None,
                 "initial_policy": smoke.INITIAL_POLICY,
@@ -239,10 +263,17 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
                 "packages": {n: importlib.metadata.version(n) for n in
                              ("mlx", "mlx-lm", "transformers", "tokenizers", "jsonschema", "PyYAML")},
                 "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=CASE_DIR, text=True).strip()}
+    if reference:
+        protocol.update(reference_policy=REFERENCE_POLICY, strategy_mode=None,
+                        limits={**LIMITS, "calls": 12, "iterations": 0},
+                        selection="None; one frozen manual policy, no optimizer or updater.",
+                        stop="Twelve negotiator calls or resource/runtime failure; no retry.",
+                        final_transfer="Reuse of the six v5 transfer fixtures; diagnostic, not held out.",
+                        interpretation="Manual task-derived reference after inspecting v5 failures; no search gain or generalization claim.")
     smoke.write_json(directory / "protocol.json", protocol)
     (directory / "source.py").write_bytes(Path(__file__).read_bytes())
     (directory / "calls.jsonl").touch()
-    report = {"protocol": PROTOCOL, "model_key": key, "status": "running", "rounds": [],
+    report = {"protocol": protocol_id, "model_key": key, "status": "running", "rounds": [],
               "strategy_updates": [], "selected_iteration": None}
     client = None
     started = time.monotonic()
@@ -251,6 +282,8 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
         smoke.write_json(directory / "report.json", report)
 
     def ask(role, instructions, payload, schema):
+        if reference and client.calls >= 12:
+            raise BudgetStop("Reference call limit reached")
         if any(smoke.digest(CASE_DIR / p) != h for p, h in hashes.items()):
             raise ValueError("Protected source changed")
         return client.ask(role, instructions, payload, schema)
@@ -270,6 +303,14 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
 
     try:
         client = client_factory(key, directory, snapshot, started)
+        if reference:
+            report["reference"] = {"policy": REFERENCE_POLICY,
+                                   "policy_tokens": client.length(REFERENCE_POLICY), "splits": {}}
+            for split in ("development", "validation", "test", "transfer"):
+                report["reference"]["splits"][split] = evaluate(REFERENCE_POLICY, split)
+                checkpoint()
+            report["status"] = "completed"
+            return directory
         if calibration:
             report["calibration"] = []
             for name in ("original", "explicit"):
@@ -355,5 +396,6 @@ if __name__ == "__main__":
     parser.add_argument("--contract", choices=CONTRACTS, default="original")
     parser.add_argument("--strategy", choices=("fixed", "adaptive"), default="adaptive")
     parser.add_argument("--calibrate", action="store_true")
+    parser.add_argument("--reference", action="store_true")
     args = parser.parse_args()
-    print(run(args.model, contract=args.contract, strategy_mode=args.strategy, calibration=args.calibrate))
+    print(run(args.model, contract=args.contract, strategy_mode=args.strategy, calibration=args.calibrate, reference=args.reference))
