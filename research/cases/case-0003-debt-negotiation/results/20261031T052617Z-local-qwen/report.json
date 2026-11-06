@@ -1,0 +1,326 @@
+{
+  "protocol": "case-0003-local-model-v2",
+  "model_key": "qwen",
+  "status": "stopped",
+  "rounds": [
+    {
+      "iteration": 0,
+      "policy": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan.",
+      "policy_tokens": 28,
+      "strategy_tokens": 31,
+      "strategy_used": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "development": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 1,
+              "installment": 1,
+              "message": "¿Cuál deuda te gustaría pagar primero?"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "No quiero negociar. Por favor, detente."
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "¿Cuál deuda quieres pagar? (A, B, C)"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 1,
+              "installment": 2,
+              "message": "¿Podrías pagar 200€ mensuales?"
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "iteration": 1,
+      "parent_iteration": 0,
+      "policy": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan.",
+      "policy_tokens": 28,
+      "strategy_used": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "strategy_tokens": 31,
+      "development": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 1,
+              "installment": 1,
+              "message": "¿Cuál deuda te gustaría pagar primero?"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "No quiero negociar. Por favor, detente."
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "¿Cuál deuda quieres pagar? (A, B, C)"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 1,
+              "installment": 2,
+              "message": "¿Podrías pagar 200€ mensuales?"
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": false
+    },
+    {
+      "iteration": 2,
+      "parent_iteration": 0,
+      "policy": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan. Si la capacidad es desconocida, mantén la pregunta. Si el usuario no quiere negociar, detente. Si el usuario acepta la deuda y el plan, ofrece la opción de pagar dos cuotas mensuales iguales. Si ningún plan se ajusta, detente. Mantén el mensaje coherente con los campos. Redacta las instrucciones y mensajes en español.",
+      "policy_tokens": 110,
+      "strategy_used": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan. Si la capacidad es desconocida, mantén la pregunta. Si el usuario no quiere negociar, detente. Si el usuario acepta la deuda y el plan, ofrece la opción de pagar dos cuotas mensuales iguales. Si ningún plan se ajusta, detente. Mantén el mensaje coherente con los campos. Redacta las instrucciones y mensajes en español.",
+      "strategy_tokens": 110,
+      "development": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 1,
+              "installment": 1,
+              "message": "¿Cuál deuda te gustaría pagar primero? Ten en cuenta que tu límite es de 330 al mes."
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "No quiero negociar. Por favor, detente."
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "No puedo continuar con este pedido."
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "No tengo información sobre tu capacidad de pago. ¿Podrías proporcionarme más detalles?"
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": false
+    }
+  ],
+  "strategy_updates": [
+    {
+      "after_iteration": 1,
+      "before": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "after": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan. Si la capacidad es desconocida, mantén la pregunta. Si el usuario no quiere negociar, detente. Si el usuario acepta la deuda y el plan, ofrece la opción de pagar dos cuotas mensuales iguales. Si ningún plan se ajusta, detente. Mantén el mensaje coherente con los campos. Redacta las instrucciones y mensajes en español.",
+      "changed": true,
+      "before_tokens": 31,
+      "after_tokens": 110
+    }
+  ],
+  "selected_iteration": 0,
+  "stop_type": "ProviderFailure",
+  "stop_reason": "Invalid updater output: invalid_schema",
+  "elapsed_seconds": 8.122554417001083,
+  "calls": 16,
+  "tokens": 9125,
+  "load_seconds": 0.8230010000042967,
+  "peak_mlx_gb": 1.731082016,
+  "protected_source_changes": 0
+}

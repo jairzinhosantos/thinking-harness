@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "scope": "Frozen before tuning. Synthetic confirmation only; not a representative benchmark.",
+  "cases": [
+    {
+      "id": "confirmation-110",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 110 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    },
+    {
+      "id": "confirmation-175",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 175 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 175,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "B",
+        "payments": 2,
+        "installment": 150
+      }
+    },
+    {
+      "id": "confirmation-310",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      }
+    },
+    {
+      "id": "confirmation-650",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 650,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 1,
+        "installment": 600
+      }
+    },
+    {
+      "id": "confirmation-90",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 90 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 90,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-unknown",
+      "history": [
+        {
+          "role": "user",
+          "content": "No he calculado cuánto dinero tendré cada mes para pagar."
+        }
+      ],
+      "declared_capacity": null,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "ask",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-decline",
+      "history": [
+        {
+          "role": "user",
+          "content": "Tengo 310 mensuales, pero he decidido no negociar ninguna deuda. Detén la gestión."
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": true,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-consent",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi capacidad mensual es de 110."
+        },
+        {
+          "role": "assistant",
+          "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+        },
+        {
+          "role": "user",
+          "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": [
+        "A",
+        2
+      ],
+      "expected": {
+        "action": "accept",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    }
+  ]
+}

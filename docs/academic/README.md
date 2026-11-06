@@ -1,5 +1,11 @@
 # Matriz de consistencia y siguiente sprint
 
+**[Entrega semana 8: ajuste de inferencia](../../research/cases/case-0003-debt-negotiation/inference-tuning.ipynb).** Se ajusta temperatura con pesos fijos y una política manual. Es un control previo a la automejora, no una validación de las hipótesis de la tesis.
+
+
+[Test 5: salida JSON estructurada](../../research/cases/case-0003-debt-negotiation/structured-output.ipynb): nueva prueba ejecutada; se conserva el historial de notebooks.
+
+[Comparación B1/B2 con Qwen 8B](../../research/cases/case-0003-debt-negotiation/paired-search.ipynb): construcción de políticas con instrucciones fijas o adaptativas; sección 8: ajuste de tokens de salida.
 **Tema:** Mejora recursiva de harnesses agénticos con modelos de pesos abiertos.
 
 **[Matriz de consistencia en PDF: una página](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/consistency-matrix.pdf)** · [Test 1 ejecutado](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb)

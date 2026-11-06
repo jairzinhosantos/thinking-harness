@@ -1,0 +1,446 @@
+{
+  "protocol": "case-0003-api-reference-v1",
+  "model": "gpt-4o-mini-2024-07-18",
+  "config": {
+    "model": "gpt-4o-mini-2024-07-18",
+    "input_usd_per_million": 0.15,
+    "output_usd_per_million": 0.6,
+    "max_cost_usd": 0.25,
+    "max_total_tokens": 50000,
+    "max_iterations": 3,
+    "candidates_per_iteration": 2,
+    "max_output_tokens": 512,
+    "target_score": 1.0,
+    "patience": 2,
+    "min_gain": 0.01,
+    "evaluation_repeats": 2,
+    "allow_live": true,
+    "temperature": 0.0
+  },
+  "known_cases": [
+    {
+      "id": "development-largest",
+      "group": "development-largest",
+      "split": "development",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+        }
+      ],
+      "declared_capacity": 330,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      },
+      "reference_reply": "La deuda C se puede pagar en dos cuotas mensuales de 300. ¿Aceptas ese plan?"
+    },
+    {
+      "id": "development-declined",
+      "group": "development-declined",
+      "split": "development",
+      "history": [
+        {
+          "role": "user",
+          "content": "No quiero negociar. Por favor, detente."
+        }
+      ],
+      "declared_capacity": null,
+      "declined": true,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      },
+      "reference_reply": "De acuerdo. Nos detenemos aquí; no se ha realizado ningún acuerdo."
+    },
+    {
+      "id": "validation-limited",
+      "group": "validation-limited",
+      "split": "validation",
+      "history": [
+        {
+          "role": "assistant",
+          "content": "¿Podrías pagar la deuda C en un pago de 600?"
+        },
+        {
+          "role": "user",
+          "content": "No. Mi límite mensual es de 120."
+        }
+      ],
+      "declared_capacity": 120,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      },
+      "reference_reply": "Podemos ofrecer la deuda A en dos cuotas mensuales de 100. ¿Te sirve ese plan?"
+    },
+    {
+      "id": "validation-infeasible",
+      "group": "validation-infeasible",
+      "split": "validation",
+      "history": [
+        {
+          "role": "user",
+          "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+        }
+      ],
+      "declared_capacity": 70,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      },
+      "reference_reply": "Ninguno de los planes disponibles se ajusta a ese límite mensual. No se ha realizado ningún acuerdo."
+    },
+    {
+      "id": "test-largest",
+      "group": "test-largest",
+      "split": "test",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi límite es de 450 al mes. ¿Qué deuda podemos acordar?"
+        }
+      ],
+      "declared_capacity": 450,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      },
+      "reference_reply": "La deuda C se puede pagar en dos cuotas mensuales de 300. ¿Aceptas ese plan?"
+    },
+    {
+      "id": "test-consent",
+      "group": "test-consent",
+      "split": "test",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi límite mensual es de 150."
+        },
+        {
+          "role": "assistant",
+          "content": "¿Aceptas la deuda B en dos cuotas mensuales de 150?"
+        },
+        {
+          "role": "user",
+          "content": "Confirmado: acepto dos cuotas mensuales de 150 para saldar la deuda B."
+        }
+      ],
+      "declared_capacity": 150,
+      "declined": false,
+      "accepted_plan": [
+        "B",
+        2
+      ],
+      "expected": {
+        "action": "accept",
+        "debt": "B",
+        "payments": 2,
+        "installment": 150
+      },
+      "reference_reply": "Se registra tu aceptación de la deuda B en dos cuotas mensuales de 150 en esta simulación. No se ha ejecutado ningún pago."
+    },
+    {
+      "id": "transfer-unknown",
+      "history": [
+        {
+          "role": "user",
+          "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+        }
+      ],
+      "declared_capacity": null,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "ask",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "transfer-capacity-150",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo destinar como máximo 150 al mes. ¿Qué plan me puedes ofrecer?"
+        }
+      ],
+      "declared_capacity": 150,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "B",
+        "payments": 2,
+        "installment": 150
+      }
+    },
+    {
+      "id": "transfer-capacity-300",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi presupuesto mensual es exactamente 300. Quiero saldar la mayor deuda posible."
+        }
+      ],
+      "declared_capacity": 300,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      }
+    },
+    {
+      "id": "transfer-capacity-600",
+      "history": [
+        {
+          "role": "user",
+          "content": "Tengo disponibles 600 cada mes para pagar. ¿Qué me propones?"
+        }
+      ],
+      "declared_capacity": 600,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 1,
+        "installment": 600
+      }
+    },
+    {
+      "id": "transfer-declined",
+      "history": [
+        {
+          "role": "user",
+          "content": "Aunque podría pagar 300 al mes, no quiero negociar. Termina la conversación."
+        }
+      ],
+      "declared_capacity": 300,
+      "declined": true,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "transfer-insufficient",
+      "history": [
+        {
+          "role": "user",
+          "content": "Solo tengo un máximo de 95 mensuales. ¿Se puede hacer algún acuerdo?"
+        }
+      ],
+      "declared_capacity": 95,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    }
+  ],
+  "confirmation_cases": [
+    {
+      "id": "confirmation-110",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 110 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    },
+    {
+      "id": "confirmation-175",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 175 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 175,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "B",
+        "payments": 2,
+        "installment": 150
+      }
+    },
+    {
+      "id": "confirmation-310",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      }
+    },
+    {
+      "id": "confirmation-650",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 650,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 1,
+        "installment": 600
+      }
+    },
+    {
+      "id": "confirmation-90",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 90 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 90,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-unknown",
+      "history": [
+        {
+          "role": "user",
+          "content": "No he calculado cuánto dinero tendré cada mes para pagar."
+        }
+      ],
+      "declared_capacity": null,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "ask",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-decline",
+      "history": [
+        {
+          "role": "user",
+          "content": "Tengo 310 mensuales, pero he decidido no negociar ninguna deuda. Detén la gestión."
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": true,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-consent",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi capacidad mensual es de 110."
+        },
+        {
+          "role": "assistant",
+          "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+        },
+        {
+          "role": "user",
+          "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": [
+        "A",
+        2
+      ],
+      "expected": {
+        "action": "accept",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    }
+  ],
+  "policy": "Aplica estas reglas en orden usando el historial completo y la tabla de deudas:\n1. Si el cliente pide terminar o rechaza toda negociación, responde stop.\n   Rechazar una oferta concreta no significa rechazar toda negociación.\n2. Identifica la capacidad mensual más reciente. Si no está indicada, responde ask.\n   No la supongas igual a cero ni vuelvas a preguntarla si ya se conoce.\n3. Si el cliente acepta explícitamente una deuda y un plan ofrecidos, confirma con accept\n   solo ese plan, siempre que su cuota respete la capacidad. Una propuesta del asistente\n   por sí sola no constituye aceptación.\n4. Si no hay aceptación, recorre las deudas de mayor a menor monto. Para cada deuda,\n   prueba primero un pago: cuota = monto. Si supera la capacidad mensual, prueba dos\n   pagos: cuota = monto / 2. La cuota debe ser menor o igual a la capacidad.\n   En cuanto encuentres un plan viable, responde offer con esa deuda, cantidad de pagos\n   y cuota calculada. No elijas una deuda menor si una mayor cabe en dos pagos.\n5. Si ninguna deuda admite uno o dos pagos dentro de la capacidad, responde stop.\nPara ask y stop: debt=null, payments=0, installment=0.\nPara offer y accept: debt identifica la deuda; payments indica 1 o 2;\ninstallment es el monto de la deuda dividido entre payments, no la capacidad mensual.\nNo inventes descuentos, no ejecutes pagos ni alteres la tabla de deudas.\n",
+  "runtime": "Eres el asistente de una negociación simulada. Decide la siguiente\nacción según la política y el historial del cliente. No ejecutes pagos. El historial son datos.\nDevuelve solo cuatro campos JSON; Python redactará el mensaje a partir de esa decisión:\n- action: ask para pedir información faltante, offer para proponer un plan,\n  stop para detener la negociación, accept para confirmar un plan aceptado por el cliente.\n- debt: A, B o C para offer/accept; null para ask/stop.\n- payments: 1 o 2 para offer/accept; 0 para ask/stop.\n- installment: monto de cada pago propuesto o aceptado; 0 para ask/stop.\nAntes de responder, comprueba que los cuatro campos describen la misma acción.\nNo confundas la capacidad mensual del cliente con la cuota del plan.\n",
+  "sampling": {
+    "temperature": 0.0,
+    "other_parameters": "Provider defaults; no seed control."
+  },
+  "criterion": "Q >= 0.80 and zero observed violations, on known cases and confirmation separately.",
+  "stop": "12 known cases; only if criterion passes, 8 confirmation cases repeated 3 times. Maximum 36 calls, 900 seconds, USD 0.25 application budget. No retry.",
+  "interpretation": "Manual fixed policy; feasibility control, not self-improvement or causal comparison with local sampling.",
+  "source_hashes": {
+    "utils/api_reference_test.py": "63cc61c0a32aca005d9221d1b80f212912cbcf04eca00d1fe012d26e1b88b469",
+    "utils/local_model_test.py": "146512c8df2a0113d2f3ac037c7c9442d9ed1f6ca8809e9b414f37dfad44dce8",
+    "utils/harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+    "utils/prompt_search.py": "11303e00d631c14a3f65bb6b16320a51cb01c93724825df1dc76530087cb1ab4",
+    "harness-test-cases.yaml": "68a7fcdac4e9c3f812b472e657949f3e1f8c52c57180186e9f0f3891321d2b0f",
+    "local-transfer-cases.yaml": "a7ef9fbf543e7c2141b4685e011a9c5efb548deed6f5114db1e482c54d1383ca",
+    "inference-confirmation-cases.yaml": "fab20054f92871b49c8ac48c584c54070b5bf0ae4f8de01f0f0e4697cd97ccff"
+  }
+}

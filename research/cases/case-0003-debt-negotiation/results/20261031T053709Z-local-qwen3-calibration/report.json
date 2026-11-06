@@ -1,0 +1,116 @@
+{
+  "protocol": "case-0003-local-model-v3",
+  "model_key": "qwen3",
+  "status": "completed",
+  "rounds": [],
+  "strategy_updates": [],
+  "selected_iteration": null,
+  "calibration": [
+    {
+      "contract": "original",
+      "policy_tokens": 182,
+      "development": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600,
+              "message": "Ofrecemos la deuda C con un pago de 600. ¿Acepta este plan?"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [
+              "exceeds_declared_capacity"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Has solicitado detener la negociación. No se realizarán pagos o cuotas."
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "contract": "explicit",
+      "policy_tokens": 182,
+      "development": {
+        "q": 0.5,
+        "v": 0.5,
+        "rows": [
+          {
+            "id": "development-largest",
+            "reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600,
+              "message": "Dado tu límite mensual de 330, podemos considerar la deuda C de 600. Sin embargo, un pago único de 600 excede tu límite. ¿Te gustaría optar por dos cuotas de 300 cada una, que sería más asequible?"
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [
+              "exceeds_declared_capacity"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0,
+              "message": "Has rechazado explícitamente negociar. Detengo la negociación."
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      }
+    }
+  ],
+  "elapsed_seconds": 5.215525209001498,
+  "calls": 4,
+  "tokens": 2642,
+  "load_seconds": 1.4036780840033316,
+  "peak_mlx_gb": 3.164702396,
+  "protected_source_changes": 0
+}

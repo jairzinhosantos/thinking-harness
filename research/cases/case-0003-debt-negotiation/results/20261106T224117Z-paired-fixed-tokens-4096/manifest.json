@@ -1,0 +1,10 @@
+{
+  "local_model_test.py": "b3367af328bd692c18645be8417bf4954fd9089395eeab292ff478f87e608658",
+  "report.json": "d3ca99b38f61ea6abf685838261d451947cb4b57cb7c4af32079645bbc692127",
+  "paired_search.py": "8b78a0b892f1cc0cd128cb003f9a777cc8c6b1ee8baaf2fb407fa1cfcaa13327",
+  "harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+  "paired-search-cases.yaml": "25d1fdd5415d8aa6fafe2e299989358235f64912a6d7c4f315eda1f321a2cf73",
+  "protocol.json": "97332fcd04c27c0bb9504170067c50dd943700711745e29bae30dcf4d65c4784",
+  "calls.jsonl": "bb407440ebb39d8756e7d04844efff0a14347fb70da46fc8d2f9d2f7158c4dba",
+  "prompt_search.py": "11303e00d631c14a3f65bb6b16320a51cb01c93724825df1dc76530087cb1ab4"
+}

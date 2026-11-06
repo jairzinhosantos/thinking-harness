@@ -1,0 +1,15 @@
+{
+  "protocol": "case-0003-local-model-v1",
+  "model_key": "qwen",
+  "status": "stopped",
+  "rounds": [],
+  "strategy_updates": [],
+  "selected_iteration": null,
+  "stop_type": "ValueError",
+  "elapsed_seconds": 1.2215037909991224,
+  "calls": 1,
+  "tokens": 2,
+  "load_seconds": 1.2116247079975437,
+  "peak_mlx_gb": 0.871558152,
+  "protected_source_changes": 0
+}

@@ -1,0 +1,919 @@
+{
+  "status": "completed",
+  "evaluations": [
+    {
+      "sampling": {
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "enable_thinking": true,
+        "seed": 11
+      },
+      "q": 1.0,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "confirmation-110",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-175",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-310",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-650",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-90",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-unknown",
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-decline",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-consent",
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    },
+    {
+      "sampling": {
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "enable_thinking": true,
+        "seed": 22
+      },
+      "q": 1.0,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "confirmation-110",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-175",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-310",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-650",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-90",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-unknown",
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-decline",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-consent",
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    },
+    {
+      "sampling": {
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "enable_thinking": true,
+        "seed": 33
+      },
+      "q": 1.0,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "confirmation-110",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-175",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-310",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-650",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-90",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-unknown",
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-decline",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "confirmation-consent",
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "confirmation": {
+    "q": 1.0,
+    "v": 0.0,
+    "rows": [
+      {
+        "id": "confirmation-110",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-175",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-310",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-650",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-90",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-unknown",
+        "raw_reply": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-decline",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-consent",
+        "raw_reply": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-110",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-175",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-310",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-650",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-90",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-unknown",
+        "raw_reply": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-decline",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-consent",
+        "raw_reply": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-110",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-175",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "B",
+          "payments": 2,
+          "installment": 150
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-310",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 2,
+          "installment": 300
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-650",
+        "raw_reply": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "expected": {
+          "action": "offer",
+          "debt": "C",
+          "payments": 1,
+          "installment": 600
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-90",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-unknown",
+        "raw_reply": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "ask",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-decline",
+        "raw_reply": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "expected": {
+          "action": "stop",
+          "debt": null,
+          "payments": 0,
+          "installment": 0
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      },
+      {
+        "id": "confirmation-consent",
+        "raw_reply": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "expected": {
+          "action": "accept",
+          "debt": "A",
+          "payments": 2,
+          "installment": 100
+        },
+        "violations": [],
+        "task_match": true,
+        "success": true
+      }
+    ]
+  },
+  "passes": true,
+  "calls": 24,
+  "tokens": 31036,
+  "elapsed_seconds": 178.30491599999732,
+  "peak_mlx_gb": 5.422659008
+}

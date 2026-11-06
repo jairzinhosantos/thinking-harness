@@ -3,9 +3,9 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 16
+revision: 24
 created: 2026-10-16
-updated: 2026-10-30
+updated: 2026-11-06
 ---
 
 # Negociación de deudas sintéticas
@@ -14,7 +14,9 @@ updated: 2026-10-30
 
 El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
 [presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
-en la raíz del caso; `results/` conserva las ejecuciones registradas.
+en la raíz del caso; `results/` conserva las ejecuciones registradas. Cada nueva prueba
+conserva su notebook ejecutado. Los notebooks anteriores permanecen como historial;
+no se reemplazan al añadir otra prueba.
 
 ## Test 1: adaptación de instrucciones
 
@@ -26,6 +28,185 @@ Se reutilizaron cuatro actualizaciones, con prompts y escenarios en español. Se
 2: validación 2/2 y test 2/2, sin incumplimientos detectados. Consumo: 35 llamadas, 24.527 tokens
 y USD 0,032357 estimados. Es una evaluación estructurada sobre seis escenarios; no se ejecutó B1
 ni se midió el efecto del idioma de forma controlada.
+
+## Test 2: Qwen3 de 4B y 8B
+
+El [notebook ejecutado](local-model-test.ipynb) compara ambos modelos a 4 bits con MLX,
+sin entrenamiento ni API. Cada modelo realiza los tres papeles del bucle. B1 conserva
+las instrucciones de mejora; B2 puede actualizarlas. Se permiten tres propuestas por condición.
+
+El protocolo **v5** añade dos ajustes manuales, fijos durante la búsqueda:
+
+- **Decisión y mensaje separados.** El modelo devuelve acción, deuda, pagos y cuota.
+  Python redacta el mensaje desde esos valores, sin corregir decisiones ni montos.
+- **Historial y duplicados.** El mejorador recibe sus dos intentos recientes y los fallos
+  de desarrollo. Una política idéntica, normalizando Unicode y espacios, no se reevalúa
+  ni se acepta como mejora nueva. No se detectan paráfrasis equivalentes.
+
+| Condición | Aceptadas | Validación | Casos nuevos | Llamadas | Tokens | Tiempo | Pico MLX |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 4B, B1 fija | 0 | 0/2 | 0/6 | 19 | 11.288 | 14,1 s | 3,18 GB |
+| 4B, B2 adaptativa | 0 | 0/2 | 0/6 | 25 | 16.098 | 19,4 s | 3,22 GB |
+| 8B, B1 fija | 0 | 0/2 | 2/6 | 19 | 11.578 | 42,2 s | 5,61 GB |
+| 8B, B2 adaptativa | 0 | 0/2 | 2/6 | 21 | 13.868 | 47,0 s | 5,66 GB |
+
+Se conservó **H0 en las cuatro condiciones**. El resultado de los casos nuevos corresponde
+al punto de partida, no a una política mejorada. Estos [seis casos](local-transfer-cases.yaml)
+se prepararon antes de ejecutar el contraste y se consultaron solo al finalizar la selección.
+El test reutilizado de dos casos dio 1/2 en las cuatro condiciones.
+
+Se detectaron siete propuestas duplicadas y se omitieron sus 28 llamadas de evaluación.
+El modelo todavía repite algunas propuestas; el control evita reevaluarlas. La longitud
+se registra con el tokenizer nativo para H y φ por separado; no selecciona candidatos
+ni mide claridad.
+
+**Control posterior con política manual:** el negociador también falla sin mejorador.
+Con el mismo contrato y evaluador, se ejecutaron 12 casos por modelo, sin búsqueda:
+
+| Modelo | Desarrollo | Validación | Test reutilizado | Seis casos v5 | Total | Casos con incumplimientos |
+|---|---:|---:|---:|---:|---:|---:|
+| 4B | 2/2 | 0/2 | 2/2 | 3/6 | 7/12 | 4 |
+| 8B | 1/2 | 0/2 | 1/2 | 4/6 | 6/12 | 0 |
+
+4B ofrece cuotas superiores a la capacidad. 8B evita esas violaciones, pero a veces pregunta
+o se detiene cuando corresponde otro turno. Ambos proponen dos pagos cuando cabe uno.
+La política manual no consiguió resolver validación; no es una referencia de funcionamiento
+correcto ni una mejora descubierta por el sistema. Se redactó después de revisar fallos previos.
+Los 12 casos son conocidos: este control no mide generalización ni aísla toda la causa del fallo.
+
+El [notebook, sección 7](local-model-test.ipynb) muestra la política exacta y cada respuesta.
+La prueba usó 24 llamadas locales: 10.085 tokens con 4B y 10.022 con 8B.
+**Decisión tras este control:** comprobar inferencia y capacidad antes de retomar la búsqueda.
+El Test 3 recoge ese ajuste; este control por sí solo no justifica sustituir 4B por 8B.
+
+**Límites:** una ejecución por condición, pocos escenarios y orden 4B antes de 8B.
+Los tiempos son orientativos e incluyen carga, no descarga. El pico mide asignaciones MLX,
+no toda la RAM. Se cambian varias partes entre v4 y v5; no se atribuye el efecto a una sola.
+El contraste actual comparte v5, sin conclusión de superioridad ni generalización.
+
+El [script](utils/local_model_test.py) fija revisiones, presupuesto y parada. Instalar
+[requirements-local.txt](requirements-local.txt) con Python 3.12 en Apple Silicon y disponer
+de los snapshots fijados en la caché de Hugging Face. Ejecutar uno a la vez desde esta carpeta:
+
+```sh
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3 --contract decision --strategy fixed
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python utils/local_model_test.py qwen3-8b --contract decision --strategy adaptive
+```
+
+Cambiar `--strategy` permite ejecutar las otras condiciones. Para repetir el control manual,
+sustituir `--strategy fixed/adaptive` por `--reference`, conservando `--contract decision`. Cada ejecución guarda protocolo,
+respuestas, métricas, script y hashes en `results/`. Los pesos permanecen fuera de GitHub.
+El notebook también enlaza las pruebas previas de Qwen y Gemma, los intentos fallidos y la
+corrección de contexto del protocolo v4; su evidencia no se modifica.
+
+Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
+[Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) y
+[Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B).
+
+## Test 3: ajuste de inferencia
+
+El [notebook de la semana 8](inference-tuning.ipynb) ajusta cómo se genera la respuesta,
+con pesos, política manual y evaluador fijos. No hay fine-tuning. Se barren temperaturas
+0, 0,3 y 0,7 con Qwen3 8B y 32B a 4 bits: 84 llamadas por modelo sobre 12 casos conocidos.
+Ningún perfil directo alcanzó el criterio: al menos 80% de decisiones correctas y cero
+incumplimientos observados. 8B quedó en 50%; 32B, en 66,7%, con incumplimientos.
+
+Dos controles con GPT-4o mini, muestreo predeterminado y temperatura cero, dieron 10/12
+y 8/12 respectivamente, ambos con una infracción. No pasaron a confirmación. Costo total
+estimado: USD 0,002659; no se usan esas respuestas para alterar el evaluador.
+
+Se añadió Qwen 8B con razonamiento activado: temperatura 0,6, `top_p=0.95`, `top_k=20`
+y hasta 2.048 tokens de salida. Resolvió 12/12 casos conocidos y 24/24 en confirmación:
+ocho casos reservados, tres repeticiones, sin incumplimientos. Se conserva esta configuración
+para retomar B1/B2 con el mismo tope de tokens, incluido el razonamiento.
+Se cambia un conjunto de opciones de inferencia; no se atribuye el efecto solo al razonamiento.
+El notebook registra la confirmación y el consumo. Los escenarios de confirmación se fijaron
+antes del barrido y no se utilizaron para elegir la configuración.
+
+Los [resultados originales](results/) conservan respuestas, presupuestos, revisiones de pesos,
+fuentes y hashes. Los pesos quedan en caché local. El 32B usó 19,35 GB de pico MLX;
+la memoria por sí sola no fue el bloqueo. Esta prueba no compara todavía B1 y B2.
+
+## Test 4: mejorador fijo y adaptativo
+
+El [notebook comparativo](paired-search.ipynb) parte de H0, una política que pregunta siempre
+por la capacidad y no ofrece planes. B1 mantiene las instrucciones del mejorador; B2 puede
+actualizarlas. La política manual del Test 3 no se entrega al modelo.
+
+Se usan Qwen 8B con razonamiento, cinco intentos por condición y los mismos topes:
+120.000 tokens de búsqueda y hasta 60.000 para la evaluación final. Las llamadas del
+actualizador cuentan en B2. Cuatro casos conocidos dan feedback de desarrollo y otros
+cuatro seleccionan la política. Los ocho casos finales son nuevos y se fijaron antes
+de ejecutar ambas búsquedas.
+
+Cada evaluación reinicia una semilla por caso, compartida por B1/B2. Se conserva la política
+anterior si hay empate; duplicados reutilizan sus puntuaciones. Propuestas inválidas se
+registran y consumen un intento. El test final compara H0 y la política seleccionada,
+sin nuevos ajustes después de consultar sus respuestas.
+
+| Condición | H0 en test | Política seleccionada | Incumplimientos | Tokens totales | Llamadas |
+|---|---:|---:|---:|---:|---:|
+| B1 fija | 3/8 | 7/8 | 0 | 52.511 | 45 |
+| B2 adaptativa | 3/8 | 7/8 | 0 | 78.624 | 64 |
+
+Ambas conservaron la misma primera política generada. B2 reutilizó tres cambios de φ,
+sin mejorar el resultado final, y consumió 49,7% más tokens. Ese aumento incluye el
+actualizador y más evaluaciones de candidatos distintos. B1 evitó 16 evaluaciones al
+reutilizar dos duplicados. Cada condición produjo una propuesta inválida, rechazada.
+
+Las dos fallaron el caso de cambio de capacidad dentro del historial. Se conserva el fallo;
+no se ajustó la política con ese feedback. Se cumple el criterio de este piloto, Q ≥ 80%
+y V = 0, con una sola búsqueda por condición. Se mantiene B1 como referencia antes de
+ampliar escenarios; no se concluye superioridad general de ningún mecanismo.
+
+### Ajuste de tokens de salida
+
+La sección 8 del mismo notebook compara **2.048 y 4.096 tokens por llamada**. El límite
+incluye razonamiento y respuesta final. Se mantienen cinco intentos, modelo, muestreo,
+semillas, evaluador y presupuesto total. La reserva de entrada permanece en 4.096 tokens;
+no se añade ni se recorta contexto. Los ocho casos finales ya son conocidos: es un ajuste
+exploratorio, no una nueva confirmación.
+
+| Tope 4.096 | Decisiones correctas | Respuestas con incumplimientos | Tokens totales | Cortes |
+|---|---:|---:|---:|---:|
+| B1 fija | 7/8 | 0 | 68.762 | 0 |
+| B2 adaptativa | 7/8 | 0 | 84.475 | 0 |
+
+Con 4.096, B1 y B2 mantienen 7/8 decisiones correctas y cero incumplimientos. B1 consume
+30,9% más tokens que con 2.048; B2, 7,4% más. Ambas resuelven el fallo anterior, pero fallan
+`paired-225`: ofrecen A en un pago de 200 cuando B admite dos cuotas de 150 con capacidad
+225. No se observa una mejora del puntaje final en estas ejecuciones.
+
+La respuesta inicial que antes se cortaba termina en 2.394 tokens, pero conserva una decisión
+incorrecta: pregunta por una capacidad ya conocida. Al cambiar ese feedback cambia también
+la búsqueda. Completar la generación no garantiza una mejor política. No hubo cortes con
+4.096, por lo que no se ejecuta el escalón condicionado de 8.192.
+
+Son pruebas locales, sin costo de API ni entrenamiento. Se registran tokens reales, tiempo
+y memoria; tiempos orientativos, sin aislar otras tareas de la laptop. Los resultados y las
+fuentes de las ejecuciones anteriores permanecen intactos.
+
+## Test 5: salida JSON estructurada
+
+El [nuevo notebook](structured-output.ipynb) compara pedir JSON mediante instrucciones con
+restringir sus tokens durante la generación. Se mantienen Qwen3 8B, 4.096 tokens de salida,
+cinco intentos y los presupuestos del Test 4. El razonamiento sigue libre; el esquema se aplica
+al JSON final del negociador, mejorador y actualizador. No hay reparación ni reintentos.
+
+- **Formato:** B1 produjo 53/53 respuestas válidas y B2, 73/73. En B2 desaparecieron los dos errores de esquema de la ejecución anterior (63/65).
+- **Calidad final:** ambas condiciones conservaron 7/8 decisiones correctas (87,5 %), sin incumplimientos críticos. El resultado no aumentó con la restricción de formato.
+- **Fallo pendiente:** con capacidad mensual de 225, ambas eligieron la deuda A en un pago de 200; correspondía B en dos cuotas de 150, la mayor deuda viable.
+- **Adaptación:** las cuatro actualizaciones de instrucciones de B2 fueron válidas y se utilizaron en propuestas posteriores. No mejoraron la política seleccionada en el primer intento.
+
+- **Consumo:** B1 usó 68.762 tokens y B2, 91.579. B2 hizo ocho llamadas más que antes porque su quinta propuesta pasó la validación de formato y pudo evaluarse en desarrollo y validación.
+
+En la llamada 38 de B2, con la misma entrada y el mismo razonamiento, la salida pasó a cumplir el esquema. Sin embargo, la instrucción generada comparaba el total de pagos con la capacidad mensual, cuando debía comparar cada cuota. La actualización siguiente corrigió esa frase, pero no produjo una política mejor en validación. El formato quedó resuelto en esta prueba; la calidad de las propuestas sigue pendiente. Es una ejecución por condición sobre casos conocidos.
+
+La restricción es fija durante la búsqueda y no recibe respuestas esperadas. Se utiliza
+[LM Format Enforcer](https://github.com/noamgat/lm-format-enforcer) con un adaptador para MLX.
+La forma nullable de `debt` se compila como una unión equivalente; la validación usa el esquema
+original. Se miden formato y calidad por separado. Los casos finales ya se conocen: es un
+diagnóstico, no una nueva confirmación ni una comparación estadística.
 
 ## Extensión propuesta
 

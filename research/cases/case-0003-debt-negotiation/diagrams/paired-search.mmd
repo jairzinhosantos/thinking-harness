@@ -1,0 +1,9 @@
+flowchart LR
+    I["Inicio: H0 y phi0"] --> P["Proponer H candidata"]
+    P --> E["Ejecutar y evaluar"]
+    E --> S["Seleccionar H"]
+    S -->|Fin del ciclo| T["Test: H0 y H seleccionada"]
+    S -->|B1: phi fija| P
+    S -->|B2| U["Actualizar phi"]
+    E -. "Solo desarrollo" .-> U
+    U --> P
