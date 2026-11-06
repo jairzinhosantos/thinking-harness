@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 15
+revision: 16
 created: 2026-09-29
 updated: 2026-11-06
 ---
@@ -50,6 +50,11 @@ El [Test 4](../research/cases/case-0003-debt-negotiation/paired-search.ipynb) co
 con Qwen 8B y presupuestos iguales, incluido el razonamiento. Parte de una política deficiente;
 la referencia manual del Test 3 no se entrega al mejorador. Se conservan intentos inválidos,
 duplicados y propuestas rechazadas. Los resultados de pruebas anteriores permanecen intactos.
+
+El Test 4 incorpora un ajuste de `max_tokens` de 2.048 a 4.096, con los mismos presupuestos
+y escenarios. Elimina los cortes observados, sin entrenar pesos. Los casos finales se reutilizan
+como diagnóstico; una confirmación posterior necesita casos nuevos y más repeticiones.
+Los resultados detallados y el consumo quedan en la sección 8 del notebook.
 
 ## Próximas decisiones
 

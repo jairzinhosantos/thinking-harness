@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 22
+revision: 23
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -156,6 +156,33 @@ Las dos fallaron el caso de cambio de capacidad dentro del historial. Se conserv
 no se ajustó la política con ese feedback. Se cumple el criterio de este piloto, Q ≥ 80%
 y V = 0, con una sola búsqueda por condición. Se mantiene B1 como referencia antes de
 ampliar escenarios; no se concluye superioridad general de ningún mecanismo.
+
+### Ajuste de tokens de salida
+
+La sección 8 del mismo notebook compara **2.048 y 4.096 tokens por llamada**. El límite
+incluye razonamiento y respuesta final. Se mantienen cinco intentos, modelo, muestreo,
+semillas, evaluador y presupuesto total. La reserva de entrada permanece en 4.096 tokens;
+no se añade ni se recorta contexto. Los ocho casos finales ya son conocidos: es un ajuste
+exploratorio, no una nueva confirmación.
+
+| Tope 4.096 | Decisiones correctas | Respuestas con incumplimientos | Tokens totales | Cortes |
+|---|---:|---:|---:|---:|
+| B1 fija | 7/8 | 0 | 68.762 | 0 |
+| B2 adaptativa | 7/8 | 0 | 84.475 | 0 |
+
+Con 4.096, B1 y B2 mantienen 7/8 decisiones correctas y cero incumplimientos. B1 consume
+30,9% más tokens que con 2.048; B2, 7,4% más. Ambas resuelven el fallo anterior, pero fallan
+`paired-225`: ofrecen A en un pago de 200 cuando B admite dos cuotas de 150 con capacidad
+225. No se observa una mejora del puntaje final en estas ejecuciones.
+
+La respuesta inicial que antes se cortaba termina en 2.394 tokens, pero conserva una decisión
+incorrecta: pregunta por una capacidad ya conocida. Al cambiar ese feedback cambia también
+la búsqueda. Completar la generación no garantiza una mejor política. No hubo cortes con
+4.096, por lo que no se ejecuta el escalón condicionado de 8.192.
+
+Son pruebas locales, sin costo de API ni entrenamiento. Se registran tokens reales, tiempo
+y memoria; tiempos orientativos, sin aislar otras tareas de la laptop. Los resultados y las
+fuentes de las ejecuciones anteriores permanecen intactos.
 
 ## Extensión propuesta
 

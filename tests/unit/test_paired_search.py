@@ -28,8 +28,10 @@ class PairedSearchTests(unittest.TestCase):
         fixtures=paired.fixtures()
         lookup={json.dumps(paired.local.visible(c),sort_keys=True):c['expected'] for split in ('development','validation','test') for c in fixtures[split]}
         requests=[]
+        configurations=[]
         class Client:
             def __init__(self,key,folder,snapshot,started,**kwargs):
+                configurations.append(kwargs['limits'].copy())
                 self.calls=self.tokens=self.proposals=0
                 self.limits=kwargs['limits']
                 self.sampling=kwargs['sampling']
@@ -50,8 +52,10 @@ class PairedSearchTests(unittest.TestCase):
         reports=[]
         with tempfile.TemporaryDirectory() as folder,patch.object(paired.importlib.metadata,'version',return_value='stub'):
             for mode in ('fixed','adaptive'):
-                path=paired.run(mode,output_root=folder,client_factory=Client)
+                path=paired.run(mode,output_root=folder,client_factory=Client,output_tokens=4096)
                 reports.append(json.loads((path/'report.json').read_text()))
+        self.assertTrue(all(c['output_tokens']==4096 and c['context_tokens']==8192 for c in configurations))
+        self.assertTrue(all(c['total_tokens']==120000 for c in configurations))
         for report in reports:
             self.assertEqual(report['status'],'completed')
             self.assertEqual(report['selected_iteration'],1)
@@ -73,6 +77,12 @@ class PairedSearchTests(unittest.TestCase):
         for phase in ('development','validation','test'):
             seeds=[{e['seed'] for e in r['events'] if e['phase']==phase} for r in reports]
             self.assertEqual(seeds[0],seeds[1])
+
+    def test_output_budget_is_bounded(self):
+        with self.assertRaises(ValueError):
+            paired.run('fixed',output_tokens=0)
+        with self.assertRaises(ValueError):
+            paired.run('fixed',output_tokens=16384)
 
     def test_notebook_replays_without_network_or_models(self):
         notebook=json.loads((CASE/'paired-search.ipynb').read_text())

@@ -1,4 +1,4 @@
-"""Paired five-proposal B1/B2 pilot with local Qwen and protected holdout cases."""
+"""Paired five-proposal B1/B2 pilot with local Qwen and isolated evaluation cases."""
 import argparse
 from datetime import datetime, timezone
 import importlib.metadata
@@ -10,7 +10,7 @@ import time
 import local_model_test as local
 
 CASE = local.CASE_DIR
-PROTOCOL = 'case-0003-paired-search-v1'
+PROTOCOL = 'case-0003-output-budget-v1'
 SAMPLING = {'temperature': .6, 'top_p': .95, 'top_k': 20, 'enable_thinking': True, 'seed': 11}
 LIMITS = {**local.LIMITS, 'iterations': 5, 'calls': 90, 'output_tokens': 2048,
           'context_tokens': 6144, 'total_tokens': 180000, 'seconds': 1800}
@@ -22,19 +22,23 @@ def fixtures():
     return json.loads((CASE / 'paired-search-cases.yaml').read_text())
 
 
-def run(strategy, output_root=None, client_factory=local.LocalClient):
+def run(strategy, output_root=None, client_factory=local.LocalClient, *, output_tokens=2048):
     if strategy not in ('fixed', 'adaptive'):
         raise ValueError('Unknown strategy')
+    if output_tokens not in (2048, 4096, 8192):
+        raise ValueError('Output limit must be 2048, 4096 or 8192')
+    limits = {**LIMITS, 'output_tokens': output_tokens,
+              'context_tokens': output_tokens + 4096}
     cases = fixtures()
     sources = [Path(__file__), Path(local.__file__), Path(local.smoke.__file__),
                Path(local.__file__).with_name('prompt_search.py'), CASE / 'paired-search-cases.yaml']
     hashes = {str(p.relative_to(CASE)): local.smoke.digest(p) for p in sources}
     repo, revision = local.MODELS['qwen3-8b']
     snapshot = Path.home() / '.cache/huggingface/hub' / ('models--'+repo.replace('/','--')) / 'snapshots' / revision
-    folder = Path(output_root or CASE / 'results') / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-paired-'+strategy)
+    folder = Path(output_root or CASE / 'results') / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-paired-'+strategy+('-tokens-'+str(output_tokens) if output_tokens != 2048 else ''))
     folder.mkdir(parents=True, exist_ok=False)
     protocol = {'protocol': PROTOCOL, 'strategy': strategy, 'model': repo, 'revision': revision,
-        'sampling': SAMPLING, 'limits': LIMITS, 'search_tokens': SEARCH_TOKENS, 'final_tokens': FINAL_TOKENS,
+        'sampling': SAMPLING, 'limits': limits, 'search_tokens': SEARCH_TOKENS, 'final_tokens': FINAL_TOKENS,
         'cases': cases, 'objective': local.smoke.OBJECTIVE, 'initial_policy': local.smoke.INITIAL_POLICY,
         'initial_strategy': local.smoke.INITIAL_STRATEGY, 'runtime': local.DECISION_RUNTIME,
         'proposal_contract': local.smoke.PROPOSAL_CONTRACT+local.NOVELTY_CONTRACT,
@@ -46,8 +50,14 @@ def run(strategy, output_root=None, client_factory=local.LocalClient):
         'duplicates': 'NFC/whitespace duplicates reuse scores; never accepted. Same seeds make this reuse consistent within the pilot.',
         'invalid_output': 'Invalid proposal counts as one attempt, keeps incumbent, no updater for that attempt. Invalid update keeps current strategy. No automatic request retry.',
         'stop': 'Five proposal attempts, search-token limit or runtime/source failure. Final evaluation has a separate 60000-token reserve within the 180000 total and 1800-second cap.',
-        'final': 'New test inspected only after selection. Evaluate H0 and selected on same case seeds. Reuse baseline if H0 remains selected. No post-test changes.',
-        'scope': 'One paired search per condition; no significance or superiority claim. Manual policy from Test 3 is not supplied to either search. Structured decisions only; messages use fixed renderer.',
+        'final': 'Test evaluated only after selection; new for Test 4, reused for output-budget tuning. Evaluate H0 and selected on same case seeds. Reuse baseline if H0 remains selected. No post-test changes.',
+        'scope': 'One paired search per condition; no significance or superiority claim. Test 4 cases are already known; no new confirmation claim. Manual policy from Test 3 is not supplied to either search. Structured decisions only; messages use fixed renderer.',
+        'output_budget_comparison': {'output_tokens': output_tokens,
+            'meaning': 'Maximum new tokens per call, including reasoning and final JSON; EOS may stop earlier.',
+            'context': '4096 input-token headroom plus output reserve. No truncation or extra input context is added.',
+            'known_test': True,
+            'interpretation': 'Runs reuse inspected Test 4 cases: exploratory tuning, not fresh confirmation.',
+            'escalation': 'Run 4096 for both conditions; try 8192 only if output_limit persists. Stop after that bounded pair. No automatic model scaling.'},
         'human_edits_during_search': 0, 'api_calls': 0,
         'base_commit': subprocess.check_output(['git','rev-parse','HEAD'],cwd=CASE,text=True).strip(),
         'packages': {n:importlib.metadata.version(n) for n in ('mlx','mlx-lm','transformers','tokenizers','jsonschema','PyYAML')}}
@@ -92,7 +102,7 @@ def run(strategy, output_root=None, client_factory=local.LocalClient):
 
     try:
         client=client_factory('qwen3-8b',folder,snapshot,started,sampling=SAMPLING,
-                              limits={**LIMITS,'total_tokens':SEARCH_TOKENS})
+                              limits={**limits,'total_tokens':SEARCH_TOKENS})
         policy,strategy_text=local.smoke.INITIAL_POLICY,local.smoke.INITIAL_STRATEGY
         incumbent={'iteration':0,'policy':policy,'strategy_used':strategy_text,
             'policy_tokens':client.length(policy),'strategy_tokens':client.length(strategy_text),
@@ -159,7 +169,7 @@ def run(strategy, output_root=None, client_factory=local.LocalClient):
         report['selected_policy']=policy
         report['selected_strategy']=strategy_text
         checkpoint()
-        client.limits['total_tokens']=min(LIMITS['total_tokens'],client.tokens+FINAL_TOKENS)
+        client.limits['total_tokens']=min(limits['total_tokens'],client.tokens+FINAL_TOKENS)
         baseline=evaluate(local.smoke.INITIAL_POLICY,'test')
         selected=evaluate(policy,'test') if report['selected_iteration'] else baseline
         report['test']={'initial':baseline,'selected':selected,'selected_reuses_initial':report['selected_iteration']==0}
@@ -179,5 +189,6 @@ def run(strategy, output_root=None, client_factory=local.LocalClient):
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--strategy',choices=('fixed','adaptive'),required=True)
+    parser.add_argument('--output-tokens', type=int, choices=(2048,4096,8192), default=2048)
     args=parser.parse_args()
-    print(run(args.strategy))
+    print(run(args.strategy, output_tokens=args.output_tokens))
