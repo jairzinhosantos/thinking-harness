@@ -172,6 +172,10 @@ class LocalClient:
     def length(self, text):
         return len(self.tokenizer.encode(text, add_special_tokens=False))
 
+    def output_processors(self, schema):
+        """Allow an explicit decoding adapter without changing prompt-only runs."""
+        return [], None
+
     def ask(self, role, instructions, payload, schema):
         from mlx_lm import stream_generate
         from mlx_lm.sample_utils import make_sampler
@@ -189,8 +193,12 @@ class LocalClient:
         started = time.monotonic()
         result, error = None, None
         try:
+            processors, processor_stats = self.output_processors(schema)
+            if processor_stats is not None:
+                entry["structured_generation"] = processor_stats
             for result in stream_generate(self.model, self.tokenizer, prompt=prompt,
                                           max_tokens=self.limits["output_tokens"],
+                                          logits_processors=processors or None,
                                           sampler=make_sampler(temp=self.sampling["temperature"], top_p=self.sampling["top_p"], top_k=self.sampling["top_k"])):
                 entry["raw_output"] += result.text
                 if time.monotonic() - self.started >= self.limits["seconds"]:

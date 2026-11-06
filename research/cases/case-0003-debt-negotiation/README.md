@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 23
+revision: 24
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -14,7 +14,9 @@ updated: 2026-11-06
 
 El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
 [presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
-en la raíz del caso; `results/` conserva las ejecuciones registradas.
+en la raíz del caso; `results/` conserva las ejecuciones registradas. Cada nueva prueba
+conserva su notebook ejecutado. Los notebooks anteriores permanecen como historial;
+no se reemplazan al añadir otra prueba.
 
 ## Test 1: adaptación de instrucciones
 
@@ -183,6 +185,28 @@ la búsqueda. Completar la generación no garantiza una mejor política. No hubo
 Son pruebas locales, sin costo de API ni entrenamiento. Se registran tokens reales, tiempo
 y memoria; tiempos orientativos, sin aislar otras tareas de la laptop. Los resultados y las
 fuentes de las ejecuciones anteriores permanecen intactos.
+
+## Test 5: salida JSON estructurada
+
+El [nuevo notebook](structured-output.ipynb) compara pedir JSON mediante instrucciones con
+restringir sus tokens durante la generación. Se mantienen Qwen3 8B, 4.096 tokens de salida,
+cinco intentos y los presupuestos del Test 4. El razonamiento sigue libre; el esquema se aplica
+al JSON final del negociador, mejorador y actualizador. No hay reparación ni reintentos.
+
+- **Formato:** B1 produjo 53/53 respuestas válidas y B2, 73/73. En B2 desaparecieron los dos errores de esquema de la ejecución anterior (63/65).
+- **Calidad final:** ambas condiciones conservaron 7/8 decisiones correctas (87,5 %), sin incumplimientos críticos. El resultado no aumentó con la restricción de formato.
+- **Fallo pendiente:** con capacidad mensual de 225, ambas eligieron la deuda A en un pago de 200; correspondía B en dos cuotas de 150, la mayor deuda viable.
+- **Adaptación:** las cuatro actualizaciones de instrucciones de B2 fueron válidas y se utilizaron en propuestas posteriores. No mejoraron la política seleccionada en el primer intento.
+
+- **Consumo:** B1 usó 68.762 tokens y B2, 91.579. B2 hizo ocho llamadas más que antes porque su quinta propuesta pasó la validación de formato y pudo evaluarse en desarrollo y validación.
+
+En la llamada 38 de B2, con la misma entrada y el mismo razonamiento, la salida pasó a cumplir el esquema. Sin embargo, la instrucción generada comparaba el total de pagos con la capacidad mensual, cuando debía comparar cada cuota. La actualización siguiente corrigió esa frase, pero no produjo una política mejor en validación. El formato quedó resuelto en esta prueba; la calidad de las propuestas sigue pendiente. Es una ejecución por condición sobre casos conocidos.
+
+La restricción es fija durante la búsqueda y no recibe respuestas esperadas. Se utiliza
+[LM Format Enforcer](https://github.com/noamgat/lm-format-enforcer) con un adaptador para MLX.
+La forma nullable de `debt` se compila como una unión equivalente; la validación usa el esquema
+original. Se miden formato y calidad por separado. Los casos finales ya se conocen: es un
+diagnóstico, no una nueva confirmación ni una comparación estadística.
 
 ## Extensión propuesta
 

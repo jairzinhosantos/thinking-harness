@@ -1,0 +1,11 @@
+{
+  "structured_output.py": "c3c3346441357b24a61b5aa13e2365247dd56134a21b010e23f70ef675649bd6",
+  "local_model_test.py": "c8231040816d530f2f1099a5924a8a08f4b3f00391af5238174fbd6a4941e6b3",
+  "report.json": "33da3c42c7202cbaa6c1bb5d290af42598b43b15929739296cd64c51d82b8003",
+  "paired_search.py": "e3e6f7aea83bd47a869e22b256b56e22d57cbe5ad0971ec07ce0c163d3f7f1aa",
+  "harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+  "paired-search-cases.yaml": "25d1fdd5415d8aa6fafe2e299989358235f64912a6d7c4f315eda1f321a2cf73",
+  "protocol.json": "64ff9f2111ec58590b7ec5823b0e60bfbd968dbcb618486661d848004659fa59",
+  "calls.jsonl": "ec39e6cf7d7c9fa1d97f1c7ff794262f7a6e8d23595dd3116ec32a60e339f584",
+  "prompt_search.py": "11303e00d631c14a3f65bb6b16320a51cb01c93724825df1dc76530087cb1ab4"
+}

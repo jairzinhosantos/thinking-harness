@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 16
+revision: 17
 created: 2026-09-29
 updated: 2026-11-06
 ---
@@ -34,6 +34,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Política manual local | Mismo evaluador y 12 casos conocidos: 4B resolvió 7/12 y 8B, 6/12; ambos 0/2 en validación. Persisten fallos del negociador sin mejorador, sin concluir incapacidad del modelo |
 | Ajuste de inferencia | [Test 3](../research/cases/case-0003-debt-negotiation/inference-tuning.ipynb): 8B con razonamiento: 12/12 conocidos y 24/24 en ocho casos reservados, sin incumplimientos. Barrido directo y controles API fallidos conservados; política manual fija, sin comparación B1/B2 |
 | Búsqueda local B1/B2 | [Test 4](../research/cases/case-0003-debt-negotiation/paired-search.ipynb): ambas pasan de 3/8 a 7/8 en ocho casos nuevos, sin incumplimientos. B2 reutiliza tres cambios de instrucciones, con 49,7% más tokens y sin ventaja final observada; una búsqueda por condición |
+| Salida estructurada | [Test 5](../research/cases/case-0003-debt-negotiation/structured-output.ipynb): Qwen 8B con JSON restringido: B1 53/53 y B2 73/73 respuestas válidas; ambas mantienen 7/8 decisiones correctas, sin incumplimientos. Casos conocidos; notebook nuevo y evidencia anterior intacta |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
@@ -55,6 +56,10 @@ El Test 4 incorpora un ajuste de `max_tokens` de 2.048 a 4.096, con los mismos p
 y escenarios. Elimina los cortes observados, sin entrenar pesos. Los casos finales se reutilizan
 como diagnóstico; una confirmación posterior necesita casos nuevos y más repeticiones.
 Los resultados detallados y el consumo quedan en la sección 8 del notebook.
+
+El Test 5 separa cumplimiento del esquema y calidad de las decisiones. La restricción se
+aplica durante la generación, después del razonamiento. Los notebooks ejecutados de pruebas
+anteriores permanecen como historial; cada prueba nueva tiene su notebook y sus registros.
 
 ## Próximas decisiones
 

@@ -1,0 +1,11 @@
+flowchart LR
+    L[Qwen 8B] --> R[Razonamiento libre]
+    R --> M[Restricción de tokens]
+    S[Esquema JSON fijo] -.-> M
+    M --> J[Respuesta JSON]
+    J --> V[Validar estructura]
+    V --> E[Evaluar comportamiento]
+    classDef fixed fill:#eef2f6,stroke:#526b82,color:#243c56
+    classDef change fill:#f7efed,stroke:#94644c,color:#493426
+    class L,R,S,J,V,E fixed
+    class M change

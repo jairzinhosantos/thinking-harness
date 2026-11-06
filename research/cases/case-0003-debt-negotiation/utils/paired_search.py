@@ -22,22 +22,31 @@ def fixtures():
     return json.loads((CASE / 'paired-search-cases.yaml').read_text())
 
 
-def run(strategy, output_root=None, client_factory=local.LocalClient, *, output_tokens=2048):
+def run(strategy, output_root=None, client_factory=local.LocalClient, *, output_tokens=2048, decoding="prompt_only"):
     if strategy not in ('fixed', 'adaptive'):
         raise ValueError('Unknown strategy')
     if output_tokens not in (2048, 4096, 8192):
         raise ValueError('Output limit must be 2048, 4096 or 8192')
     limits = {**LIMITS, 'output_tokens': output_tokens,
               'context_tokens': output_tokens + 4096}
+    if decoding not in ('prompt_only', 'json_schema'):
+        raise ValueError('Unknown decoding mode')
+    if decoding == 'json_schema' and client_factory is local.LocalClient:
+        from structured_output import StructuredLocalClient
+        client_factory = StructuredLocalClient
     cases = fixtures()
     sources = [Path(__file__), Path(local.__file__), Path(local.smoke.__file__),
                Path(local.__file__).with_name('prompt_search.py'), CASE / 'paired-search-cases.yaml']
+    if decoding == 'json_schema':
+        sources.append(Path(__file__).with_name('structured_output.py'))
     hashes = {str(p.relative_to(CASE)): local.smoke.digest(p) for p in sources}
     repo, revision = local.MODELS['qwen3-8b']
     snapshot = Path.home() / '.cache/huggingface/hub' / ('models--'+repo.replace('/','--')) / 'snapshots' / revision
-    folder = Path(output_root or CASE / 'results') / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-paired-'+strategy+('-tokens-'+str(output_tokens) if output_tokens != 2048 else ''))
+    folder = Path(output_root or CASE / 'results') / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-paired-'+strategy+('-tokens-'+str(output_tokens) if output_tokens != 2048 else '')+('-structured' if decoding == 'json_schema' else ''))
     folder.mkdir(parents=True, exist_ok=False)
-    protocol = {'protocol': PROTOCOL, 'strategy': strategy, 'model': repo, 'revision': revision,
+    protocol = {'protocol': 'case-0003-structured-search-v1' if decoding == 'json_schema' else PROTOCOL, 'strategy': strategy, 'model': repo, 'revision': revision,
+        'decoding': decoding,
+        'schema_constraint': 'Mask final JSON only after </think>, in all three roles. Nullable string enum compiled as equivalent anyOf; up to 12 consecutive whitespace characters, free field order. No repair, retry, forced answer or expected labels. Free reasoning and post-generation validation retained.' if decoding == 'json_schema' else 'Prompt instructions only; post-generation validation.',
         'sampling': SAMPLING, 'limits': limits, 'search_tokens': SEARCH_TOKENS, 'final_tokens': FINAL_TOKENS,
         'cases': cases, 'objective': local.smoke.OBJECTIVE, 'initial_policy': local.smoke.INITIAL_POLICY,
         'initial_strategy': local.smoke.INITIAL_STRATEGY, 'runtime': local.DECISION_RUNTIME,
@@ -60,7 +69,7 @@ def run(strategy, output_root=None, client_factory=local.LocalClient, *, output_
             'escalation': 'Run 4096 for both conditions; try 8192 only if output_limit persists. Stop after that bounded pair. No automatic model scaling.'},
         'human_edits_during_search': 0, 'api_calls': 0,
         'base_commit': subprocess.check_output(['git','rev-parse','HEAD'],cwd=CASE,text=True).strip(),
-        'packages': {n:importlib.metadata.version(n) for n in ('mlx','mlx-lm','transformers','tokenizers','jsonschema','PyYAML')}}
+        'packages': {n:importlib.metadata.version(n) for n in ('mlx','mlx-lm','transformers','tokenizers','jsonschema','PyYAML') + (('lm-format-enforcer','pydantic','interegular') if decoding == 'json_schema' else ())}}
     local.smoke.write_json(folder/'protocol.json', protocol)
     for p in sources:
         (folder/p.name).write_bytes(p.read_bytes())
@@ -190,5 +199,6 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--strategy',choices=('fixed','adaptive'),required=True)
     parser.add_argument('--output-tokens', type=int, choices=(2048,4096,8192), default=2048)
+    parser.add_argument('--decoding', choices=('prompt_only','json_schema'), default='prompt_only')
     args=parser.parse_args()
-    print(run(args.strategy, output_tokens=args.output_tokens))
+    print(run(args.strategy, output_tokens=args.output_tokens, decoding=args.decoding))
