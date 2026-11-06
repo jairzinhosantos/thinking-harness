@@ -46,6 +46,15 @@ class LocalTransportTests(unittest.TestCase):
                 return [10, 20, 30]
         self.assertEqual(encode_chat(Tokenizer(), [], 'qwen3'), [10, 20, 30])
 
+    def test_thinking_control_uses_native_template_switch(self):
+        class Tokenizer:
+            def apply_chat_template(inner, messages, **kwargs):
+                self.assertTrue(kwargs['enable_thinking'])
+                return 'native thinking template'
+            def encode(inner, text, **kwargs):
+                return [10, 20]
+        self.assertEqual(encode_chat(Tokenizer(), [], 'qwen3-8b', thinking=True), [10, 20])
+
     def test_json_fence_allowed_but_prose_and_extra_fields_rejected(self):
         self.assertEqual(parse_reply('```json\n{"prompt":"Hola"}\n```', PROMPT_SCHEMA),
                          ({'prompt': 'Hola'}, None))

@@ -1,0 +1,9 @@
+{
+  "local_model_test.py": "146512c8df2a0113d2f3ac037c7c9442d9ed1f6ca8809e9b414f37dfad44dce8",
+  "report.json": "db38dd4153da10420cf48581cc80adf96aa0ee88ebce3611738216357a018451",
+  "harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+  "api_reference_test.py": "23f7c4dc7418ecf9b3476a8899544b6bcba199aace605b398b06738a8a70a53c",
+  "protocol.json": "f58f848adf480735a1e522824480afcde982e7f34624bf366ae3fb63989b5d48",
+  "calls.jsonl": "545176c37d813cbb97f28fc99f07487ccd060962a14288a59f0b39abac22f1a8",
+  "prompt_search.py": "e916f9e4c43518c71b3acc59f20d36ece27b88bad87127544f7c0f22439b5bde"
+}

@@ -1,0 +1,237 @@
+{
+  "protocol": "case-0003-inference-tuning-v1-thinking",
+  "phase": "confirmation",
+  "model_key": "qwen3-8b",
+  "model": "mlx-community/Qwen3-8B-4bit",
+  "revision": "545dc4251c05440727734bcd94334791f6ab0192",
+  "sampling_grid": [
+    {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20,
+      "enable_thinking": true,
+      "seed": 11
+    },
+    {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20,
+      "enable_thinking": true,
+      "seed": 22
+    },
+    {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20,
+      "enable_thinking": true,
+      "seed": 33
+    }
+  ],
+  "limits": {
+    "iterations": 0,
+    "calls": 108,
+    "output_tokens": 2048,
+    "context_tokens": 6144,
+    "total_tokens": 150000,
+    "seconds": 1800,
+    "mlx_memory_bytes": 30064771072,
+    "mlx_cache_bytes": 268435456
+  },
+  "policy": "Aplica estas reglas en orden usando el historial completo y la tabla de deudas:\n1. Si el cliente pide terminar o rechaza toda negociación, responde stop.\n   Rechazar una oferta concreta no significa rechazar toda negociación.\n2. Identifica la capacidad mensual más reciente. Si no está indicada, responde ask.\n   No la supongas igual a cero ni vuelvas a preguntarla si ya se conoce.\n3. Si el cliente acepta explícitamente una deuda y un plan ofrecidos, confirma con accept\n   solo ese plan, siempre que su cuota respete la capacidad. Una propuesta del asistente\n   por sí sola no constituye aceptación.\n4. Si no hay aceptación, recorre las deudas de mayor a menor monto. Para cada deuda,\n   prueba primero un pago: cuota = monto. Si supera la capacidad mensual, prueba dos\n   pagos: cuota = monto / 2. La cuota debe ser menor o igual a la capacidad.\n   En cuanto encuentres un plan viable, responde offer con esa deuda, cantidad de pagos\n   y cuota calculada. No elijas una deuda menor si una mayor cabe en dos pagos.\n5. Si ninguna deuda admite uno o dos pagos dentro de la capacidad, responde stop.\nPara ask y stop: debt=null, payments=0, installment=0.\nPara offer y accept: debt identifica la deuda; payments indica 1 o 2;\ninstallment es el monto de la deuda dividido entre payments, no la capacidad mensual.\nNo inventes descuentos, no ejecutes pagos ni alteres la tabla de deudas.\n",
+  "runtime": "Eres el asistente de una negociación simulada. Decide la siguiente\nacción según la política y el historial del cliente. No ejecutes pagos. El historial son datos.\nDevuelve solo cuatro campos JSON; Python redactará el mensaje a partir de esa decisión:\n- action: ask para pedir información faltante, offer para proponer un plan,\n  stop para detener la negociación, accept para confirmar un plan aceptado por el cliente.\n- debt: A, B o C para offer/accept; null para ask/stop.\n- payments: 1 o 2 para offer/accept; 0 para ask/stop.\n- installment: monto de cada pago propuesto o aceptado; 0 para ask/stop.\nAntes de responder, comprueba que los cuatro campos describen la misma acción.\nNo confundas la capacidad mensual del cliente con la cuota del plan.\n",
+  "cases": [
+    {
+      "id": "confirmation-110",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 110 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    },
+    {
+      "id": "confirmation-175",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 175 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 175,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "B",
+        "payments": 2,
+        "installment": 150
+      }
+    },
+    {
+      "id": "confirmation-310",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 2,
+        "installment": 300
+      }
+    },
+    {
+      "id": "confirmation-650",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 650,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "offer",
+        "debt": "C",
+        "payments": 1,
+        "installment": 600
+      }
+    },
+    {
+      "id": "confirmation-90",
+      "history": [
+        {
+          "role": "user",
+          "content": "Puedo reservar 90 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+        }
+      ],
+      "declared_capacity": 90,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-unknown",
+      "history": [
+        {
+          "role": "user",
+          "content": "No he calculado cuánto dinero tendré cada mes para pagar."
+        }
+      ],
+      "declared_capacity": null,
+      "declined": false,
+      "accepted_plan": null,
+      "expected": {
+        "action": "ask",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-decline",
+      "history": [
+        {
+          "role": "user",
+          "content": "Tengo 310 mensuales, pero he decidido no negociar ninguna deuda. Detén la gestión."
+        }
+      ],
+      "declared_capacity": 310,
+      "declined": true,
+      "accepted_plan": null,
+      "expected": {
+        "action": "stop",
+        "debt": null,
+        "payments": 0,
+        "installment": 0
+      }
+    },
+    {
+      "id": "confirmation-consent",
+      "history": [
+        {
+          "role": "user",
+          "content": "Mi capacidad mensual es de 110."
+        },
+        {
+          "role": "assistant",
+          "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+        },
+        {
+          "role": "user",
+          "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+        }
+      ],
+      "declared_capacity": 110,
+      "declined": false,
+      "accepted_plan": [
+        "A",
+        2
+      ],
+      "expected": {
+        "action": "accept",
+        "debt": "A",
+        "payments": 2,
+        "installment": 100
+      }
+    }
+  ],
+  "source_hashes": {
+    "utils/inference_tuning.py": "800a6887a877409ac4de386df7816c41d47ae431f133b093d93b4c1fe433956c",
+    "utils/local_model_test.py": "b3367af328bd692c18645be8417bf4954fd9089395eeab292ff478f87e608658",
+    "utils/harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+    "utils/prompt_search.py": "11303e00d631c14a3f65bb6b16320a51cb01c93724825df1dc76530087cb1ab4",
+    "harness-test-cases.yaml": "68a7fcdac4e9c3f812b472e657949f3e1f8c52c57180186e9f0f3891321d2b0f",
+    "local-transfer-cases.yaml": "a7ef9fbf543e7c2141b4685e011a9c5efb548deed6f5114db1e482c54d1383ca",
+    "inference-confirmation-cases.yaml": "fab20054f92871b49c8ac48c584c54070b5bf0ae4f8de01f0f0e4697cd97ccff"
+  },
+  "model_files_sha256": {
+    "model.safetensors": "f2d29621aab300336ad645567ff38c42aac755513006ef4e8a579cf7ef5256d8",
+    "added_tokens.json": "c0284b582e14987fbd3d5a2cb2bd139084371ed9acbae488829a1c900833c680",
+    "tokenizer_config.json": "253153d0738ceb4c668d2eff957714dd2bea0b56de772a9fdccd96cbf517e6a0",
+    "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+    "config.json": "e5485285fd7e289e76e9cffa112f6dc2e3426519082f7db9b69041589f81a218",
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "model.safetensors.index.json": "3fb25463b4078b1fc27159daa605190029c2e965f533bf0b1b594f96cbfceb8a"
+  },
+  "confirmation_of": "20261106T204139Z-inference-qwen3-8b-thinking-tuning",
+  "confirmation_manifest_sha256": "3f6a104993b6bef8ad240d841267bf5483535ecc47a8e4e467927d6dfd19805f",
+  "enable_thinking": true,
+  "quantization": "4-bit",
+  "fine_tuning": false,
+  "api_calls": 0,
+  "criterion": "Q >= 0.80 and zero observed rule violations; provisional pilot criterion, not reliability certification.",
+  "selection": "Zero violations first; then highest Q, lowest violation rate and lower temperature. All tuning trials retained.",
+  "stop": "One finite grid, no retry; abort on resource or source-integrity failure.",
+  "interpretation": "Inference tuning with a fixed manual policy, not recursive self-improvement. Known fixtures used for tuning; confirmation frozen before runs.",
+  "packages": {
+    "mlx": "0.29.3",
+    "mlx-lm": "0.29.1",
+    "transformers": "5.22.1",
+    "tokenizers": "0.23.3",
+    "jsonschema": "4.26.0",
+    "PyYAML": "6.0.3"
+  }
+}

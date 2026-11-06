@@ -1,0 +1,266 @@
+{
+  "status": "completed",
+  "evaluations": [
+    {
+      "sampling": {
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "seed": 11,
+        "enable_thinking": true
+      },
+      "q": 1.0,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "development-largest",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "development-declined",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "validation-limited",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "validation-infeasible",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "test-largest",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "test-consent",
+          "raw_reply": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-unknown",
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-150",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-300",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-600",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-declined",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-insufficient",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "sampling": {
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "enable_thinking": true
+      },
+      "q": 1.0,
+      "v": 0.0,
+      "successes": 12,
+      "count": 12,
+      "passes": true
+    }
+  ],
+  "selected": {
+    "sampling": {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20,
+      "enable_thinking": true
+    },
+    "q": 1.0,
+    "v": 0.0,
+    "successes": 12,
+    "count": 12,
+    "passes": true
+  },
+  "calls": 12,
+  "tokens": 15110,
+  "elapsed_seconds": 65.36894108300112,
+  "peak_mlx_gb": 5.42446126
+}

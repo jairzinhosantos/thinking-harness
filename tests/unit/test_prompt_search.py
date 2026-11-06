@@ -195,12 +195,13 @@ class PromptSearchTests(unittest.TestCase):
                   'usage':{'input_tokens':10,'output_tokens':20},
                   'output':[{'type':'message','content':[{'type':'output_text','text':'{"prompt":"seed"}'}]}]}
         with tempfile.TemporaryDirectory() as tmp, patch.object(m.urllib.request,'urlopen',return_value=io.BytesIO(json.dumps(response).encode())) as call:
-            client=m.ResponsesClient(config(allow_live=True),tmp)
+            client=m.ResponsesClient(config(allow_live=True,temperature=0),tmp)
             self.assertEqual(client.ask('optimizer','fixed',{},m.PROMPT_SCHEMA),{'prompt':'seed'})
             self.assertEqual(client.tokens,30)
             self.assertAlmostEqual(client.cost,0.00005)
             body=json.loads(call.call_args.args[0].data)
             self.assertFalse(body['store'])
+            self.assertEqual(body['temperature'],0)
             self.assertTrue(body['text']['format']['strict'])
             self.assertNotIn('previous_response_id',body)
 
@@ -261,7 +262,7 @@ class PromptSearchTests(unittest.TestCase):
 
     def test_canonical_spanish_notebook_and_local_links(self):
         self.assertEqual(sorted(p.name for p in CASE.glob('*.ipynb')),
-                         ['harness-smoke-test.ipynb', 'local-model-test.ipynb', 'prompt-search.ipynb'])
+                         ['harness-smoke-test.ipynb', 'inference-tuning.ipynb', 'local-model-test.ipynb', 'prompt-search.ipynb'])
         notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
         first_code=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code')
         self.assertIn("LANGUAGE = 'es'", first_code)

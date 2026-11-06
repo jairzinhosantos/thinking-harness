@@ -2,9 +2,9 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 13
+revision: 14
 created: 2026-09-29
-updated: 2026-10-31
+updated: 2026-11-06
 ---
 
 # Plan de investigación
@@ -32,6 +32,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Adaptación mínima | [Test 1](../research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb): cinco propuestas en español y cuatro actualizaciones reutilizadas; propuesta 2 conservada, validación 2/2 y test 2/2 con reglas estructuradas; sin comparación B1/B2 |
 | Modelos locales | [Test 2](../research/cases/case-0003-debt-negotiation/local-model-test.ipynb), protocolo v5: Qwen3 4B y 8B, búsqueda fija/adaptativa, renderizado de mensajes y control de duplicados. Ninguna política aceptada; se omiten 28 reevaluaciones. Seis casos nuevos tras la selección; sin conclusión de superioridad |
 | Política manual local | Mismo evaluador y 12 casos conocidos: 4B resolvió 7/12 y 8B, 6/12; ambos 0/2 en validación. Persisten fallos del negociador sin mejorador, sin concluir incapacidad del modelo |
+| Ajuste de inferencia | [Test 3](../research/cases/case-0003-debt-negotiation/inference-tuning.ipynb): 8B con razonamiento: 12/12 conocidos y 24/24 en ocho casos reservados, sin incumplimientos. Barrido directo y controles API fallidos conservados; política manual fija, sin comparación B1/B2 |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
@@ -39,13 +40,13 @@ y el [índice de casos](../research/cases/README.md). No reinterpretar resultado
 
 ## Próximo sprint académico
 
-Se prepara el [entrega académica: matriz y siguiente sprint](academic/README.md)
-para negociación sintética: representación YAML, controles y ablaciones de prompts y organización.
-La entrega define cómo medir. Las pruebas muestran el mecanismo y sus fallos, pero todavía
-no demuestran importancia de componentes ni ventaja comparativa. Antes de ampliar el contraste,
-se separarán lectura de capacidad, elección de deuda y cálculo de cuota. El control con
-política manual también falla en validación, por lo que el bloqueo no se atribuye solo al mejorador. El control de duplicados ya evita reevaluaciones idénticas.
-No modifica los protocolos ni los resultados del piloto.
+La [entrega académica](academic/README.md) enlaza matriz y notebooks. Para la semana 8,
+el ajuste de hiperparámetros se trabaja en **inferencia**: temperatura, modo de razonamiento
+y límite de salida, sin cambiar pesos. Se conserva una política manual para separar capacidad
+del negociador y calidad del mejorador. El Test 3 documenta búsqueda, selección y confirmación.
+
+Después de fijar una configuración que funcione, se retomará B1/B2 con presupuestos comparables,
+incluido el consumo de razonamiento. Los resultados de pruebas anteriores permanecen intactos.
 
 ## Próximas decisiones
 

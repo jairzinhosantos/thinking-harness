@@ -1,5 +1,7 @@
 # Documentación
 
+**[Semana 8: ajuste de hiperparámetros](../research/cases/case-0003-debt-negotiation/inference-tuning.ipynb)**: notebook ejecutado, configuraciones, métricas y confirmación.
+
 - **[Matriz de consistencia](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md):** objetivos, hipótesis, variables y siguiente sprint.
 - **[Matriz en PDF: una página](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/consistency-matrix.pdf):** versión para lectura o descarga.
 - **[Test 1](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb):** cinco iteraciones ejecutadas, resultados y consumo.

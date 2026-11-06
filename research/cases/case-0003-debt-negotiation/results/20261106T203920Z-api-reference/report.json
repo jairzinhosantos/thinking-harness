@@ -1,0 +1,238 @@
+{
+  "status": "completed",
+  "evaluations": [
+    {
+      "phase": "known",
+      "repeat": 0,
+      "q": 0.8333333333333334,
+      "v": 0.08333333333333333,
+      "rows": [
+        {
+          "id": "development-largest",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "development-declined",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "validation-limited",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "validation-infeasible",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "test-largest",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [
+            "exceeds_declared_capacity"
+          ],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "test-consent",
+          "raw_reply": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-unknown",
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-150",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-300",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-capacity-600",
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-declined",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "transfer-insufficient",
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "known_passes": false,
+  "confirmation": null,
+  "passes": false,
+  "calls": 12,
+  "tokens": 8143,
+  "estimated_cost_usd": 0.0013294499999999992,
+  "elapsed_seconds": 18.806253291000758
+}

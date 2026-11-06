@@ -3,9 +3,9 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 20
+revision: 21
 created: 2026-10-16
-updated: 2026-10-31
+updated: 2026-11-06
 ---
 
 # Negociación de deudas sintéticas
@@ -74,8 +74,8 @@ Los 12 casos son conocidos: este control no mide generalización ni aísla toda 
 
 El [notebook, sección 7](local-model-test.ipynb) muestra la política exacta y cada respuesta.
 La prueba usó 24 llamadas locales: 10.085 tokens con 4B y 10.022 con 8B.
-**Siguiente paso propuesto:** separar lectura de capacidad, elección de deuda y cálculo de cuota
-antes de retomar la búsqueda. No hay evidencia suficiente para sustituir 4B por 8B.
+**Decisión tras este control:** comprobar inferencia y capacidad antes de retomar la búsqueda.
+El Test 3 recoge ese ajuste; este control por sí solo no justifica sustituir 4B por 8B.
 
 **Límites:** una ejecución por condición, pocos escenarios y orden 4B antes de 8B.
 Los tiempos son orientativos e incluyen carga, no descarga. El pico mide asignaciones MLX,
@@ -100,6 +100,30 @@ corrección de contexto del protocolo v4; su evidencia no se modifica.
 Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
 [Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) y
 [Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B).
+
+## Test 3: ajuste de inferencia
+
+El [notebook de la semana 8](inference-tuning.ipynb) ajusta cómo se genera la respuesta,
+con pesos, política manual y evaluador fijos. No hay fine-tuning. Se barren temperaturas
+0, 0,3 y 0,7 con Qwen3 8B y 32B a 4 bits: 84 llamadas por modelo sobre 12 casos conocidos.
+Ningún perfil directo alcanzó el criterio: al menos 80% de decisiones correctas y cero
+incumplimientos observados. 8B quedó en 50%; 32B, en 66,7%, con incumplimientos.
+
+Dos controles con GPT-4o mini, muestreo predeterminado y temperatura cero, dieron 10/12
+y 8/12 respectivamente, ambos con una infracción. No pasaron a confirmación. Costo total
+estimado: USD 0,002659; no se usan esas respuestas para alterar el evaluador.
+
+Se añadió Qwen 8B con razonamiento activado: temperatura 0,6, `top_p=0.95`, `top_k=20`
+y hasta 2.048 tokens de salida. Resolvió 12/12 casos conocidos y 24/24 en confirmación:
+ocho casos reservados, tres repeticiones, sin incumplimientos. Se conserva esta configuración
+para retomar B1/B2 con el mismo tope de tokens, incluido el razonamiento.
+Se cambia un conjunto de opciones de inferencia; no se atribuye el efecto solo al razonamiento.
+El notebook registra la confirmación y el consumo. Los escenarios de confirmación se fijaron
+antes del barrido y no se utilizaron para elegir la configuración.
+
+Los [resultados originales](results/) conservan respuestas, presupuestos, revisiones de pesos,
+fuentes y hashes. Los pesos quedan en caché local. El 32B usó 19,35 GB de pico MLX;
+la memoria por sí sola no fue el bloqueo. Esta prueba no compara todavía B1 y B2.
 
 ## Extensión propuesta
 

@@ -18,6 +18,8 @@ from prompt_search import (CASE_DIR, PROMPT_SCHEMA, REPLY_SCHEMA, get_prompt,
 
 PROTOCOL = "case-0003-local-model-v5"
 MODELS = {
+    "qwen3-32b": ("mlx-community/Qwen3-32B-4bit",
+                   "bcaaf7f538adf166c1080a2befdb4f6019f66639"),
     "qwen": ("mlx-community/Qwen2.5-1.5B-Instruct-4bit",
              "8b403126fc14f14cfc99bb4cfa72ecbc129ea677"),
     "gemma": ("mlx-community/gemma-2-2b-it-4bit",
@@ -142,9 +144,9 @@ def messages_for(key, instructions, payload, schema):
     return [{"role": "system", "content": contract}, {"role": "user", "content": data}]
 
 
-def encode_chat(tokenizer, messages, key):
+def encode_chat(tokenizer, messages, key, *, thinking=False):
     """Render first: Transformers 5 can return a mapping when tokenize=True."""
-    options = {"enable_thinking": False} if key.startswith("qwen3") else {}
+    options = {"enable_thinking": thinking} if key.startswith("qwen3") else {}
     rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, **options)
     tokens = tokenizer.encode(rendered, add_special_tokens=False)
     if not isinstance(tokens, list) or not all(type(token) is int for token in tokens):
@@ -153,14 +155,16 @@ def encode_chat(tokenizer, messages, key):
 
 
 class LocalClient:
-    def __init__(self, key, directory, snapshot, started):
+    def __init__(self, key, directory, snapshot, started, *, sampling=None, limits=None):
         import mlx.core as mx
         from mlx_lm import load
+        self.limits = dict(LIMITS if limits is None else limits)
+        self.sampling = dict(sampling or {"temperature": 0.0, "top_p": 1.0, "top_k": 0, "seed": 42})
         self.mx, self.key, self.directory = mx, key, directory
         self.started, self.calls, self.tokens = started, 0, 0
-        mx.set_memory_limit(LIMITS["mlx_memory_bytes"])
-        mx.set_cache_limit(LIMITS["mlx_cache_bytes"])
-        mx.random.seed(42)
+        mx.set_memory_limit(self.limits["mlx_memory_bytes"])
+        mx.set_cache_limit(self.limits["mlx_cache_bytes"])
+        mx.random.seed(self.sampling["seed"])
         mx.reset_peak_memory()
         self.model, self.tokenizer = load(str(snapshot), tokenizer_config={"trust_remote_code": False})
         self.load_seconds = time.monotonic() - started
@@ -172,11 +176,12 @@ class LocalClient:
         from mlx_lm import stream_generate
         from mlx_lm.sample_utils import make_sampler
         messages = messages_for(self.key, instructions, payload, schema)
-        prompt = encode_chat(self.tokenizer, messages, self.key)
-        reserve = len(prompt) + LIMITS["output_tokens"]
-        if (self.calls >= LIMITS["calls"] or reserve > LIMITS["context_tokens"]
-                or self.tokens + reserve > LIMITS["total_tokens"]
-                or time.monotonic() - self.started >= LIMITS["seconds"]):
+        thinking = self.sampling.get("enable_thinking", False)
+        prompt = encode_chat(self.tokenizer, messages, self.key, thinking=thinking)
+        reserve = len(prompt) + self.limits["output_tokens"]
+        if (self.calls >= self.limits["calls"] or reserve > self.limits["context_tokens"]
+                or self.tokens + reserve > self.limits["total_tokens"]
+                or time.monotonic() - self.started >= self.limits["seconds"]):
             raise BudgetStop("Local inference limit reached")
         self.calls += 1
         entry = {"call": self.calls, "role": role, "messages": messages,
@@ -185,14 +190,19 @@ class LocalClient:
         result, error = None, None
         try:
             for result in stream_generate(self.model, self.tokenizer, prompt=prompt,
-                                          max_tokens=LIMITS["output_tokens"],
-                                          sampler=make_sampler(temp=0.0)):
+                                          max_tokens=self.limits["output_tokens"],
+                                          sampler=make_sampler(temp=self.sampling["temperature"], top_p=self.sampling["top_p"], top_k=self.sampling["top_k"])):
                 entry["raw_output"] += result.text
-                if time.monotonic() - self.started >= LIMITS["seconds"]:
+                if time.monotonic() - self.started >= self.limits["seconds"]:
                     raise BudgetStop("Local time limit reached")
             if result is None:
                 raise ProviderFailure("No generation returned")
-            value, error = parse_reply(entry["raw_output"], schema)
+            answer = entry["raw_output"]
+            if thinking:
+                # Qwen's template opens the reasoning segment; keep the full trace,
+                # but validate only the final answer after the closing delimiter.
+                answer = answer.split("</think>", 1)[1].strip() if "</think>" in answer else ""
+            value, error = parse_reply(answer, schema)
             if result.finish_reason != "stop":
                 value, error = None, "output_limit"
             entry.update(parsed=value, error=error, finish_reason=result.finish_reason)
@@ -220,7 +230,7 @@ def run(key, output_root=None, client_factory=LocalClient, *, contract="original
     runtime = CONTRACTS[contract]
     repo, revision = MODELS[key]
     snapshot = Path.home() / ".cache/huggingface/hub" / ("models--" + repo.replace("/", "--")) / "snapshots" / revision
-    if client_factory is LocalClient and not (snapshot / "model.safetensors").is_file():
+    if client_factory is LocalClient and not any(snapshot.glob("*.safetensors")):
         raise FileNotFoundError("Pinned weights not cached; download separately before running")
     directory = Path(output_root or CASE_DIR / "results") / (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-local-" + key

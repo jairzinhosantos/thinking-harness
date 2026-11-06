@@ -84,8 +84,11 @@ class Config:
     min_gain: float = 0.01
     evaluation_repeats: int = 2
     allow_live: bool = False
+    temperature: float | None = None
 
     def validate(self):
+        if self.temperature is not None and (not math.isfinite(self.temperature) or not 0 <= self.temperature <= 2):
+            raise ValueError("temperature must be between 0 and 2")
         for name in ("max_total_tokens", "max_iterations", "candidates_per_iteration",
                      "max_output_tokens", "patience", "evaluation_repeats"):
             value = getattr(self, name)
@@ -196,6 +199,8 @@ class ResponsesClient:
                 "store": False, "max_output_tokens": cfg.max_output_tokens,
                 "text": {"format": {"type": "json_schema", "name": role,
                                      "strict": True, "schema": output_schema}}}
+        if cfg.temperature is not None:
+            body["temperature"] = cfg.temperature
         raw = json.dumps(body, ensure_ascii=False).encode()
         # Conservative text-input estimate, including schema and framing allowance.
         # This is an application guard, not a provider-enforced billing cap.

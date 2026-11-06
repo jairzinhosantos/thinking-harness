@@ -1,0 +1,9 @@
+{
+  "inference_tuning.py": "c978b3bfa6ca5b2e4f98a95e9d0251e1e9c042b67383c8a688c2b2f9fb27e195",
+  "local_model_test.py": "e73f47f0a2bb75c620cee33e116e0568fcb5ea1dd55dc1c62f3dcb3c1c8da455",
+  "report.json": "60e20c04e575c9aa2afdce64dc389096fdcd3132d0ca4d092d5c3b9e9ba34b87",
+  "harness_smoke_test.py": "fc56f23551cbbd4eae47814ff797d2e869f03e8081940fcb6e77bd6e242827cf",
+  "protocol.json": "451855ce0b322e7e0245a8586e889864034d9603420035057c9758073b65c5a5",
+  "calls.jsonl": "e2046c7f350180994eca7655044f0d71d5b1dab74e605f80e9c75243193cd802",
+  "prompt_search.py": "e916f9e4c43518c71b3acc59f20d36ece27b88bad87127544f7c0f22439b5bde"
+}
