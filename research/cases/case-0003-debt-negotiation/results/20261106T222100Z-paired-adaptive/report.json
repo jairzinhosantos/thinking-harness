@@ -1,0 +1,2869 @@
+{
+  "status": "completed",
+  "strategy": "adaptive",
+  "rounds": [
+    {
+      "iteration": 0,
+      "policy": "Pregunta siempre por la capacidad de pago mensual del cliente, incluso cuando ya la haya indicado. No ofrezcas ningún plan.",
+      "strategy_used": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "policy_tokens": 28,
+      "strategy_tokens": 31,
+      "development": {
+        "q": 0.75,
+        "v": 0.25,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": null,
+            "task_match": false,
+            "violations": [
+              "output_limit"
+            ],
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No quiero negociar. Por favor, detente."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "transfer-unknown",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+                }
+              ]
+            },
+            "expected": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-consent",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi capacidad mensual es de 110."
+                },
+                {
+                  "role": "assistant",
+                  "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+                },
+                {
+                  "role": "user",
+                  "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+                }
+              ]
+            },
+            "expected": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.0,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "¿Podrías pagar la deuda C en un pago de 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. Mi límite mensual es de 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "confirmation-310",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "confirmation-650",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "iteration": 1,
+      "parent_iteration": 0,
+      "policy": "Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Ofrecer la mayor deuda posible: priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Detenerse si ningún plan se ajusta o si el usuario rechaza. Aceptar solo deudas y planes explícitamente aceptados. No inventar descuentos. Mantener respuestas concisas para evitar límites de salida.",
+      "policy_tokens": 107,
+      "strategy_used": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "strategy_tokens": 31,
+      "duplicate_of": null,
+      "development": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No quiero negociar. Por favor, detente."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "transfer-unknown",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+                }
+              ]
+            },
+            "expected": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-consent",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi capacidad mensual es de 110."
+                },
+                {
+                  "role": "assistant",
+                  "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+                },
+                {
+                  "role": "user",
+                  "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+                }
+              ]
+            },
+            "expected": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "validation": {
+        "q": 1.0,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "¿Podrías pagar la deuda C en un pago de 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. Mi límite mensual es de 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-310",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-650",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "iteration": 2,
+      "parent_iteration": 1,
+      "policy": "Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En caso de aceptación explícita, confirmar la acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas.",
+      "policy_tokens": 130,
+      "strategy_used": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Ofrecer la mayor deuda posible: priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Detenerse si ningún plan se ajusta o si el usuario rechaza. Aceptar solo deudas y planes explícitamente aceptados. No inventar descuentos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "strategy_tokens": 170,
+      "duplicate_of": null,
+      "development": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No quiero negociar. Por favor, detente."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "transfer-unknown",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+                }
+              ]
+            },
+            "expected": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-consent",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi capacidad mensual es de 110."
+                },
+                {
+                  "role": "assistant",
+                  "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+                },
+                {
+                  "role": "user",
+                  "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+                }
+              ]
+            },
+            "expected": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "¿Podrías pagar la deuda C en un pago de 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. Mi límite mensual es de 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-310",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "confirmation-650",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "accepted": false
+    },
+    {
+      "iteration": 3,
+      "accepted": false,
+      "error": "invalid_schema",
+      "strategy_used": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En caso de aceptación explícita, confirmar la acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "proposal": null
+    },
+    {
+      "iteration": 4,
+      "parent_iteration": 1,
+      "policy": "Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. En caso de aceptación explícita, confirmar acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En trazas, si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir.",
+      "policy_tokens": 159,
+      "strategy_used": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En caso de aceptación explícita, confirmar la acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "strategy_tokens": 192,
+      "duplicate_of": null,
+      "development": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No quiero negociar. Por favor, detente."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "transfer-unknown",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+                }
+              ]
+            },
+            "expected": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-consent",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi capacidad mensual es de 110."
+                },
+                {
+                  "role": "assistant",
+                  "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+                },
+                {
+                  "role": "user",
+                  "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+                }
+              ]
+            },
+            "expected": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "¿Podrías pagar la deuda C en un pago de 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. Mi límite mensual es de 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-310",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "B",
+              "payments": 1,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "confirmation-650",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "accepted": false
+    },
+    {
+      "iteration": 5,
+      "parent_iteration": 1,
+      "policy": "Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Priorizar deuda más alta posible: ofrecer deuda C (600) si capacidad ≥ 300 (2 cuotas de 300), B (300) si ≥ 150 (2 cuotas de 150), o A (200) si ≥ 100 (2 cuotas de 100). Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. En caso de aceptación, confirmar acción 'aceptar'; en rechazo, detenerse. No inventar descuentos. Mantener respuestas concisas. Detenerse solo si usuario rechaza explícitamente o ningún plan se ajusta. En trazas, si usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Diagnóstica fallos: si no se elige la deuda máxima viable, ajustar prioridad.",
+      "policy_tokens": 235,
+      "strategy_used": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. En caso de aceptación explícita, confirmar acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En trazas, si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Diagnóstica fallos al revisar trazas: si el sistema no elige la deuda máxima viable, ajustar prioridad. Conservar lo que funciona en trazas con éxito.",
+      "strategy_tokens": 213,
+      "duplicate_of": null,
+      "development": {
+        "q": 0.75,
+        "v": 0.25,
+        "rows": [
+          {
+            "id": "development-largest",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi límite es de 330 al mes. ¿Qué deuda podemos acordar?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "development-declined",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No quiero negociar. Por favor, detente."
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": "C",
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [
+              "unexpected_plan_fields"
+            ],
+            "task_match": false,
+            "success": false
+          },
+          {
+            "id": "transfer-unknown",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Quiero revisar mis deudas, pero todavía no sé cuánto puedo destinar cada mes."
+                }
+              ]
+            },
+            "expected": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "ask",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-consent",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Mi capacidad mensual es de 110."
+                },
+                {
+                  "role": "assistant",
+                  "content": "¿Aceptas pagar la deuda A en dos cuotas de 100?"
+                },
+                {
+                  "role": "user",
+                  "content": "Sí, acepto ese plan de la deuda A en dos pagos de 100."
+                }
+              ]
+            },
+            "expected": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "accept",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          }
+        ]
+      },
+      "validation": {
+        "q": 0.75,
+        "v": 0.0,
+        "rows": [
+          {
+            "id": "validation-limited",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "assistant",
+                  "content": "¿Podrías pagar la deuda C en un pago de 600?"
+                },
+                {
+                  "role": "user",
+                  "content": "No. Mi límite mensual es de 120."
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "A",
+              "payments": 2,
+              "installment": 100
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "validation-infeasible",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "No puedo pagar más de 70 al mes. ¿Hay algún plan?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "raw_reply": {
+              "action": "stop",
+              "debt": null,
+              "payments": 0,
+              "installment": 0
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-310",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 310 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": true,
+            "success": true
+          },
+          {
+            "id": "confirmation-650",
+            "context": {
+              "debts": {
+                "A": 200,
+                "B": 300,
+                "C": 600
+              },
+              "allowed_payment_counts": [
+                1,
+                2
+              ],
+              "history": [
+                {
+                  "role": "user",
+                  "content": "Puedo reservar 650 mensuales para este acuerdo. ¿Qué deuda me conviene pagar según las opciones disponibles?"
+                }
+              ]
+            },
+            "expected": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 1,
+              "installment": 600
+            },
+            "raw_reply": {
+              "action": "offer",
+              "debt": "C",
+              "payments": 2,
+              "installment": 300
+            },
+            "violations": [],
+            "task_match": false,
+            "success": false
+          }
+        ]
+      },
+      "accepted": false
+    }
+  ],
+  "strategy_updates": [
+    {
+      "after_iteration": 1,
+      "before": "Redacta una política breve para el objetivo indicado. Utiliza la política actual y la evaluación de desarrollo para proponer una mejora.",
+      "after": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Ofrecer la mayor deuda posible: priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Detenerse si ningún plan se ajusta o si el usuario rechaza. Aceptar solo deudas y planes explícitamente aceptados. No inventar descuentos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "changed": true,
+      "error": null
+    },
+    {
+      "after_iteration": 2,
+      "before": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Ofrecer la mayor deuda posible: priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Detenerse si ningún plan se ajusta o si el usuario rechaza. Aceptar solo deudas y planes explícitamente aceptados. No inventar descuentos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "after": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En caso de aceptación explícita, confirmar la acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "changed": true,
+      "error": null
+    },
+    {
+      "after_iteration": 4,
+      "before": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En caso de aceptación explícita, confirmar la acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Diagnóstica fallos al revisar trazas: si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Conservar lo que funciona en trazas con éxito.",
+      "after": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. En caso de aceptación explícita, confirmar acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En trazas, si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Diagnóstica fallos al revisar trazas: si el sistema no elige la deuda máxima viable, ajustar prioridad. Conservar lo que funciona en trazas con éxito.",
+      "changed": true,
+      "error": null
+    }
+  ],
+  "events": [
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1011,
+      "call": 1,
+      "tokens": 2493,
+      "cumulative_tokens": 2493,
+      "elapsed_seconds": 25.245844000000943
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1012,
+      "call": 2,
+      "tokens": 1429,
+      "cumulative_tokens": 3922,
+      "elapsed_seconds": 37.36656008299906
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1013,
+      "call": 3,
+      "tokens": 622,
+      "cumulative_tokens": 4544,
+      "elapsed_seconds": 40.14339058300175
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1014,
+      "call": 4,
+      "tokens": 1066,
+      "cumulative_tokens": 5610,
+      "elapsed_seconds": 47.565747207998356
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2011,
+      "call": 5,
+      "tokens": 1224,
+      "cumulative_tokens": 6834,
+      "elapsed_seconds": 57.16313758300021
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2012,
+      "call": 6,
+      "tokens": 1170,
+      "cumulative_tokens": 8004,
+      "elapsed_seconds": 66.38347258299837
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2013,
+      "call": 7,
+      "tokens": 1173,
+      "cumulative_tokens": 9177,
+      "elapsed_seconds": 75.60063945799993
+    },
+    {
+      "iteration": 0,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2014,
+      "call": 8,
+      "tokens": 951,
+      "cumulative_tokens": 10128,
+      "elapsed_seconds": 82.13627658300175
+    },
+    {
+      "iteration": 1,
+      "role": "proposer",
+      "phase": "search",
+      "seed": 10012,
+      "call": 9,
+      "tokens": 1835,
+      "cumulative_tokens": 11963,
+      "elapsed_seconds": 92.55472362499859
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1011,
+      "call": 10,
+      "tokens": 1403,
+      "cumulative_tokens": 13366,
+      "elapsed_seconds": 103.86567466600172
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1012,
+      "call": 11,
+      "tokens": 705,
+      "cumulative_tokens": 14071,
+      "elapsed_seconds": 107.01221966600133
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1013,
+      "call": 12,
+      "tokens": 725,
+      "cumulative_tokens": 14796,
+      "elapsed_seconds": 110.31446283300102
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1014,
+      "call": 13,
+      "tokens": 1388,
+      "cumulative_tokens": 16184,
+      "elapsed_seconds": 121.12712808300057
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2011,
+      "call": 14,
+      "tokens": 1350,
+      "cumulative_tokens": 17534,
+      "elapsed_seconds": 131.8544535000001
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2012,
+      "call": 15,
+      "tokens": 845,
+      "cumulative_tokens": 18379,
+      "elapsed_seconds": 136.724257165999
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2013,
+      "call": 16,
+      "tokens": 1060,
+      "cumulative_tokens": 19439,
+      "elapsed_seconds": 144.0670066249986
+    },
+    {
+      "iteration": 1,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2014,
+      "call": 17,
+      "tokens": 1073,
+      "cumulative_tokens": 20512,
+      "elapsed_seconds": 151.5430604159992
+    },
+    {
+      "iteration": 1,
+      "role": "strategy_update",
+      "phase": "search",
+      "seed": 20012,
+      "call": 18,
+      "tokens": 1769,
+      "cumulative_tokens": 22281,
+      "elapsed_seconds": 160.65581812500022
+    },
+    {
+      "iteration": 2,
+      "role": "proposer",
+      "phase": "search",
+      "seed": 10013,
+      "call": 19,
+      "tokens": 2231,
+      "cumulative_tokens": 24512,
+      "elapsed_seconds": 171.8637540000018
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1011,
+      "call": 20,
+      "tokens": 1402,
+      "cumulative_tokens": 25914,
+      "elapsed_seconds": 183.12129691600057
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1012,
+      "call": 21,
+      "tokens": 718,
+      "cumulative_tokens": 26632,
+      "elapsed_seconds": 186.16119345799962
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1013,
+      "call": 22,
+      "tokens": 738,
+      "cumulative_tokens": 27370,
+      "elapsed_seconds": 189.46456379099982
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1014,
+      "call": 23,
+      "tokens": 898,
+      "cumulative_tokens": 28268,
+      "elapsed_seconds": 194.22143974999926
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2011,
+      "call": 24,
+      "tokens": 1116,
+      "cumulative_tokens": 29384,
+      "elapsed_seconds": 201.9369874160002
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2012,
+      "call": 25,
+      "tokens": 1214,
+      "cumulative_tokens": 30598,
+      "elapsed_seconds": 210.86856516600164
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2013,
+      "call": 26,
+      "tokens": 1402,
+      "cumulative_tokens": 32000,
+      "elapsed_seconds": 222.16523304099974
+    },
+    {
+      "iteration": 2,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2014,
+      "call": 27,
+      "tokens": 981,
+      "cumulative_tokens": 32981,
+      "elapsed_seconds": 228.38991141600127
+    },
+    {
+      "iteration": 2,
+      "role": "strategy_update",
+      "phase": "search",
+      "seed": 20013,
+      "call": 28,
+      "tokens": 2613,
+      "cumulative_tokens": 35594,
+      "elapsed_seconds": 246.4347850410013
+    },
+    {
+      "iteration": 3,
+      "role": "proposer",
+      "phase": "search",
+      "seed": 10014,
+      "call": 29,
+      "tokens": 2236,
+      "cumulative_tokens": 37830,
+      "elapsed_seconds": 254.96108908300084
+    },
+    {
+      "iteration": 4,
+      "role": "proposer",
+      "phase": "search",
+      "seed": 10015,
+      "call": 30,
+      "tokens": 2378,
+      "cumulative_tokens": 40208,
+      "elapsed_seconds": 265.1108153749992
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1011,
+      "call": 31,
+      "tokens": 1152,
+      "cumulative_tokens": 41360,
+      "elapsed_seconds": 273.1130627499988
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1012,
+      "call": 32,
+      "tokens": 1147,
+      "cumulative_tokens": 42507,
+      "elapsed_seconds": 281.27632716600056
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1013,
+      "call": 33,
+      "tokens": 823,
+      "cumulative_tokens": 43330,
+      "elapsed_seconds": 285.18491754099887
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1014,
+      "call": 34,
+      "tokens": 1092,
+      "cumulative_tokens": 44422,
+      "elapsed_seconds": 292.04149837500154
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2011,
+      "call": 35,
+      "tokens": 1218,
+      "cumulative_tokens": 45640,
+      "elapsed_seconds": 300.66364895800143
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2012,
+      "call": 36,
+      "tokens": 920,
+      "cumulative_tokens": 46560,
+      "elapsed_seconds": 305.87696587499886
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2013,
+      "call": 37,
+      "tokens": 1747,
+      "cumulative_tokens": 48307,
+      "elapsed_seconds": 321.4072007909999
+    },
+    {
+      "iteration": 4,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2014,
+      "call": 38,
+      "tokens": 908,
+      "cumulative_tokens": 49215,
+      "elapsed_seconds": 326.4026867909997
+    },
+    {
+      "iteration": 4,
+      "role": "strategy_update",
+      "phase": "search",
+      "seed": 20015,
+      "call": 39,
+      "tokens": 2154,
+      "cumulative_tokens": 51369,
+      "elapsed_seconds": 337.9551790000005
+    },
+    {
+      "iteration": 5,
+      "role": "proposer",
+      "phase": "search",
+      "seed": 10016,
+      "call": 40,
+      "tokens": 2587,
+      "cumulative_tokens": 53956,
+      "elapsed_seconds": 350.14327608299936
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1011,
+      "call": 41,
+      "tokens": 1593,
+      "cumulative_tokens": 55549,
+      "elapsed_seconds": 362.85930833300154
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1012,
+      "call": 42,
+      "tokens": 861,
+      "cumulative_tokens": 56410,
+      "elapsed_seconds": 366.5924015829987
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1013,
+      "call": 43,
+      "tokens": 802,
+      "cumulative_tokens": 57212,
+      "elapsed_seconds": 369.6464543330003
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "development",
+      "seed": 1014,
+      "call": 44,
+      "tokens": 1196,
+      "cumulative_tokens": 58408,
+      "elapsed_seconds": 376.9953970409988
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2011,
+      "call": 45,
+      "tokens": 1636,
+      "cumulative_tokens": 60044,
+      "elapsed_seconds": 390.1728162500003
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2012,
+      "call": 46,
+      "tokens": 1504,
+      "cumulative_tokens": 61548,
+      "elapsed_seconds": 401.8962014159988
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2013,
+      "call": 47,
+      "tokens": 1040,
+      "cumulative_tokens": 62588,
+      "elapsed_seconds": 407.78508345799855
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "validation",
+      "seed": 2014,
+      "call": 48,
+      "tokens": 1247,
+      "cumulative_tokens": 63835,
+      "elapsed_seconds": 416.2377883750014
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3011,
+      "call": 49,
+      "tokens": 811,
+      "cumulative_tokens": 64646,
+      "elapsed_seconds": 421.0245404999987
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3012,
+      "call": 50,
+      "tokens": 801,
+      "cumulative_tokens": 65447,
+      "elapsed_seconds": 426.1405660829987
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3013,
+      "call": 51,
+      "tokens": 1173,
+      "cumulative_tokens": 66620,
+      "elapsed_seconds": 435.71245245799946
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3014,
+      "call": 52,
+      "tokens": 1044,
+      "cumulative_tokens": 67664,
+      "elapsed_seconds": 443.7551992910012
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3015,
+      "call": 53,
+      "tokens": 930,
+      "cumulative_tokens": 68594,
+      "elapsed_seconds": 450.4232200410006
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3016,
+      "call": 54,
+      "tokens": 603,
+      "cumulative_tokens": 69197,
+      "elapsed_seconds": 453.0130822079991
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3017,
+      "call": 55,
+      "tokens": 859,
+      "cumulative_tokens": 70056,
+      "elapsed_seconds": 458.87043004099905
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3018,
+      "call": 56,
+      "tokens": 736,
+      "cumulative_tokens": 70792,
+      "elapsed_seconds": 462.5764608749996
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3011,
+      "call": 57,
+      "tokens": 1102,
+      "cumulative_tokens": 71894,
+      "elapsed_seconds": 470.1729555409984
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3012,
+      "call": 58,
+      "tokens": 1360,
+      "cumulative_tokens": 73254,
+      "elapsed_seconds": 481.3557063750013
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3013,
+      "call": 59,
+      "tokens": 1204,
+      "cumulative_tokens": 74458,
+      "elapsed_seconds": 490.59364116600045
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3014,
+      "call": 60,
+      "tokens": 900,
+      "cumulative_tokens": 75358,
+      "elapsed_seconds": 496.13852454099833
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3015,
+      "call": 61,
+      "tokens": 867,
+      "cumulative_tokens": 76225,
+      "elapsed_seconds": 501.3194617500012
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3016,
+      "call": 62,
+      "tokens": 697,
+      "cumulative_tokens": 76922,
+      "elapsed_seconds": 504.2961045000011
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3017,
+      "call": 63,
+      "tokens": 845,
+      "cumulative_tokens": 77767,
+      "elapsed_seconds": 509.24502058299913
+    },
+    {
+      "iteration": 5,
+      "role": "negotiator",
+      "phase": "test",
+      "seed": 3018,
+      "call": 64,
+      "tokens": 857,
+      "cumulative_tokens": 78624,
+      "elapsed_seconds": 513.6393260410005
+    }
+  ],
+  "selected_iteration": 1,
+  "first_validation_target": {
+    "iteration": 1,
+    "tokens": 20512,
+    "elapsed_seconds": 151.54391074999876
+  },
+  "search_status": "completed",
+  "search_tokens": 63835,
+  "search_seconds": 416.2408923330004,
+  "selected_policy": "Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos. Ofrecer la mayor deuda posible: priorizar pago único si es asequible, de lo contrario dos. Si capacidad desconocida, preguntar. Detenerse si ningún plan se ajusta o si el usuario rechaza. Aceptar solo deudas y planes explícitamente aceptados. No inventar descuentos. Mantener respuestas concisas para evitar límites de salida.",
+  "selected_strategy": "Redacta una política breve para elegir el siguiente turno de negociación de deuda. Si la capacidad es conocida, calcular la deuda máxima viable con 1 o 2 pagos, priorizando la deuda más alta. Si capacidad desconocida, preguntar. Aceptar solo deudas y planes explícitamente aceptados. En caso de aceptación explícita, confirmar acción 'aceptar'; en caso de rechazo, detenerse. No inventar descuentos ni ejecutar pagos. Mantener respuestas concisas. Detenerse solo si el usuario rechaza explícitamente o ningún plan se ajusta. En trazas, si el usuario acepta explícitamente, aceptar; si se detiene prematuramente, corregir. Diagnóstica fallos al revisar trazas: si el sistema no elige la deuda máxima viable, ajustar prioridad. Conservar lo que funciona en trazas con éxito.",
+  "test": {
+    "initial": {
+      "q": 0.375,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "paired-125",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Antes tenía 250 disponibles al mes."
+              },
+              {
+                "role": "assistant",
+                "content": "¿Cuál es tu límite actual?"
+              },
+              {
+                "role": "user",
+                "content": "Ahora solo puedo comprometer 125 mensuales. Revisa las opciones con ese monto."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-225",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Para estas deudas tengo un límite de 225 por mes. ¿Qué alternativa corresponde?"
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-425",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Mi límite mensual disponible es 425; quiero resolver la mayor deuda que alcance."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-725",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Tengo un presupuesto mensual de 725 para este acuerdo. Indícame el plan."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-75",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Mi presupuesto para pagos es de 75 mensuales y no puedo aumentarlo."
+              }
+            ]
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-unknown",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Necesito ver mis opciones, pero aún no he definido cuánto podré pagar mensualmente."
+              }
+            ]
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-decline",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Dispongo de 425 al mes, pero no autorizo continuar esta negociación. Quiero terminarla."
+              }
+            ]
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-consent",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Dispongo de 225 cada mes."
+              },
+              {
+                "role": "assistant",
+                "content": "Te ofrezco la deuda B en dos pagos de 150. ¿Aceptas?"
+              },
+              {
+                "role": "user",
+                "content": "Sí, confirmo la deuda B con esas dos cuotas de 150."
+              }
+            ]
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "raw_reply": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    },
+    "selected": {
+      "q": 0.875,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "paired-125",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Antes tenía 250 disponibles al mes."
+              },
+              {
+                "role": "assistant",
+                "content": "¿Cuál es tu límite actual?"
+              },
+              {
+                "role": "user",
+                "content": "Ahora solo puedo comprometer 125 mensuales. Revisa las opciones con ese monto."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "paired-225",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Para estas deudas tengo un límite de 225 por mes. ¿Qué alternativa corresponde?"
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-425",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Mi límite mensual disponible es 425; quiero resolver la mayor deuda que alcance."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-725",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Tengo un presupuesto mensual de 725 para este acuerdo. Indícame el plan."
+              }
+            ]
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 1,
+            "installment": 600
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-75",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Mi presupuesto para pagos es de 75 mensuales y no puedo aumentarlo."
+              }
+            ]
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-unknown",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Necesito ver mis opciones, pero aún no he definido cuánto podré pagar mensualmente."
+              }
+            ]
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-decline",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Dispongo de 425 al mes, pero no autorizo continuar esta negociación. Quiero terminarla."
+              }
+            ]
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "paired-consent",
+          "context": {
+            "debts": {
+              "A": 200,
+              "B": 300,
+              "C": 600
+            },
+            "allowed_payment_counts": [
+              1,
+              2
+            ],
+            "history": [
+              {
+                "role": "user",
+                "content": "Dispongo de 225 cada mes."
+              },
+              {
+                "role": "assistant",
+                "content": "Te ofrezco la deuda B en dos pagos de 150. ¿Aceptas?"
+              },
+              {
+                "role": "user",
+                "content": "Sí, confirmo la deuda B con esas dos cuotas de 150."
+              }
+            ]
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "raw_reply": {
+            "action": "accept",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ]
+    },
+    "selected_reuses_initial": false
+  },
+  "passes": true,
+  "calls": 64,
+  "tokens": 78624,
+  "elapsed_seconds": 513.6409567500014,
+  "peak_mlx_gb": 5.694948828,
+  "protected_source_changes": 0
+}

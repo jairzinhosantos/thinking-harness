@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 14
+revision: 15
 created: 2026-09-29
 updated: 2026-11-06
 ---
@@ -33,6 +33,7 @@ entrenar un controlador o modelo requiere justificación y presupuesto. El feedb
 | Modelos locales | [Test 2](../research/cases/case-0003-debt-negotiation/local-model-test.ipynb), protocolo v5: Qwen3 4B y 8B, búsqueda fija/adaptativa, renderizado de mensajes y control de duplicados. Ninguna política aceptada; se omiten 28 reevaluaciones. Seis casos nuevos tras la selección; sin conclusión de superioridad |
 | Política manual local | Mismo evaluador y 12 casos conocidos: 4B resolvió 7/12 y 8B, 6/12; ambos 0/2 en validación. Persisten fallos del negociador sin mejorador, sin concluir incapacidad del modelo |
 | Ajuste de inferencia | [Test 3](../research/cases/case-0003-debt-negotiation/inference-tuning.ipynb): 8B con razonamiento: 12/12 conocidos y 24/24 en ocho casos reservados, sin incumplimientos. Barrido directo y controles API fallidos conservados; política manual fija, sin comparación B1/B2 |
+| Búsqueda local B1/B2 | [Test 4](../research/cases/case-0003-debt-negotiation/paired-search.ipynb): ambas pasan de 3/8 a 7/8 en ocho casos nuevos, sin incumplimientos. B2 reutiliza tres cambios de instrucciones, con 49,7% más tokens y sin ventaja final observada; una búsqueda por condición |
 | Tesis | Plan centrado en configuración declarativa para cobranzas simuladas; contraste de mejora fija y adaptativa propuesto, todavía sin validar |
 
 Las fuentes detalladas están en el [mapa de literatura](../research/synthesis/research-options.md)
@@ -45,8 +46,10 @@ el ajuste de hiperparámetros se trabaja en **inferencia**: temperatura, modo de
 y límite de salida, sin cambiar pesos. Se conserva una política manual para separar capacidad
 del negociador y calidad del mejorador. El Test 3 documenta búsqueda, selección y confirmación.
 
-Después de fijar una configuración que funcione, se retomará B1/B2 con presupuestos comparables,
-incluido el consumo de razonamiento. Los resultados de pruebas anteriores permanecen intactos.
+El [Test 4](../research/cases/case-0003-debt-negotiation/paired-search.ipynb) compara B1/B2
+con Qwen 8B y presupuestos iguales, incluido el razonamiento. Parte de una política deficiente;
+la referencia manual del Test 3 no se entrega al mejorador. Se conservan intentos inválidos,
+duplicados y propuestas rechazadas. Los resultados de pruebas anteriores permanecen intactos.
 
 ## Próximas decisiones
 

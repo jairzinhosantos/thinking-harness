@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 21
+revision: 22
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -124,6 +124,38 @@ antes del barrido y no se utilizaron para elegir la configuración.
 Los [resultados originales](results/) conservan respuestas, presupuestos, revisiones de pesos,
 fuentes y hashes. Los pesos quedan en caché local. El 32B usó 19,35 GB de pico MLX;
 la memoria por sí sola no fue el bloqueo. Esta prueba no compara todavía B1 y B2.
+
+## Test 4: mejorador fijo y adaptativo
+
+El [notebook comparativo](paired-search.ipynb) parte de H0, una política que pregunta siempre
+por la capacidad y no ofrece planes. B1 mantiene las instrucciones del mejorador; B2 puede
+actualizarlas. La política manual del Test 3 no se entrega al modelo.
+
+Se usan Qwen 8B con razonamiento, cinco intentos por condición y los mismos topes:
+120.000 tokens de búsqueda y hasta 60.000 para la evaluación final. Las llamadas del
+actualizador cuentan en B2. Cuatro casos conocidos dan feedback de desarrollo y otros
+cuatro seleccionan la política. Los ocho casos finales son nuevos y se fijaron antes
+de ejecutar ambas búsquedas.
+
+Cada evaluación reinicia una semilla por caso, compartida por B1/B2. Se conserva la política
+anterior si hay empate; duplicados reutilizan sus puntuaciones. Propuestas inválidas se
+registran y consumen un intento. El test final compara H0 y la política seleccionada,
+sin nuevos ajustes después de consultar sus respuestas.
+
+| Condición | H0 en test | Política seleccionada | Incumplimientos | Tokens totales | Llamadas |
+|---|---:|---:|---:|---:|---:|
+| B1 fija | 3/8 | 7/8 | 0 | 52.511 | 45 |
+| B2 adaptativa | 3/8 | 7/8 | 0 | 78.624 | 64 |
+
+Ambas conservaron la misma primera política generada. B2 reutilizó tres cambios de φ,
+sin mejorar el resultado final, y consumió 49,7% más tokens. Ese aumento incluye el
+actualizador y más evaluaciones de candidatos distintos. B1 evitó 16 evaluaciones al
+reutilizar dos duplicados. Cada condición produjo una propuesta inválida, rechazada.
+
+Las dos fallaron el caso de cambio de capacidad dentro del historial. Se conserva el fallo;
+no se ajustó la política con ese feedback. Se cumple el criterio de este piloto, Q ≥ 80%
+y V = 0, con una sola búsqueda por condición. Se mantiene B1 como referencia antes de
+ampliar escenarios; no se concluye superioridad general de ningún mecanismo.
 
 ## Extensión propuesta
 
