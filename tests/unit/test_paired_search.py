@@ -1,5 +1,7 @@
 """Check holdout isolation, paired randomness, selection and adaptation accounting."""
+import hashlib
 import json
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -112,7 +114,12 @@ class PairedSearchTests(unittest.TestCase):
             self.assertLessEqual(report['tokens'],protocol['limits']['total_tokens'])
             self.assertEqual(report['protected_source_changes'],0)
             for name,digest in protocol['source_hashes'].items():
-                self.assertEqual(paired.task.digest(folder/Path(name).name),digest)
+                if 'base_commit' in protocol and 'source_storage' in protocol:
+                    ref = f"{protocol['base_commit']}:research/cases/case-0003-debt-negotiation/{name}"
+                    data = subprocess.check_output(['git', 'show', ref], cwd=CASE)
+                    self.assertEqual(hashlib.sha256(data).hexdigest(), digest)
+                else:
+                    self.assertEqual(paired.task.digest(folder/Path(name).name),digest)
 
 
 if __name__=='__main__': unittest.main()

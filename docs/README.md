@@ -2,7 +2,7 @@
 
 **Automejora del prompt · Semana 8**
 
-**[Notebook en GitHub](../research/cases/case-0003-debt-negotiation/notebooks/study-overview.ipynb)** · Caso, prompts, ajustes y resultados en una sola lectura.
+**[Notebook en GitHub](../research/cases/case-0003-debt-negotiation/notebooks/study-overview.ipynb)** · Caso, prompts y resultados de Qwen3 8B y GPT-4o mini.
 
 ## Objetivo del estudio
 
@@ -95,8 +95,7 @@ la validación decide qué H conservar; el test final se consulta después.
 | Test 3 | Ajustar inferencia con H manual fija | [Inferencia](../research/cases/case-0003-debt-negotiation/notebooks/inference-tuning.ipynb) |
 | Test 4 | Buscar H con B1/B2; ampliar tokens | [Automejora](../research/cases/case-0003-debt-negotiation/notebooks/paired-search.ipynb) |
 | Test 5 | Restringir la generación de JSON | [Formato](../research/cases/case-0003-debt-negotiation/notebooks/structured-output.ipynb) |
-
-La lectura principal reúne los Tests 3–5. Las otras notebooks conservan cada prueba; no es necesario abrirlas para seguir el estudio.
+| OpenAI | Repetir B1 y B2 con GPT-4o mini | [Comparación con Qwen](../research/cases/case-0003-debt-negotiation/notebooks/study-overview.ipynb) |
 
 El Test 3 separa capacidad del negociador y calidad del mejorador. Los Tests 4–5 utilizan
 la inferencia elegida, pero parten de H0; no reciben la política manual.

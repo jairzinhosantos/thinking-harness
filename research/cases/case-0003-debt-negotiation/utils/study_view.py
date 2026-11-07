@@ -11,6 +11,8 @@ RUNS = {
     'confirmation': '20261106T204259Z-inference-qwen3-8b-thinking-confirmation',
     'fixed': '20261106T221544Z-paired-fixed',
     'adaptive': '20261106T222100Z-paired-adaptive',
+    'api_fixed': '20261107T014953Z-paired-gpt-4o-mini-2024-07-18-fixed',
+    'api_adaptive': '20261107T015030Z-paired-gpt-4o-mini-2024-07-18-adaptive',
     'fixed_budget': '20261106T224117Z-paired-fixed-tokens-4096',
     'adaptive_budget': '20261106T224923Z-paired-adaptive-tokens-4096',
     'fixed_schema': '20261106T231518Z-paired-fixed-tokens-4096-structured',
@@ -192,3 +194,25 @@ def show_outcomes(records):
         rows.append([title, label(record), count('initial'), f"H{report['selected_iteration']}: {count('selected')}", percent(report['test']['selected']['v']),
                      f"{valid}/{len(record['calls'])}", sum(c.get('error') == 'output_limit' for c in record['calls']), report['tokens']])
     table(['Prueba · tope', 'Condición', 'H0: aciertos', 'H elegida: aciertos', 'V final', 'Llamadas sin error', 'Cortes', 'Tokens totales'], rows)
+
+
+def show_model_results(records):
+    rows = []
+    for key in ('fixed', 'adaptive', 'api_fixed', 'api_adaptive'):
+        record = records[key]
+        report = record['report']
+        initial = report['test']['initial']['rows']
+        final = report['test']['selected']['rows']
+        model = record['protocol']['model'].split('/')[-1]
+        cost = report.get('estimated_cost_usd')
+        rows.append([
+            model, label(record), f"H{report['selected_iteration']}",
+            f"{sum(r['success'] for r in initial)}/{len(initial)}",
+            f"{sum(r['success'] for r in final)}/{len(final)}",
+            f"{sum(bool(r['violations']) for r in final)}/{len(final)}",
+            report['calls'], report['tokens'],
+            'Local' if cost is None else f'{cost:.5f}',
+        ])
+    table(['Modelo', 'Estrategia', 'Política elegida', 'Aciertos iniciales',
+           'Aciertos finales', 'Respuestas con infracción', 'Llamadas',
+           'Tokens totales', 'API (USD estimados)'], rows)
