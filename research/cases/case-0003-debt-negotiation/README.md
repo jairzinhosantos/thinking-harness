@@ -3,14 +3,14 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 25
+revision: 26
 created: 2026-10-16
 updated: 2026-11-06
 ---
 
 # Negociación de deudas sintéticas
 
-**[Notebook en GitHub · ajuste de inferencia](notebooks/inference-tuning.ipynb)**
+**[Notebook en GitHub · lectura conjunta](notebooks/study-overview.ipynb)**
 · [Guía visual de la entrega](../../../docs/README.md)
 · [Matriz](../../../docs/academic/README.md)
 
@@ -22,6 +22,9 @@ sus pesos durante cada comparación.
 Los notebooks ejecutados están en `notebooks/`; el código de apoyo, en `utils/`;
 y los registros originales, en `results/`. Las figuras editables están en `diagrams/`.
 Los resultados previos, incluidos fallos y paradas, se conservan.
+
+La lectura conjunta muestra prompts, iteraciones, tamaño y resultados de los Tests 3–5.
+Los experimentos originales permanecen separados por protocolo.
 
 ## Historial de pruebas
 

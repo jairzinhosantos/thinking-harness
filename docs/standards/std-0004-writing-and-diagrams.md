@@ -2,7 +2,7 @@
 id: std-0004
 title: "Escritura y diagramas"
 status: in-review
-revision: 6
+revision: 7
 created: 2026-09-30
 updated: 2026-11-06
 ---
@@ -26,6 +26,9 @@ Títulos de dos a cuatro palabras, sin contar numeración. Preferir «Definició
 a preguntas largas. En README, notebooks y diagramas: definiciones directas, resultados concretos
 y límites explícitos. Evitar introducciones repetidas y frases que anuncian lo que se explicará.
 Conservar fórmulas y detalles necesarios para interpretar o repetir la prueba.
+Separar entradas, acciones y salidas con listas o tablas. Definir símbolos con un ejemplo
+breve. En notebooks de lectura: objetivo, caso, procedimiento y después resultados.
+Usar títulos destacados y descripciones menores en figuras; evitar bloques de texto planos.
 Sin emojis, guiones largos, afirmaciones promocionales ni repeticiones. Atribuir resultados
 externos y distinguir interpretación, inspección estática y reproducción.
 

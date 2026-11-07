@@ -15,7 +15,7 @@ CASE = ROOT / 'research/cases/case-0003-debt-negotiation'
 class NotebookNavigationTests(unittest.TestCase):
     def test_navigation_outputs_and_replay_from_notebook_directory(self):
         notebooks = sorted((CASE / 'notebooks').glob('*.ipynb'))
-        self.assertEqual(len(notebooks), 6)
+        self.assertEqual(len(notebooks), 7)
         self.assertFalse(list(CASE.glob('*.ipynb')))
         before = Path.cwd()
         try:
