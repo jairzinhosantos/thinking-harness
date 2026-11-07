@@ -197,25 +197,32 @@ def show_outcomes(records):
 
 
 def show_model_results(records):
-    rows = []
-    for key in ('fixed', 'adaptive', 'api_fixed', 'api_adaptive'):
-        record = records[key]
-        report = record['report']
-        initial = report['test']['initial']['rows']
-        final = report['test']['selected']['rows']
-        model = record['protocol']['model'].split('/')[-1]
-        cost = report.get('estimated_cost_usd')
-        gain = report['test']['selected']['q'] - report['test']['initial']['q']
-        change = 'Mejoró' if gain > 0 else 'Sin mejora' if gain == 0 else 'Bajó'
-        goal = 'meta alcanzada' if report['passes'] else 'meta pendiente'
-        rows.append([
-            model, label(record), f"H{report['selected_iteration']}",
-            f"{sum(r['success'] for r in initial)}/{len(initial)}",
-            f"{sum(r['success'] for r in final)}/{len(final)}",
-            f"{sum(bool(r['violations']) for r in final)}/{len(final)}",
-            report['calls'], report['tokens'],
-            'Local' if cost is None else f'{cost:.5f}', f'{change} · {goal}',
-        ])
-    table(['Modelo', 'Estrategia', 'Política elegida', 'Aciertos iniciales',
-           'Aciertos finales', 'Respuestas con infracción', 'Llamadas',
-           'Tokens totales', 'API (USD estimados)', 'Resultado final'], rows)
+    outcomes, usage = [], []
+    for fixed, adaptive in [('fixed', 'adaptive'), ('api_fixed', 'api_adaptive')]:
+        fixed_quality = records[fixed]['report']['test']['selected']['q']
+        for key in (fixed, adaptive):
+            record = records[key]
+            report = record['report']
+            initial = report['test']['initial']
+            final = report['test']['selected']
+            model = record['protocol']['model'].split('/')[-1]
+            condition = label(record)
+            gain = 100 * (final['q'] - initial['q'])
+            extra_gain = 100 * (final['q'] - fixed_quality)
+            change = 'Mejoró' if gain > 0 else 'Sin mejora' if gain == 0 else 'Bajó'
+            goal = 'meta alcanzada' if report['passes'] else 'meta pendiente'
+            count = len(final['rows'])
+            outcomes.append([
+                model, condition, f"H{report['selected_iteration']}",
+                f"{sum(r['success'] for r in initial['rows'])}/{len(initial['rows'])}",
+                f"{sum(r['success'] for r in final['rows'])}/{count} ({final['q']:.1%})".replace('.', ','),
+                f"{sum(bool(r['violations']) for r in final['rows'])}/{count} ({final['v']:.1%})".replace('.', ','),
+                f"{gain:+g}", 'Base' if key == fixed else f"{extra_gain:g}",
+                f'{change} · {goal}',
+            ])
+            cost = report.get('estimated_cost_usd')
+            usage.append([model, condition, report['calls'], report['tokens'],
+                          'Local' if cost is None else f'{cost:.5f}'])
+    table(['Modelo', 'Estrategia', 'Política', 'H0', 'Q final', 'V final',
+           'Mejora vs. H0 (pp)', 'B2 menos B1 (pp)', 'Resultado'], outcomes)
+    table(['Modelo', 'Estrategia', 'Llamadas', 'Tokens totales', 'API (USD estimados)'], usage)
