@@ -9,22 +9,16 @@
 Mejorar automáticamente las instrucciones que usa un agente para negociar una deuda.
 Ese texto se llama **política H**: por ejemplo, «ofrece la mayor deuda cuya cuota pueda pagar el cliente».
 
-El sistema realiza tres llamadas distintas al mismo modelo:
-
-| Rol | Trabajo |
-|---|---|
-| **Negociador** | Usa H para decidir qué responder al cliente. |
-| **Mejorador** | Propone otra H a partir de los fallos observados. Sigue unas instrucciones llamadas **φ**. |
-| **Actualizador** | Reescribe φ para cambiar cómo trabaja el mejorador en el siguiente intento. |
+![Objetivo y flujo](../research/cases/case-0003-debt-negotiation/diagrams/objective-flow.svg)
 
 Se comparan dos estrategias de búsqueda:
 
-| Estrategia | Política H | Instrucciones φ |
+| Estrategia | H (política) | φ (instrucciones de mejora) |
 |---|---|---|
 | **B1: mejora fija** | Puede cambiar entre intentos | Se mantienen iguales durante toda la búsqueda |
 | **B2: mejora adaptativa** | Puede cambiar entre intentos | El actualizador puede reemplazarlas entre intentos |
 
-**H0, H1… son versiones del texto; B1 y B2 son estrategias.** Cambiar un texto no garantiza mejor desempeño.
+**H0, H1… son versiones de la política; B1 y B2 son estrategias.** Cambiar un texto no garantiza mejor desempeño.
 
 **Restricción experimental:** no se entrenan los pesos del modelo. Se editan textos;
 el modelo, las reglas de evaluación y el presupuesto se mantienen iguales al comparar B1 con B2.
@@ -112,22 +106,13 @@ la inferencia elegida, pero parten de H0; no reciben la política manual.
 Se ajusta **cómo el modelo genera respuestas**, sin entrenarlo. Un token es una unidad de texto del modelo; no equivale siempre a una palabra.
 
 | Parámetro | Significado | Valores y fundamento |
-|---|---|---|
-| Temperatura | Regula la diversidad al elegir el siguiente token | **0:** elegir siempre el más probable; **0,3:** explorar poca variación; **0,7:** referencia sin razonamiento; **0,6:** referencia con razonamiento |
-| `top_k` | Limita la selección a los k tokens más probables | **20**, valor de referencia de Qwen; no se hizo un barrido de k |
-| `top_p` | Filtra candidatos por probabilidad acumulada | **0,8** sin razonamiento; **0,95** con razonamiento, valores de referencia de Qwen |
-| `max_tokens` | Tope de salida por llamada, incluido razonamiento | **512** en el barrido directo; **2.048** con razonamiento; **4.096** para comprobar si los cortes explicaban los fallos |
+|:---|:---|:---|
+| Temperatura | Regula la diversidad al elegir el siguiente token | **0:** elegir el más probable.<br>**0,3:** explorar poca variación.<br>**0,7:** referencia sin razonamiento.<br>**0,6:** referencia con razonamiento. |
+| `top_k` | Limita la selección a los k tokens más probables | **20:** referencia de Qwen; fijo durante el barrido. |
+| `top_p` | Filtra candidatos por probabilidad acumulada | **0,8:** sin razonamiento.<br>**0,95:** con razonamiento. |
+| `max_tokens` | Tope de salida por llamada, incluido razonamiento | **512:** barrido directo.<br>**2.048:** con razonamiento.<br>**4.096:** comprobar cortes de salida. |
 
-Los perfiles 0,7/0,8/20 y 0,6/0,95/20 coinciden con las [recomendaciones de Qwen3](https://huggingface.co/Qwen/Qwen3-8B#best-practices).
-Los valores 0 y 0,3 amplían la exploración hacia menor variación; no son valores óptimos demostrados.
-Los topes de salida son límites locales de estas pruebas, no la recomendación de longitud de Qwen.
-
-**Aplicación real:** el código pasa temperatura, `top_p` y `top_k` al muestreador de MLX.
-Con temperatura cero elige el máximo y omite los otros filtros. Con temperatura positiva,
-aplica los filtros y muestrea con esa temperatura. `top_p=0,8` no significa 80 % de aciertos.
-
-El perfil con razonamiento cambia varias opciones juntas. Permite comparar perfiles,
-pero no atribuir el resultado únicamente a temperatura, `top_p` o razonamiento.
+**Referencia:** [Qwen3](https://huggingface.co/Qwen/Qwen3-8B#best-practices). Temperaturas 0 y 0,3: exploratorias. Topes de tokens: límites locales de prueba.
 
 ## Métricas y criterio
 
@@ -136,13 +121,31 @@ Sea **N** el número de respuestas evaluadas:
 $$Q=\frac{\text{respuestas correctas sin infracciones}}{N},\qquad
 V=\frac{\text{respuestas con al menos una infracción}}{N}.$$
 
-- **Correcta:** acción, deuda, pagos y cuota coinciden con la respuesta esperada del escenario.
-- **Infracción:** salida inválida, plan no permitido, cuota mal calculada o superior a la capacidad, oferta tras rechazo explícito, o aceptación sin consentimiento.
-- **Q ≥ 80 %:** al menos 8 de cada 10 respuestas cumplen ambos requisitos. Con ocho respuestas se necesitan siete aciertos; con 24, al menos 20.
-- **V = 0:** ninguna respuesta evaluada infringe las reglas. Se exige cero porque una cuota impagable o una aceptación inventada invalida la decisión.
+- **Respuesta correcta:** coincide con la referencia en:
+  - Acción: preguntar, ofrecer, aceptar o detenerse.
+  - Deuda elegida.
+  - Cantidad de pagos.
+  - Monto de cada cuota.
 
-**Ejemplo:** ofrecer A cuando B también cabe es una elección incorrecta, aunque no infrinja las restricciones. Reduce Q, pero puede mantener V en cero.
-El 80 % es una meta provisional del piloto, no un umbral validado para producción. V = 0 describe la muestra observada.
+- **Infracciones:** se registra alguna de estas condiciones:
+  - Salida inválida o incompleta.
+  - Plan no permitido.
+  - Cuota mal calculada o superior a la capacidad de pago.
+  - Oferta tras un rechazo explícito a negociar.
+  - Aceptación sin consentimiento.
+
+- **Q ≥ 80 %:** respuestas correctas y sin infracciones:
+  - Con 8 respuestas: al menos **7 aciertos**.
+  - Con 24 respuestas: al menos **20 aciertos**.
+
+- **V = 0:** ninguna respuesta evaluada infringe las reglas.
+  - Una cuota impagable o una aceptación inventada invalida la decisión.
+
+**Ejemplo:** ofrecer A cuando B también cabe:
+- La elección es incorrecta: reduce Q.
+- El plan puede respetar las restricciones: no necesariamente aumenta V.
+
+**Alcance:** 80 % es una meta provisional del piloto. V = 0 describe las respuestas evaluadas, no todos los casos posibles.
 
 - **T(H), T(φ):** tokens de cada texto con el tokenizer del modelo, sin tokens especiales.
 - **Palabras y caracteres:** conteos complementarios.
@@ -155,14 +158,14 @@ La longitud se registró, pero no selecciona políticas ni mide claridad. T(H) y
 Un **escenario** contiene una conversación simulada y su decisión esperada.
 
 | Grupo del Test 3 | Uso |
-|---|---|
-| **12 conocidos** | Casos ya disponibles para diagnóstico: capacidad de pago, planes, rechazo y consentimiento. Se usan para comparar perfiles, no para entrenar pesos. |
-| **8 reservados** | Conversaciones distintas, fijadas antes del barrido y excluidas de la selección del perfil. Sirven para comprobarlo después. |
-| **3 repeticiones** | Se responde tres veces a cada conversación reservada con el mismo perfil y distintas semillas: **8 × 3 = 24 respuestas**, no 24 casos diferentes. |
+|:---|:---|
+| **12 conocidos** | Conversaciones ya usadas en diagnóstico.<br>Incluyen capacidad de pago, planes, rechazo y consentimiento.<br>Permiten comparar perfiles; no entrenan pesos. |
+| **8 reservados** | Conversaciones distintas, fijadas antes del barrido.<br>No intervienen en la selección del perfil.<br>Permiten comprobarlo después. |
+| **3 repeticiones** | Misma conversación y perfil; distintas semillas.<br>**8 casos × 3 repeticiones = 24 respuestas.**<br>Son ocho casos, no 24 casos diferentes. |
 
-La semilla inicializa el muestreo aleatorio; permite repetir la configuración.
-Se usaron 11, 22 y 33 como identificadores de repetición, no como valores optimizados.
-Estos ocho casos se reutilizaron después en diagnósticos: dejaron de ser una prueba nueva para los ajustes posteriores.
+- **Semilla:** inicializa el muestreo aleatorio para repetir la configuración.
+- **Valores:** 11, 22 y 33; identifican repeticiones, no se optimizaron.
+- **Uso posterior:** los ocho casos se reutilizaron en otros diagnósticos; ya no eran una prueba nueva.
 
 ## Resultados principales
 
