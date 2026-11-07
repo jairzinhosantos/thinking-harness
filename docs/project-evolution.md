@@ -10,7 +10,7 @@ La [guía raíz](../README.md#estructura) describe las carpetas actuales.
 case-0003-debt-negotiation/
   README.md
   notebooks/
-    prompt-search.ipynb
+    study-overview.ipynb
     inference-tuning.ipynb
     ...
   prompt-search.pdf
@@ -19,8 +19,11 @@ case-0003-debt-negotiation/
   prompt.yaml
   requirements.txt
   utils/
-    prompt_search.py
-    notebook_view.py
+    paired_search.py
+    task.py
+    models.py
+    study_view.py
+    ...
   diagrams/
   results/
 ```

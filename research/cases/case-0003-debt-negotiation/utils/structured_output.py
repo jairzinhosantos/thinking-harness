@@ -1,6 +1,6 @@
 """Schema-constrained final JSON for MLX; free reasoning before the closing tag."""
 from lmformatenforcer import CharacterLevelParserConfig, JsonSchemaParser, TokenEnforcer, TokenEnforcerTokenizerData
-import local_model_test as local
+from models import LocalClient
 
 
 def tokenizer_data(tokenizer):
@@ -75,7 +75,7 @@ class FinalJsonMask:
         return logits + mask
 
 
-class StructuredLocalClient(local.LocalClient):
+class StructuredLocalClient(LocalClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.sampling.get('enable_thinking'):

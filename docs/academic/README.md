@@ -52,7 +52,7 @@ $$
 - **Ejemplo:** con capacidad mensual de 120, ofrecer A en dos cuotas de 100 es correcto. Ofrecer C en dos cuotas de 300 incumple capacidad. Volver a preguntar por la capacidad falla la decisión, aunque no infrinja las reglas estructuradas.
 - **Alcance:** el evaluador actual revisa campos de la decisión; no comprueba toda la conversación ni el significado completo del mensaje. No hay herramientas para ejecutar pagos. Una respuesta estructurada correcta no acredita cumplimiento bancario real.
 
-La referencia y las reglas se fijan antes de la comparación y quedan fuera del espacio editable. [Evaluador del caso](../../research/cases/case-0003-debt-negotiation/utils/prompt_search.py) · [Escenarios del Test 1](../../research/cases/case-0003-debt-negotiation/harness-test-cases.yaml).
+La referencia y las reglas se fijan antes de la comparación y quedan fuera del espacio editable. [Evaluador del caso](../../research/cases/case-0003-debt-negotiation/utils/task.py) · [Escenarios del Test 1](../../research/cases/case-0003-debt-negotiation/harness-test-cases.yaml).
 
 ## Variables
 

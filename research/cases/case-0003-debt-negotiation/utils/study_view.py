@@ -38,10 +38,16 @@ def load_records(case_dir):
     return records
 
 
+def cell(value):
+    if isinstance(value, (dict, list)):
+        return '<pre style="white-space:pre-wrap;text-align:left;margin:0">' + html.escape(json.dumps(value, ensure_ascii=False, indent=2)) + '</pre>'
+    return html.escape(str(value))
+
+
 def table(headers, rows):
     style = 'text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #d5dce3;overflow-wrap:anywhere'
     header = ''.join(f'<th style="{style}">{html.escape(str(value))}</th>' for value in headers)
-    body = ''.join('<tr>' + ''.join(f'<td style="{style}">{html.escape(str(value))}</td>' for value in row) + '</tr>' for row in rows)
+    body = ''.join('<tr>' + ''.join(f'<td style="{style}">{cell(value)}</td>' for value in row) + '</tr>' for row in rows)
     display(HTML(f'<table style="width:100%;border-collapse:collapse"><thead><tr>{header}</tr></thead><tbody>{body}</tbody></table>'))
 
 
@@ -84,15 +90,14 @@ def show_first_proposal(records):
     prompt('Objetivo fijo', payload['objective'], folded=True)
     rows = payload['development_feedback']
     table(['Caso de desarrollo', 'Respuesta de H0', 'Referencia', 'Correcta', 'Incumplimientos'], [
-        [r['id'], json.dumps(r['raw_reply'], ensure_ascii=False), json.dumps(r['expected'], ensure_ascii=False),
+        [r['id'], r['raw_reply'], r['expected'],
          'Sí' if r['success'] else 'No', ', '.join(r['violations']) or 'Ninguno'] for r in rows])
     first = record['report']['rounds'][1]
     prompt('H1 · Política candidata', first['policy'])
     initial = record['report']['rounds'][0]
     table(['Versión', 'Q validación', 'V validación', 'Selección'], [
-        ['H0', percent(initial['validation']['q']), percent(initial['validation']['v']), 'Reemplazada'],
+        ['H0', percent(initial['validation']['q']), percent(initial['validation']['v']), 'Reemplazada' if first['accepted'] else 'Conservada'],
         ['H1', percent(first['validation']['q']), percent(first['validation']['v']), 'Aceptada' if first['accepted'] else 'Rechazada']])
-    assert first['policy'] == records['fixed']['report']['rounds'][1]['policy']
 
 
 def show_updates(records):
@@ -181,4 +186,4 @@ def show_outcomes(records):
 
 
 def show_sources(records):
-    display(HTML('<ul>' + ''.join(f'<li>{html.escape(key)}: <a href="../results/{r["name"]}/report.json">{r["name"]}</a></li>' for key, r in records.items()) + '</ul>'))
+    display(HTML('<details><summary>Registros originales</summary><ul>' + ''.join(f'<li>{html.escape(key)}: <a href="../results/{r["name"]}/report.json">{r["name"]}</a></li>' for key, r in records.items()) + '</ul></details>'))

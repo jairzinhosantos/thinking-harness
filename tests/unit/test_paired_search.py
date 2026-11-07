@@ -14,19 +14,19 @@ import paired_search as paired
 class PairedSearchTests(unittest.TestCase):
     def test_reserved_cases_are_new_and_references_pass_fixed_evaluator(self):
         cases=paired.fixtures()
-        known=[c for g in paired.local.smoke.select_cases().values() for c in g]+paired.local.transfer_cases()
+        known=[c for g in paired.task.select_cases().values() for c in g]+paired.task.transfer_cases()
         known+=json.loads((CASE/'inference-confirmation-cases.yaml').read_text())['cases']
         self.assertFalse({json.dumps(c['history']) for c in cases['test']} & {json.dumps(c['history']) for c in known})
         self.assertEqual([len(cases[k]) for k in ('development','validation','test')],[4,4,8])
         for split in ('development','validation','test'):
             for case in cases[split]:
-                result=paired.local.rule_check(case,paired.local.render_decision(case['expected']))
+                result=paired.task.rule_check(case,paired.task.render_decision(case['expected']))
                 self.assertTrue(result['task_match'])
                 self.assertEqual(result['violations'],[])
 
     def test_paired_search_hides_holdout_counts_updates_and_retains_ties(self):
         fixtures=paired.fixtures()
-        lookup={json.dumps(paired.local.visible(c),sort_keys=True):c['expected'] for split in ('development','validation','test') for c in fixtures[split]}
+        lookup={json.dumps(paired.task.visible(c),sort_keys=True):c['expected'] for split in ('development','validation','test') for c in fixtures[split]}
         requests=[]
         configurations=[]
         class Client:
@@ -37,6 +37,8 @@ class PairedSearchTests(unittest.TestCase):
                 self.sampling=kwargs['sampling']
                 self.mx=type('MX',(),{'get_peak_memory':staticmethod(lambda:0),
                     'random':type('R',(),{'seed':staticmethod(lambda seed:None)})})
+            def seed(self, value): pass
+            def peak_memory(self): return 0
             def length(self,text): return len(text.split())
             def ask(self,role,instructions,payload,schema):
                 self.calls+=1;self.tokens+=10
@@ -46,7 +48,7 @@ class PairedSearchTests(unittest.TestCase):
                     return {'prompt':f'Candidate policy {self.proposals}'},None
                 if role=='strategy_update':
                     return {'prompt':f'Updated strategy {self.proposals}'},None
-                if instructions.endswith(paired.local.smoke.INITIAL_POLICY):
+                if instructions.endswith(paired.task.INITIAL_POLICY):
                     return {'action':'ask','debt':None,'payments':0,'installment':0},None
                 return lookup[json.dumps(payload,sort_keys=True)],None
         reports=[]
@@ -100,7 +102,7 @@ class PairedSearchTests(unittest.TestCase):
             folder=manifest_path.parent
             for name,digest in json.loads(manifest_path.read_text()).items():
                 self.assertEqual(Path(name).name,name)
-                self.assertEqual(paired.local.smoke.digest(folder/name),digest)
+                self.assertEqual(paired.task.digest(folder/name),digest)
             protocol=json.loads((folder/'protocol.json').read_text())
             report=json.loads((folder/'report.json').read_text())
             calls=[json.loads(line) for line in (folder/'calls.jsonl').read_text().splitlines()]
@@ -110,7 +112,7 @@ class PairedSearchTests(unittest.TestCase):
             self.assertLessEqual(report['tokens'],protocol['limits']['total_tokens'])
             self.assertEqual(report['protected_source_changes'],0)
             for name,digest in protocol['source_hashes'].items():
-                self.assertEqual(paired.local.smoke.digest(folder/Path(name).name),digest)
+                self.assertEqual(paired.task.digest(folder/Path(name).name),digest)
 
 
 if __name__=='__main__': unittest.main()

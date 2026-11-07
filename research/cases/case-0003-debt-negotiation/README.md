@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 27
+revision: 28
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -56,6 +56,8 @@ Se evalúa una respuesta por escenario. No se ejecutan pagos ni se usan datos ba
 
 Un mismo LLM cumple los roles de negociador, mejorador y actualizador en llamadas separadas.
 En los Tests 3–5, Python evalúa. H y φ son textos distintos; cada versión reemplaza la anterior.
+
+**H0, H1…:** versiones de la política. **B1/B2:** estrategias de búsqueda.
 
 ## Flujo de mejora
 
@@ -120,14 +122,22 @@ Prompts completos, candidatos rechazados y consumo: [lectura conjunta](notebooks
 | Ruta | Contenido |
 |---|---|
 | [notebooks/](notebooks/) | Lectura conjunta e historial ejecutado |
-| [utils/](utils/) | Scripts y vistas de resultados |
+| [utils/paired_search.py](utils/paired_search.py) | Único bucle B1/B2 |
+| [utils/task.py](utils/task.py) | Prompts, reglas y selección |
+| [utils/models.py](utils/models.py) | Carga local y llamadas API |
 | [results/](results/) | Protocolos, respuestas, métricas, fuentes y hashes originales |
 | [diagrams/](diagrams/) | Figuras y fuentes editables |
 | [paired-search-cases.yaml](paired-search-cases.yaml) | Escenarios de búsqueda B1/B2 |
 | [utils/execution.md](utils/execution.md) | Entorno y comandos para nuevas ejecuciones |
 
+La lectura principal es `study-overview.ipynb`. Las otras seis notebooks conservan el historial;
+los siguientes ajustes se incorporan a esa lectura, sin crear otra notebook por ejecución.
+
 Los notebooks leen evidencia guardada. Ejecutar los scripts de prueba sí inicia nuevas llamadas.
 Los pesos permanecen en la caché local.
+
+**Comparación GPT:** bucle B1/B2 preparado; pendiente de configurar la clave local.
+Los controles API registrados usan política manual y no demuestran automejora.
 
 ## Piloto inicial
 

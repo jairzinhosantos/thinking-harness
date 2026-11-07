@@ -7,25 +7,25 @@
         <mxCell id="title" value="Automejora del prompt" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#20364D;fontSize=28;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="30" y="20" width="1090" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="sub" value="Tests 4–5 · Un modelo, tres roles · Pesos fijos" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=17;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="sub" value="Qwen3 8B · Pesos fijos · Cada rol es una llamada al modelo" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=17;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="30" y="65" width="1090" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="h" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;H · Política del negociador&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;Reglas para resolver el caso.&lt;br&gt;Ejemplo: «Ofrece la mayor deuda viable».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="h" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;H0 · Política inicial&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;«Pregunta siempre por la capacidad.&lt;br&gt;No ofrezcas ningún plan».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="30" y="120" width="530" height="125" as="geometry" />
         </mxCell>
-        <mxCell id="phi" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;φ · Instrucciones del mejorador&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;Método para revisar H.&lt;br&gt;Ejemplo: «Diagnostica fallos y corrige la regla».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="phi" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;φ0 · Instrucciones iniciales&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;«Revisa la política y sus fallos.&lt;br&gt;Propón una mejora».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="590" y="120" width="530" height="125" as="geometry" />
         </mxCell>
-        <mxCell id="propose" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;1. Proponer&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• H vigente + φ&lt;br&gt;• Fallos de desarrollo&lt;br&gt;&lt;b&gt;Salida: H candidata&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="propose" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;1. Mejorador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• H conservada + φ + fallos&lt;br&gt;• Devuelve H1, H2…&lt;br&gt;&lt;b&gt;Candidata, aún sin aceptar&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="30" y="310" width="245" height="175" as="geometry" />
         </mxCell>
-        <mxCell id="run" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;2. Ejecutar&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Negociador con H&lt;br&gt;• Deudas e historial&lt;br&gt;&lt;b&gt;Salida: decisión JSON&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="run" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;2. Negociador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Contrato fijo + H candidata&lt;br&gt;• Recibe deudas e historial&lt;br&gt;&lt;b&gt;Devuelve action, debt, cuotas&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="310" y="310" width="245" height="175" as="geometry" />
         </mxCell>
-        <mxCell id="eval" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;3. Evaluar&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Decisión correcta&lt;br&gt;• Reglas satisfechas&lt;br&gt;&lt;b&gt;Python calcula Q y V&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="eval" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;3. Evaluador · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Compara decisión esperada&lt;br&gt;• Comprueba restricciones&lt;br&gt;&lt;b&gt;Q: aciertos · V: infracciones&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="590" y="310" width="245" height="175" as="geometry" />
         </mxCell>
-        <mxCell id="select" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;4. Seleccionar&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Mejora Q de validación&lt;br&gt;• Sin incumplimientos&lt;br&gt;&lt;b&gt;Conservar o rechazar H&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="select" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;4. Selección · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Q mejora ≥ 0,01 y V = 0&lt;br&gt;• Si no, conserva H anterior&lt;br&gt;&lt;b&gt;Se decide en validación&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="870" y="310" width="250" height="175" as="geometry" />
         </mxCell>
         <mxCell id="p-r" value="" source="propose" target="run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;" edge="1" parent="1">
@@ -54,7 +54,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="update" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;Solo B2 · Actualizar φ&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;Actualizador: φ + candidata + fallos de desarrollo.&lt;br&gt;&lt;b&gt;Salida: φ nueva para la próxima propuesta.&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
+        <mxCell id="update" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;B2 · Actualizador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;Recibe φ, candidata y fallos de desarrollo.&lt;br&gt;&lt;b&gt;Reemplaza φ para el siguiente intento.&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
           <mxGeometry x="310" y="585" width="525" height="120" as="geometry" />
         </mxCell>
         <mxCell id="eval-update" value="Fallos" source="eval" target="update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#A27B49;dashed=1;exitX=0.7;exitY=1;entryX=0.85;entryY=0;" edge="1" parent="1">
@@ -70,8 +70,21 @@
         <mxCell id="fixed" value="&lt;b&gt;B1:&lt;/b&gt; φ fija.&lt;br&gt;&lt;br&gt;&lt;b&gt;B2:&lt;/b&gt; φ puede cambiar." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#20364D;fontSize=17;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="875" y="595" width="245" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="footer" value="Test final después de seleccionar H. Evaluador, contratos y pesos permanecen fijos." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=16;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="footer" value="Primero se evalúa H0. Tras la búsqueda, H0 y H elegida pasan al test final. B1/B2 son estrategias, no versiones de H." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=16;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="30" y="730" width="1090" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="h-input" source="h" target="propose" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#526B82;endArrow=block;exitX=0.5;exitY=1;entryX=0.3;entryY=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="phi-input" source="phi" target="propose" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#526B82;endArrow=block;exitX=0.5;exitY=1;entryX=0.65;entryY=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="855" y="260" />
+              <mxPoint x="189" y="260" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
