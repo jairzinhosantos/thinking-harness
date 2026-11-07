@@ -1,90 +1,65 @@
 <mxfile host="app.diagrams.net">
-  <diagram id="learning-loop" name="learning-loop">
-    <mxGraphModel dx="1160" dy="780" grid="1" gridSize="10" page="1" pageWidth="1160" pageHeight="780">
+  <diagram id="learning-loop" name="Automejora del prompt">
+    <mxGraphModel dx="1200" dy="1030" pageWidth="1200" pageHeight="1120" page="1" grid="1" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="Automejora del prompt" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#20364D;fontSize=28;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="20" width="1090" height="40" as="geometry" />
+        <mxCell id="title" value="&lt;b&gt;Automejora del prompt&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=31;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="8" width="1168" height="48" />
         </mxCell>
-        <mxCell id="sub" value="Qwen3 8B · Pesos fijos · Cada rol es una llamada al modelo" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=17;fontStyle=0;" vertex="1" parent="1">
-          <mxGeometry x="30" y="65" width="1090" height="32" as="geometry" />
+        <mxCell id="intro" value="&lt;b&gt;Test 4 · Búsqueda B2 con 2.048 tokens por llamada&lt;/b&gt; · Qwen3 8B con pesos fijos&lt;br&gt;&lt;b&gt;H0 (política inicial)&lt;/b&gt; pide siempre la capacidad de pago. &lt;b&gt;φ0 (instrucciones de mejora)&lt;/b&gt; guía la revisión de esa política.&lt;br&gt;Primero se prueba H0 para registrar sus fallos de desarrollo y su puntuación de validación." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3F5F7;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="60" width="1168" height="92" />
         </mxCell>
-        <mxCell id="h" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;H0 · Política inicial&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;«Pregunta siempre por la capacidad.&lt;br&gt;No ofrezcas ningún plan».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="30" y="120" width="530" height="125" as="geometry" />
+        <mxCell id="section1" value="&lt;b&gt;1. Proponer y probar&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=23;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="163" width="1168" height="48" />
         </mxCell>
-        <mxCell id="phi" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;φ0 · Instrucciones iniciales&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;«Revisa la política y sus fallos.&lt;br&gt;Propón una mejora».&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="590" y="120" width="530" height="125" as="geometry" />
+        <mxCell id="improve" value="&lt;b style=&quot;font-size:23px&quot;&gt;Mejorador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;Lee H (política vigente) y sus fallos.&lt;br&gt;Sigue φ (instrucciones de mejora).&lt;br&gt;&lt;b&gt;Propone una política candidata.&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="217" width="356" height="152" />
         </mxCell>
-        <mxCell id="propose" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;1. Mejorador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• H conservada + φ + fallos&lt;br&gt;• Devuelve H1, H2…&lt;br&gt;&lt;b&gt;Candidata, aún sin aceptar&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="30" y="310" width="245" height="175" as="geometry" />
+        <mxCell id="run" value="&lt;b style=&quot;font-size:23px&quot;&gt;Negociador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;Prueba H con deudas y conversación.&lt;br&gt;Elige acción, deuda, pagos y cuota.&lt;br&gt;&lt;b&gt;Devuelve una decisión por caso.&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF4FA;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="415" y="217" width="345" height="152" />
         </mxCell>
-        <mxCell id="run" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;2. Negociador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Contrato fijo + H candidata&lt;br&gt;• Recibe deudas y conversación&lt;br&gt;&lt;b&gt;Devuelve action, debt, cuotas&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="310" y="310" width="245" height="175" as="geometry" />
+        <mxCell id="eval" value="&lt;b style=&quot;font-size:23px&quot;&gt;Evaluador · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;Compara la decisión con la referencia.&lt;br&gt;Revisa cuota, plan y consentimiento.&lt;br&gt;&lt;b&gt;Registra aciertos e infracciones.&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="808" y="217" width="372" height="152" />
         </mxCell>
-        <mxCell id="eval" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;3. Evaluador · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Compara decisión esperada&lt;br&gt;• Comprueba restricciones&lt;br&gt;&lt;b&gt;Q: proporción correcta · V: infracciones&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="590" y="310" width="245" height="175" as="geometry" />
+        <mxCell id="improve-run" source="improve" target="run" value="" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeColor=#577994;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="select" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;4. Selección · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;• Q sube ≥ 1 punto % y V = 0&lt;br&gt;• Si no, conserva H anterior&lt;br&gt;&lt;b&gt;Se decide en validación&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="870" y="310" width="250" height="175" as="geometry" />
+        <mxCell id="run-eval" source="run" target="eval" value="" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=block;endFill=1;strokeColor=#577994;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="p-r" value="" source="propose" target="run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="groups" value="&lt;b&gt;Desarrollo&lt;/b&gt; aporta ejemplos de fallos para revisar los prompts. &amp;nbsp;&amp;nbsp; &lt;b&gt;Validación&lt;/b&gt; determina qué política se conserva." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3F5F7;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="385" width="1168" height="62" />
         </mxCell>
-        <mxCell id="r-e" value="" source="run" target="eval" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="section2" value="&lt;b&gt;2. Seleccionar en validación&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=23;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="458" width="1168" height="48" />
         </mxCell>
-        <mxCell id="e-s" value="" source="eval" target="select" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="q" value="&lt;b&gt;Q · Proporción de aciertos&lt;/b&gt;&lt;br&gt;Respuestas con los cuatro campos correctos y sin infracciones, divididas entre el total de respuestas." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF4FA;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="512" width="560" height="100" />
         </mxCell>
-        <mxCell id="feedback" value="Fallos de desarrollo" source="eval" target="propose" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="710" y="280" />
-              <mxPoint x="150" y="280" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="v" value="&lt;b&gt;V · Proporción con infracciones&lt;/b&gt;&lt;br&gt;Respuestas con al menos una infracción, divididas entre el total. Una cuota superior a la capacidad cuenta como infracción." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF4FA;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="592" y="512" width="588" height="100" />
         </mxCell>
-        <mxCell id="retained" value="Siguiente intento con H conservada" source="select" target="propose" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#597B98;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="995" y="520" />
-              <mxPoint x="18" y="520" />
-              <mxPoint x="18" y="400" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="rule" value="&lt;b&gt;Selección de la política candidata&lt;/b&gt;&lt;br&gt;1. Su Q supera la Q de la política vigente en al menos 1 punto porcentual.&lt;br&gt;2. Su V es cero en validación.&lt;br&gt;&lt;b&gt;Si cumple ambas condiciones, se acepta. En otro caso, se mantiene la política vigente.&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="625" width="1168" height="112" />
         </mxCell>
-        <mxCell id="update" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b style=&quot;font-size:21px&quot;&gt;B2 · Actualizador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px&quot;&gt;Recibe φ, candidata y fallos de desarrollo.&lt;br&gt;&lt;b&gt;Reemplaza φ para el siguiente intento.&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF3E9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=top;spacing=18;" vertex="1" parent="1">
-          <mxGeometry x="310" y="585" width="525" height="120" as="geometry" />
+        <mxCell id="example1" value="&lt;b&gt;Intento 1 · Se acepta H1&lt;/b&gt;&lt;br&gt;Q pasa de 0/4 con H0 a 4/4 con H1. V de H1 = 0/4.&lt;br&gt;La nueva política vigente es H1." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3F5F7;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="751" width="560" height="96" />
         </mxCell>
-        <mxCell id="eval-update" value="Fallos" source="eval" target="update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#A27B49;dashed=1;exitX=0.7;exitY=1;entryX=0.85;entryY=0;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="example2" value="&lt;b&gt;Intento 2 · Se conserva H1&lt;/b&gt;&lt;br&gt;H2 obtiene 3/4 aciertos y 0/4 infracciones. Aunque cumple las reglas, su Q baja del 100 % al 75 %." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F3F5F7;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="592" y="751" width="588" height="96" />
         </mxCell>
-        <mxCell id="update-propose" value="φ nueva" source="update" target="propose" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=14;fontFamily=Arial;labelBackgroundColor=#FFFFFF;strokeColor=#A27B49;dashed=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="150" y="645" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="section3" value="&lt;b&gt;3. Preparar el siguiente intento&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=23;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="858" width="1168" height="48" />
         </mxCell>
-        <mxCell id="fixed" value="&lt;b&gt;B1:&lt;/b&gt; mismo método de mejora.&lt;br&gt;&lt;br&gt;&lt;b&gt;B2:&lt;/b&gt; puede reescribir ese método (φ)." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#20364D;fontSize=17;fontStyle=0;" vertex="1" parent="1">
-          <mxGeometry x="875" y="595" width="245" height="100" as="geometry" />
+        <mxCell id="fixed" value="&lt;b&gt;B1 · Instrucciones fijas&lt;/b&gt;&lt;br&gt;El mejorador recibe la política conservada, sus resultados de desarrollo y las mismas instrucciones φ0." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EDF4FA;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="910" width="560" height="110" />
         </mxCell>
-        <mxCell id="footer" value="Primero se evalúa H0. Tras la búsqueda, H0 y H elegida pasan al test final. B1/B2 son estrategias, no versiones de H." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Arial;fontColor=#53677B;fontSize=16;fontStyle=0;" vertex="1" parent="1">
-          <mxGeometry x="30" y="730" width="1090" height="35" as="geometry" />
+        <mxCell id="adapt" value="&lt;b&gt;B2 · Instrucciones adaptativas&lt;/b&gt;&lt;br&gt;El actualizador usa los fallos de desarrollo de la candidata para revisar φ. El mejorador recibe la política conservada y las instrucciones vigentes." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F4EFF6;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=19;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="592" y="910" width="588" height="110" />
         </mxCell>
-        <mxCell id="h-input" source="h" target="propose" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#526B82;endArrow=block;exitX=0.5;exitY=1;entryX=0.3;entryY=0;">
-          <mxGeometry as="geometry" relative="1">
-            <Array as="points" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="phi-input" source="phi" target="propose" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#526B82;endArrow=block;exitX=0.5;exitY=1;entryX=0.65;entryY=0;">
-          <mxGeometry as="geometry" relative="1">
-            <Array as="points">
-              <mxPoint x="855" y="260" />
-              <mxPoint x="189" y="260" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="exit" value="&lt;b&gt;Continuación&lt;/b&gt; · Si queda otro intento, se vuelve al mejorador del paso 1. Al terminar la búsqueda, el test final compara H0 con la política seleccionada." style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#18334A;fontFamily=Arial;fontSize=18;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="12" y="1033" width="1168" height="62" />
         </mxCell>
       </root>
     </mxGraphModel>
