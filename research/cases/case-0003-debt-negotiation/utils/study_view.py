@@ -192,7 +192,3 @@ def show_outcomes(records):
         rows.append([title, label(record), count('initial'), f"H{report['selected_iteration']}: {count('selected')}", percent(report['test']['selected']['v']),
                      f"{valid}/{len(record['calls'])}", sum(c.get('error') == 'output_limit' for c in record['calls']), report['tokens']])
     table(['Prueba · tope', 'Condición', 'H0: aciertos', 'H elegida: aciertos', 'V final', 'Llamadas sin error', 'Cortes', 'Tokens totales'], rows)
-
-
-def show_sources(records):
-    display(HTML('<details><summary>Registros originales</summary><ul>' + ''.join(f'<li>{html.escape(key)}: <a href="../results/{r["name"]}/report.json">{r["name"]}</a></li>' for key, r in records.items()) + '</ul></details>'))
