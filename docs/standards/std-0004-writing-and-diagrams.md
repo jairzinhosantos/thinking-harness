@@ -2,9 +2,9 @@
 id: std-0004
 title: "Escritura y diagramas"
 status: in-review
-revision: 5
+revision: 6
 created: 2026-09-30
-updated: 2026-10-17
+updated: 2026-11-06
 ---
 
 # Escritura y diagramas
@@ -22,6 +22,10 @@ editorial: modificar una entrada experimental requiere una revisión de protocol
 
 Usar frases concretas y voz del proyecto: «Se compararán dos mejoradores con el mismo
 presupuesto». Evitar narrar preferencias personales, conversaciones o actividad del asistente.
+Títulos de dos a cuatro palabras, sin contar numeración. Preferir «Definición de hiperparámetros»
+a preguntas largas. En README, notebooks y diagramas: definiciones directas, resultados concretos
+y límites explícitos. Evitar introducciones repetidas y frases que anuncian lo que se explicará.
+Conservar fórmulas y detalles necesarios para interpretar o repetir la prueba.
 Sin emojis, guiones largos, afirmaciones promocionales ni repeticiones. Atribuir resultados
 externos y distinguir interpretación, inspección estática y reproducción.
 
