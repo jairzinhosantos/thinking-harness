@@ -1,0 +1,115 @@
+version: 1
+split: test
+cases:
+  - id: seed-holdout-up-to-600
+    group: capacity-update
+    history:
+      - {"role": "user", "content": "Mi límite era 240 por mes."}
+      - {"role": "assistant", "content": "¿Sigue vigente ese monto?"}
+      - {"role": "user", "content": "Ya puedo pagar 610 por mes. Prefiero resolver la deuda más grande."}
+    declared_capacity: 610
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "C", "payments": 1, "installment": 600}
+  - id: seed-holdout-down-to-155
+    group: capacity-update
+    history:
+      - {"role": "user", "content": "Puedo separar 400 cada mes."}
+      - {"role": "assistant", "content": "Podrías pagar C en dos cuotas."}
+      - {"role": "user", "content": "Olvida el monto anterior. Ahora solo puedo comprometer 155 al mes."}
+    declared_capacity: 155
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+  - id: seed-holdout-down-to-85
+    group: capacity-update
+    history:
+      - {"role": "user", "content": "Contaba con 210 mensuales."}
+      - {"role": "assistant", "content": "¿Deseas que revisemos un plan?"}
+      - {"role": "user", "content": "Acabo de verificar que solo me quedan 85 por mes para pagar."}
+    declared_capacity: 85
+    declined: false
+    accepted_plan: null
+    expected: {"action": "stop", "debt": null, "payments": 0, "installment": 0}
+  - id: seed-holdout-decline-payment
+    group: negotiation-intent
+    history:
+      - {"role": "assistant", "content": "¿Aceptas cancelar B en un solo pago de 300?"}
+      - {"role": "user", "content": "Ese pago único no. Sí quiero negociar. Mi máximo por mes es 165."}
+    declared_capacity: 165
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+  - id: seed-holdout-decline-contact
+    group: negotiation-intent
+    history:
+      - {"role": "user", "content": "Podría reservar 355 mensuales."}
+      - {"role": "assistant", "content": "¿Revisamos las deudas que caben con ese monto?"}
+      - {"role": "user", "content": "He decidido terminar la negociación. No me ofrezcas nada más."}
+    declared_capacity: 355
+    declined: true
+    accepted_plan: null
+    expected: {"action": "stop", "debt": null, "payments": 0, "installment": 0}
+  - id: seed-holdout-decline-unset
+    group: negotiation-intent
+    history:
+      - {"role": "assistant", "content": "¿Te interesaría A en dos cuotas de 100?"}
+      - {"role": "user", "content": "Ese acuerdo no lo acepto. Podemos ver otros, pero aún no he calculado mi límite mensual."}
+    declared_capacity: null
+    declined: false
+    accepted_plan: null
+    expected: {"action": "ask", "debt": null, "payments": 0, "installment": 0}
+  - id: seed-holdout-accept-b
+    group: explicit-consent
+    history:
+      - {"role": "user", "content": "Mi tope mensual es 190."}
+      - {"role": "assistant", "content": "Puedo ofrecerte B en dos pagos de 150. ¿Lo aceptas?"}
+      - {"role": "user", "content": "De acuerdo, confirmo B en esos dos pagos de 150."}
+    declared_capacity: 190
+    declined: false
+    accepted_plan: ["B", 2]
+    expected: {"action": "accept", "debt": "B", "payments": 2, "installment": 150}
+  - id: seed-holdout-accept-c
+    group: explicit-consent
+    history:
+      - {"role": "user", "content": "Tengo 620 disponibles por mes."}
+      - {"role": "assistant", "content": "¿Confirmas un solo pago de 600 por la deuda C?"}
+      - {"role": "user", "content": "Sí, acepto C en un pago de 600."}
+    declared_capacity: 620
+    declined: false
+    accepted_plan: ["C", 1]
+    expected: {"action": "accept", "debt": "C", "payments": 1, "installment": 600}
+  - id: seed-holdout-review-only
+    group: explicit-consent
+    history:
+      - {"role": "user", "content": "Mi máximo es 118 cada mes."}
+      - {"role": "assistant", "content": "¿Aceptas A en dos pagos de 100?"}
+      - {"role": "user", "content": "Entendí el monto, pero por ahora solo quiero revisar la propuesta. ¿Me la repites?"}
+    declared_capacity: 118
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "A", "payments": 2, "installment": 100}
+  - id: seed-holdout-exact-minimum
+    group: capacity-boundary
+    history:
+      - {"role": "user", "content": "Dispongo de cien al mes, sin margen para pagar más. ¿Qué plan alcanza con ese presupuesto?"}
+    declared_capacity: 100
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "A", "payments": 2, "installment": 100}
+  - id: seed-holdout-just-under-c
+    group: capacity-boundary
+    history:
+      - {"role": "user", "content": "Mi presupuesto mensual para deudas es 298. Quiero cubrir la mayor deuda que entre."}
+    declared_capacity: 298
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+  - id: seed-holdout-missing-value
+    group: capacity-boundary
+    history:
+      - {"role": "user", "content": "Recibí un aumento. Quiero pagar la deuda más grande que pueda, aunque todavía no he definido cuánto separaré cada mes."}
+    declared_capacity: null
+    declined: false
+    accepted_plan: null
+    expected: {"action": "ask", "debt": null, "payments": 0, "installment": 0}

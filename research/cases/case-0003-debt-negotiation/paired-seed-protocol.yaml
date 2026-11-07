@@ -1,0 +1,39 @@
+version: 1
+question: "¿Adaptar las instrucciones del mejorador cambia la calidad o el consumo frente a mantenerlas fijas?"
+design:
+  unit: "Una búsqueda completa desde H0 y φ0. Cinco pares B1/B2. Una semilla base distinta por par."
+  seed_pairs: [101, 211, 307, 401, 503]
+  order: [B1-B2, B2-B1, B1-B2, B2-B1, B1-B2]
+  model: mlx-community/Qwen3-8B-4bit
+  revision: 545dc4251c05440727734bcd94334791f6ab0192
+  sampling: {temperature: 0.6, top_p: 0.95, top_k: 20, enable_thinking: true}
+  decoding: prompt_only
+  source_commit: 97d2be3e4f1e4019e3bb835c4c624f5a5a42420c
+  starting_texts: "INITIAL_POLICY e INITIAL_STRATEGY de utils/task.py. Reiniciar ambas al comenzar cada búsqueda."
+  B1: "Proponer políticas con las instrucciones iniciales durante los cinco intentos."
+  B2: "Mismo procedimiento. Tras una candidata evaluable, el actualizador puede sustituir las instrucciones para el próximo intento."
+search:
+  fixture: paired-search-cases.yaml
+  splits: [development, validation]
+  feedback: "Solo trazas de desarrollo al mejorador y al actualizador. Python usa validación exclusivamente para seleccionar la política."
+  seeds: "Con s = semilla del par e i = posición desde cero, desarrollo usa s+1000+i y validación s+2000+i. Con t = intento de 1 a 5, propuesta usa s+10000+t y actualización s+20000+t."
+  selection: "Aceptar si Q de validación aumenta al menos 0,01 y V de la candidata es cero. En empate conservar la vigente."
+  limits_per_search: {proposals: 5, calls: 57, total_tokens: 120000, max_output_tokens: 2048, context_tokens: 6144, seconds: 1800}
+  accounting: "Contar llamadas y tokens reales, incluidas las actualizaciones de B2. El techo cubre 8 evaluaciones iniciales, hasta 5 propuestas, 40 evaluaciones de candidatas y 4 actualizaciones."
+  stop: "Sin reintentos. Registrar cortes y errores de formato. Si se agota el presupuesto, conservar la última política aceptada y marcar la búsqueda limitada."
+freeze:
+  before_test: "Finalizar las diez búsquedas y guardar semilla, estrategia, estado, coste y texto exacto con SHA-256 de cada política elegida antes de abrir el conjunto reservado."
+  failure: "Si un fallo técnico impide guardar alguna política, detener la confirmación. Identificar el par incompleto antes de comparar."
+confirmation:
+  fixture: paired-seed-holdout.yaml
+  policies: "H0 y las diez seleccionadas. Evaluar una sola vez cada texto idéntico y asociar el resultado a todos sus orígenes."
+  case_seed: "50000+i con i desde cero. Usar la misma semilla para ese escenario en todas las políticas."
+  limits_per_policy: {calls: 12, total_tokens: 40000, max_output_tokens: 2048, context_tokens: 6144, seconds: 900}
+  exposure: "El negociador solo recibe deudas, planes e historial. Referencias y metadatos quedan en el evaluador. Este conjunto nunca se envía al mejorador."
+  exhausted: "Registrar una confirmación incompleta si no hay 12 respuestas evaluadas por un fallo técnico o agotamiento del presupuesto. No imputar aciertos ni declarar meta alcanzada."
+  aggregate_ceiling: "570 llamadas de búsqueda y hasta 132 de confirmación. Máximo conjunto: 702 llamadas y 1.640.000 tokens de entrada más salida. Ejecución local."
+outcomes:
+  quality: "Q = aciertos sin infracción / 12. V = respuestas con alguna infracción / 12, incluidos fallos de formato. Meta por política: Q >= 0,80 y V = 0."
+  primary: "Para cada par completo, diferencia de Q final B2 menos B1 en puntos porcentuales. Contar mejoras, empates y retrocesos por signo. Mostrar V y cumplimiento de meta por separado."
+  secondary: "Diferencia frente a H0, coincidencia exacta de textos y diferencias de llamadas y tokens de búsqueda entre B2 y B1. Registrar el consumo de confirmación por separado."
+  scope: "Cinco pares exploratorios. Las doce conversaciones se comparten entre pares. Los aciertos de un mismo escenario no son réplicas independientes."
