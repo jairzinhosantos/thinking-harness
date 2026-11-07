@@ -113,6 +113,8 @@ class LocalClient:
                                           logits_processors=processors or None,
                                           sampler=make_sampler(temp=self.sampling["temperature"], top_p=self.sampling["top_p"], top_k=self.sampling["top_k"])):
                 entry["raw_output"] += result.text
+                if getattr(self, "on_generation", None):
+                    self.on_generation(entry["raw_output"], result.generation_tokens)
                 if time.monotonic() - self.started >= self.limits["seconds"]:
                     raise BudgetStop("Local time limit reached")
             if result is None:

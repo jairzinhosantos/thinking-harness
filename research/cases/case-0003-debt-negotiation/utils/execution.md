@@ -61,3 +61,21 @@ se utiliza su commit original. No se presentan como nuevas ejecuciones del códi
 - `manifest.json`: hashes de los archivos de evidencia.
 
 Las carpetas históricas también incluyen copias de scripts. Se conservan sin cambios.
+
+## Demo local
+
+Abre [la demo](../demo/index.html) para recorrer los dos primeros intentos registrados del Test 4. La escritura en esta vista previa tiene un ritmo ilustrativo.
+
+### Presentación en vivo
+
+1. En la terminal, desde la carpeta `demo/`, usa el entorno Python del caso con MLX y el modelo Qwen3 8B a 4 bits en caché.
+2. Ejecuta `python server.py` y abre la dirección local que imprime.
+3. Coloca el navegador y la terminal lado a lado. La primera conexión inicia la carga del modelo. La terminal muestra las llamadas y el navegador recibe los eventos y los fragmentos de la respuesta pública de Qwen.
+
+La sesión ejecuta un intento adaptativo. Evalúa H0, propone H1 y aplica el mismo evaluador del caso a cuatro conversaciones de desarrollo y cuatro de validación. Se acepta la candidata si gana al menos un punto porcentual en validación y V es cero. Al completar una propuesta válida se revisa φ. El resultado pertenece a esta demostración de un intento.
+
+### Reproducir una sesión
+
+La terminal imprime la ruta de `events.jsonl`. Para conservar la sesión, copia ese archivo fuera de la carpeta temporal. Reprodúcelo con `python server.py --replay /ruta/events.jsonl`. El navegador mostrará «Grabación». La reproducción respeta los tiempos capturados y admite `--speed 2`.
+
+Ctrl+C cierra el servidor. Usa `--port 8766` para elegir otro puerto.
