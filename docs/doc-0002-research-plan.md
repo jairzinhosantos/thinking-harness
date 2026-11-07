@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 18
+revision: 19
 created: 2026-09-29
 updated: 2026-11-06
 ---
@@ -42,7 +42,9 @@ y el [índice de casos](../research/cases/README.md). No reinterpretar resultado
 
 ## Próximo sprint académico
 
-La [entrega académica](academic/README.md) enlaza matriz y notebooks. Para la semana 8,
+La [entrada de la entrega](README.md) enlaza el [notebook conjunto](../research/cases/case-0003-debt-negotiation/notebooks/study-overview.ipynb):
+caso, prompts, ajustes, longitud y resultados. Lee evidencia guardada sin ejecutar modelos.
+La [entrega académica](academic/README.md) conserva la matriz y los notebooks. Para la semana 8,
 el ajuste de hiperparámetros se trabaja en **inferencia**: temperatura, modo de razonamiento
 y límite de salida, sin cambiar pesos. Se conserva una política manual para separar capacidad
 del negociador y calidad del mejorador. El Test 3 documenta búsqueda, selección y confirmación.

@@ -262,7 +262,7 @@ class PromptSearchTests(unittest.TestCase):
 
     def test_canonical_spanish_notebook_and_local_links(self):
         self.assertEqual(sorted(p.name for p in (CASE/'notebooks').glob('*.ipynb')),
-                         ['harness-smoke-test.ipynb', 'inference-tuning.ipynb', 'local-model-test.ipynb', 'paired-search.ipynb', 'prompt-search.ipynb', 'structured-output.ipynb'])
+                         ['harness-smoke-test.ipynb', 'inference-tuning.ipynb', 'local-model-test.ipynb', 'paired-search.ipynb', 'prompt-search.ipynb', 'structured-output.ipynb', 'study-overview.ipynb'])
         notebook=json.loads((CASE / 'notebooks' / 'prompt-search.ipynb').read_text())
         first_code=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code')
         self.assertIn("LANGUAGE = 'es'", first_code)
@@ -380,7 +380,7 @@ class PromptSearchTests(unittest.TestCase):
     def test_case_has_one_spanish_markdown_and_legacy_evidence_is_distinct(self):
         markdown=[p.relative_to(CASE).as_posix() for p in CASE.rglob('*.md')
                   if not {'runs','_local','.venv'} & set(p.relative_to(CASE).parts)]
-        self.assertEqual(markdown,['README.md'])
+        self.assertEqual(markdown,['README.md', 'utils/execution.md'])
         self.assertEqual(m.PROTOCOL,'case-0003-prompt-search-v3')
         self.assertIn('case-0003-prompt-search-v2',m.REPLAY_PROTOCOLS)
         with tempfile.TemporaryDirectory() as tmp:
