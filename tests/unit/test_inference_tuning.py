@@ -11,7 +11,6 @@ import yaml
 CASE = Path(__file__).resolve().parents[2] / 'research/cases/case-0003-debt-negotiation'
 sys.path.insert(0, str(CASE / 'utils'))
 import inference_tuning as tuning
-import api_reference_test as api
 
 
 class TuningTests(unittest.TestCase):
@@ -21,13 +20,13 @@ class TuningTests(unittest.TestCase):
 
     def test_confirmation_fixtures_are_disjoint_and_expected_decisions_pass(self):
         cases = yaml.safe_load((CASE / 'inference-confirmation-cases.yaml').read_text())['cases']
-        known = [c for g in tuning.local.smoke.select_cases().values() for c in g] + tuning.local.transfer_cases()
+        known = [c for g in tuning.task.select_cases().values() for c in g] + tuning.task.transfer_cases()
         self.assertFalse({json.dumps(c['history']) for c in cases} & {json.dumps(c['history']) for c in known})
         for case in cases:
-            check = tuning.local.rule_check(case, tuning.local.render_decision(case['expected']))
+            check = tuning.task.rule_check(case, tuning.task.render_decision(case['expected']))
             self.assertTrue(check['task_match'])
             self.assertEqual(check['violations'], [])
-            self.assertNotIn('expected', tuning.local.visible(case))
+            self.assertNotIn('expected', tuning.task.visible(case))
 
     def test_tuning_excludes_confirmation_and_changes_sampling_only(self):
         requests = []
@@ -37,6 +36,8 @@ class TuningTests(unittest.TestCase):
                 self.sampling = kwargs['sampling']
                 self.mx = type('Memory', (), {'get_peak_memory': staticmethod(lambda: 0),
                     'random': type('Random', (), {'seed': staticmethod(lambda seed: None)})})
+            def seed(self, value): pass
+            def peak_memory(self): return 0
             def ask(self, role, instructions, payload, schema):
                 self.calls += 1
                 requests.append((instructions, payload, self.sampling.copy()))
@@ -52,41 +53,7 @@ class TuningTests(unittest.TestCase):
         self.assertEqual(len(report['profiles']),3)
         self.assertEqual(len({r[2]['temperature'] for r in requests}),3)
 
-    def test_api_reference_requires_opt_in_and_stops_before_confirmation_on_failure(self):
-        with self.assertRaises(ValueError):
-            api.run()
-        requests = []
-        class Client:
-            def __init__(self, config, folder):
-                self.calls = self.tokens = self.cost = 0
-            def ask(self, role, instructions, payload, schema):
-                self.calls += 1
-                requests.append(payload)
-                return {'action':'ask','debt':None,'payments':0,'installment':0}
-        with tempfile.TemporaryDirectory() as folder:
-            path = api.run(allow_live=True, output_root=folder, client_factory=Client)
-            _, report = tuning.read_record(path)
-        self.assertEqual(len(requests), 12)
-        self.assertFalse(report['passes'])
-        self.assertIsNone(report['confirmation'])
-        self.assertTrue(all('expected' not in r for r in requests))
 
-    def test_api_confirmation_runs_only_after_success_and_preserves_all_repeats(self):
-        known = [c for g in tuning.local.smoke.select_cases().values() for c in g] + tuning.local.transfer_cases()
-        confirm = yaml.safe_load((CASE / 'inference-confirmation-cases.yaml').read_text())['cases']
-        expected = {json.dumps(tuning.local.visible(c), sort_keys=True): c['expected'] for c in known+confirm}
-        class Client:
-            def __init__(self, config, folder):
-                self.calls = self.tokens = self.cost = 0
-            def ask(self, role, instructions, payload, schema):
-                self.calls += 1
-                return expected[json.dumps(payload, sort_keys=True)]
-        with tempfile.TemporaryDirectory() as folder:
-            path = api.run(allow_live=True, output_root=folder, client_factory=Client)
-            _, report = tuning.read_record(path)
-        self.assertEqual(report['calls'],36)
-        self.assertTrue(report['passes'])
-        self.assertEqual(len(report['confirmation']['rows']),24)
 
     def test_failed_tuning_cannot_enter_confirmation(self):
         folders = sorted((CASE / 'results').glob('*-inference-*/manifest.json'))

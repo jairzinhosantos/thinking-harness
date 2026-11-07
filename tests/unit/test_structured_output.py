@@ -11,7 +11,8 @@ from unittest.mock import patch
 CASE = Path(__file__).resolve().parents[2] / 'research/cases/case-0003-debt-negotiation'
 sys.path.insert(0, str(CASE / 'utils'))
 from structured_output import FinalJsonMask, tokenizer_data, schema_for_grammar
-import local_model_test as local
+import task as local
+from models import LocalClient, parse_reply
 
 
 class CharacterTokenizer:
@@ -75,7 +76,7 @@ class StructuredOutputTests(unittest.TestCase):
         self.assertEqual(before['type'], ['string', 'null'])
 
     def test_default_client_has_no_generation_mask(self):
-        client = local.LocalClient.__new__(local.LocalClient)
+        client = LocalClient.__new__(LocalClient)
         self.assertEqual(client.output_processors(local.PROMPT_SCHEMA), ([], None))
 
 
@@ -86,7 +87,7 @@ class StructuredEvidenceTests(unittest.TestCase):
                 continue
             for name, digest in json.loads((folder / 'manifest.json').read_text()).items():
                 self.assertEqual(Path(name).name, name)
-                self.assertEqual(local.smoke.digest(folder / name), digest)
+                self.assertEqual(local.digest(folder / name), digest)
             protocol = json.loads((folder / 'protocol.json').read_text())
             report = json.loads((folder / 'report.json').read_text())
             calls = [json.loads(line) for line in (folder / 'calls.jsonl').read_text().splitlines()]
@@ -97,7 +98,7 @@ class StructuredEvidenceTests(unittest.TestCase):
                 if call.get('error') is None:
                     self.assertTrue(call['structured_generation']['activated'])
                     schema = local.DECISION_SCHEMA if call['role'] == 'negotiator' else local.PROMPT_SCHEMA
-                    value, error = local.parse_reply(call['raw_output'].split('</think>', 1)[-1].strip(), schema)
+                    value, error = parse_reply(call['raw_output'].split('</think>', 1)[-1].strip(), schema)
                     self.assertIsNone(error)
                     self.assertEqual(value, call['parsed'])
 
@@ -108,7 +109,7 @@ class StructuredEvidenceTests(unittest.TestCase):
         for cell in notebook['cells']:
             diagram = cell['metadata'].get('diagram')
             if diagram:
-                self.assertEqual(local.smoke.digest(CASE / diagram['source']), diagram['source_sha256'])
+                self.assertEqual(local.digest(CASE / diagram['source']), diagram['source_sha256'])
                 preview = next(iter(cell['attachments'].values()))['image/png']
                 self.assertEqual(hashlib.sha256(base64.b64decode(preview)).hexdigest(), diagram['preview_sha256'])
         scope = {}

@@ -34,7 +34,16 @@ Son alternativas, no pasos consecutivos. Se evalúa una respuesta por escenario.
 | B | 300 | 150 | **Ofrecer B en dos cuotas** |
 | C | 600 | 300 | Supera la capacidad |
 
-La respuesta es `action=offer`, `debt=B`, `payments=2`, `installment=150`.
+**Salida esperada:**
+
+```json
+{
+  "action": "offer",
+  "debt": "B",
+  "payments": 2,
+  "installment": 150
+}
+```
 `debt` identifica la deuda; `payments`, los pagos; `installment`, la cuota mensual.
 
 ## Prompts y roles
@@ -51,6 +60,8 @@ La respuesta es `action=offer`, `debt=B`, `payments=2`, `installment=150`.
 
 Un mismo LLM cumple esos roles en llamadas separadas. H y φ son textos distintos;
 **φ no se envía al negociador**. Cada versión sustituye a la anterior, no se acumulan.
+
+**H0, H1…:** versiones de la política. **B1/B2:** estrategias de búsqueda.
 
 ## Flujo de mejora
 

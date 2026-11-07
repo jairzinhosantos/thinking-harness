@@ -2,7 +2,7 @@
 id: doc-0002
 title: "Plan de investigación"
 status: in-review
-revision: 19
+revision: 20
 created: 2026-09-29
 updated: 2026-11-06
 ---
@@ -60,8 +60,9 @@ como diagnóstico; una confirmación posterior necesita casos nuevos y más repe
 Los resultados detallados y el consumo quedan en la sección 8 del notebook.
 
 El Test 5 separa cumplimiento del esquema y calidad de las decisiones. La restricción se
-aplica durante la generación, después del razonamiento. Los notebooks ejecutados de pruebas
-anteriores permanecen como historial; cada prueba nueva tiene su notebook y sus registros.
+aplica durante la generación, después del razonamiento. Los notebooks anteriores permanecen como historial. La lectura principal se mantiene en
+`study-overview.ipynb`; las variaciones de una misma prueba agregan registros, no otra notebook.
+Una notebook nueva requiere una pregunta experimental distinta.
 
 ## Próximas decisiones
 
