@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="model-inputs" name="model-inputs">
-    <mxGraphModel dx="1200" dy="820" grid="1" gridSize="10" page="1" pageWidth="1200" pageHeight="820">
+    <mxGraphModel dx="1240" dy="1020" grid="1" gridSize="10" page="1" pageWidth="1240" pageHeight="1020" background="#FFFFFF">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -11,19 +11,19 @@
           <mxGeometry as="geometry" x="20" y="60" width="1150" height="40" />
         </mxCell>
         <mxCell id="nrole" value="&lt;b style=&quot;font-size:22px&quot;&gt;Negociador&lt;/b&gt;&lt;br&gt;&lt;br&gt;Decide la respuesta" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=none;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="20" y="120" width="205" height="155" />
+          <mxGeometry as="geometry" x="20" y="120" width="190" height="230" />
         </mxCell>
-        <mxCell id="nsys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;Contrato fijo + &lt;b&gt;H&lt;/b&gt; + esquema JSON" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="120" width="410" height="73" />
+        <mxCell id="nsys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;&lt;br&gt;Contrato fijo [límites: no ejecutar pagos]&lt;br&gt;&lt;b&gt;H&lt;/b&gt; [política: instrucciones para negociar]&lt;br&gt;Esquema JSON [campos y tipos de la decisión]" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="230" y="120" width="510" height="140" />
         </mxCell>
         <mxCell id="nusr" value="&lt;b&gt;user · Datos&lt;/b&gt;&lt;br&gt;Deudas + conversación previa" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="202" width="410" height="73" />
+          <mxGeometry as="geometry" x="230" y="270" width="510" height="80" />
         </mxCell>
         <mxCell id="nmodel" value="&lt;b&gt;LLM&lt;/b&gt;&lt;br&gt;Qwen3 8B" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#597B98;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="715" y="160" width="140" height="75" />
+          <mxGeometry as="geometry" x="790" y="200" width="120" height="75" />
         </mxCell>
         <mxCell id="nout" value="&lt;b&gt;Salida&lt;/b&gt;&lt;br&gt;&lt;br&gt;Decisión JSON&lt;br&gt;&lt;b&gt;offer · B · 2 · 150&lt;/b&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="915" y="142" width="255" height="112" />
+          <mxGeometry as="geometry" x="960" y="170" width="250" height="135" />
         </mxCell>
         <mxCell id="na" source="nsys" target="nmodel" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
           <mxGeometry as="geometry" relative="1" />
@@ -35,19 +35,19 @@
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="mrole" value="&lt;b style=&quot;font-size:22px&quot;&gt;Mejorador&lt;/b&gt;&lt;br&gt;&lt;br&gt;Propone otra política" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="20" y="320" width="205" height="155" />
+          <mxGeometry as="geometry" x="20" y="390" width="190" height="230" />
         </mxCell>
-        <mxCell id="msys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;Contrato fijo + &lt;b&gt;φ&lt;/b&gt; + esquema JSON" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="320" width="410" height="73" />
+        <mxCell id="msys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;&lt;br&gt;Contrato fijo [solo editar H; respetar límites]&lt;br&gt;&lt;b&gt;φ&lt;/b&gt; [instrucciones para proponer cambios en H]&lt;br&gt;Esquema JSON [campo &lt;b&gt;prompt&lt;/b&gt; de tipo texto]" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="230" y="390" width="510" height="140" />
         </mxCell>
-        <mxCell id="musr" value="&lt;b&gt;user · Datos&lt;/b&gt;&lt;br&gt;Objetivo + H conservada +&lt;br&gt;intentos y fallos de desarrollo" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="402" width="410" height="73" />
+        <mxCell id="musr" value="&lt;b&gt;user · Datos&lt;/b&gt;&lt;br&gt;Objetivo + H (política conservada)&lt;br&gt;+ intentos y fallos de desarrollo" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="230" y="540" width="510" height="80" />
         </mxCell>
         <mxCell id="mmodel" value="&lt;b&gt;LLM&lt;/b&gt;&lt;br&gt;Qwen3 8B" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#597B98;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="715" y="360" width="140" height="75" />
+          <mxGeometry as="geometry" x="790" y="470" width="120" height="75" />
         </mxCell>
-        <mxCell id="mout" value="&lt;b&gt;Salida&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;H candidata&lt;/b&gt;&lt;br&gt;Nuevo texto para negociar" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="915" y="342" width="255" height="112" />
+        <mxCell id="mout" value="&lt;b&gt;Salida&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;H candidata (política)&lt;/b&gt;&lt;br&gt;Nuevo texto en el campo &lt;b&gt;prompt&lt;/b&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="440" width="250" height="135" />
         </mxCell>
         <mxCell id="ma" source="msys" target="mmodel" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
           <mxGeometry as="geometry" relative="1" />
@@ -59,19 +59,19 @@
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="urole" value="&lt;b style=&quot;font-size:22px&quot;&gt;Actualizador · B2&lt;/b&gt;&lt;br&gt;&lt;br&gt;Cambia cómo mejorar" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=none;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="20" y="520" width="205" height="155" />
+          <mxGeometry as="geometry" x="20" y="660" width="190" height="230" />
         </mxCell>
-        <mxCell id="usys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;Contrato de actualización fijo&lt;br&gt;+ esquema JSON" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="520" width="410" height="73" />
+        <mxCell id="usys" value="&lt;b&gt;system · Instrucciones&lt;/b&gt;&lt;br&gt;&lt;br&gt;Contrato fijo [actualizar φ, no la política H]&lt;br&gt;Esquema JSON [campo &lt;b&gt;prompt&lt;/b&gt; de tipo texto]" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="230" y="660" width="510" height="140" />
         </mxCell>
-        <mxCell id="uusr" value="&lt;b&gt;user · Datos&lt;/b&gt;&lt;br&gt;Objetivo + φ vigente +&lt;br&gt;H candidata y sus fallos" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="245" y="602" width="410" height="73" />
+        <mxCell id="uusr" value="&lt;b&gt;user · Datos&lt;/b&gt;&lt;br&gt;Objetivo + φ (instrucciones vigentes)&lt;br&gt;+ H (política candidata) y sus fallos de desarrollo" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="230" y="810" width="510" height="80" />
         </mxCell>
         <mxCell id="umodel" value="&lt;b&gt;LLM&lt;/b&gt;&lt;br&gt;Qwen3 8B" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#597B98;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="715" y="560" width="140" height="75" />
+          <mxGeometry as="geometry" x="790" y="740" width="120" height="75" />
         </mxCell>
-        <mxCell id="uout" value="&lt;b&gt;Salida&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;φ nueva&lt;/b&gt;&lt;br&gt;Texto para el mejorador" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="915" y="542" width="255" height="112" />
+        <mxCell id="uout" value="&lt;b&gt;Salida&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;φ nueva (instrucciones)&lt;/b&gt;&lt;br&gt;Nuevo texto en el campo &lt;b&gt;prompt&lt;/b&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=#C0CCD6;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="710" width="250" height="135" />
         </mxCell>
         <mxCell id="ua" source="usys" target="umodel" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
           <mxGeometry as="geometry" relative="1" />
@@ -82,8 +82,8 @@
         <mxCell id="uc" source="umodel" target="uout" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="legend" value="&lt;b&gt;H:&lt;/b&gt; instrucciones para negociar. &lt;b&gt;φ:&lt;/b&gt; instrucciones para proponer cambios en H.&lt;br&gt;&lt;b&gt;Python evalúa y selecciona H.&lt;/b&gt; El negociador no recibe la respuesta esperada; el mejorador recibe fallos de desarrollo." style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="20" y="724" width="1150" height="74" />
+        <mxCell id="legend" value="&lt;b&gt;Los corchetes explican cada componente; no son texto añadido al prompt.&lt;/b&gt;&lt;br&gt;Python evalúa y selecciona la política. El negociador no recibe la respuesta esperada." style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#20364D;fontFamily=Arial;fontSize=17;align=left;verticalAlign=middle;spacing=12;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="940" width="1190" height="60" />
         </mxCell>
       </root>
     </mxGraphModel>

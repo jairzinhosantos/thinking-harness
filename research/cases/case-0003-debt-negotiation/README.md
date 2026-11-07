@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 29
+revision: 30
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -21,22 +21,16 @@ updated: 2026-11-06
 Mejorar automáticamente las instrucciones que usa un agente para negociar una deuda.
 Ese texto se llama **política H**: por ejemplo, «ofrece la mayor deuda cuya cuota pueda pagar el cliente».
 
-El sistema realiza tres llamadas distintas al mismo modelo:
-
-| Rol | Trabajo |
-|---|---|
-| **Negociador** | Usa H para decidir qué responder al cliente. |
-| **Mejorador** | Propone otra H a partir de los fallos observados. Sigue unas instrucciones llamadas **φ**. |
-| **Actualizador** | Reescribe φ para cambiar cómo trabaja el mejorador en el siguiente intento. |
+![Objetivo y flujo](diagrams/objective-flow.svg)
 
 Se comparan dos estrategias de búsqueda:
 
-| Estrategia | Política H | Instrucciones φ |
+| Estrategia | H (política) | φ (instrucciones de mejora) |
 |---|---|---|
 | **B1: mejora fija** | Puede cambiar entre intentos | Se mantienen iguales durante toda la búsqueda |
 | **B2: mejora adaptativa** | Puede cambiar entre intentos | El actualizador puede reemplazarlas entre intentos |
 
-**H0, H1… son versiones del texto; B1 y B2 son estrategias.** Cambiar un texto no garantiza mejor desempeño.
+**H0, H1… son versiones de la política; B1 y B2 son estrategias.** Cambiar un texto no garantiza mejor desempeño.
 
 **Restricción experimental:** no se entrenan los pesos del modelo. Se editan textos;
 el modelo, las reglas de evaluación y el presupuesto se mantienen iguales al comparar B1 con B2.

@@ -1,0 +1,61 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="objective-flow" name="objective-flow">
+    <mxGraphModel dx="1220" dy="580" grid="1" gridSize="10" page="1" pageWidth="1220" pageHeight="580" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;b style=&quot;font-size:28px&quot;&gt;Objetivo y flujo&lt;/b&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="10" width="1180" height="48" />
+        </mxCell>
+        <mxCell id="sub" value="&lt;b style=&quot;font-size:18px&quot;&gt;Mejorar las instrucciones para negociar mediante propuestas, pruebas y selección.&lt;/b&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="60" width="1180" height="45" />
+        </mxCell>
+        <mxCell id="h" value="&lt;b style=&quot;font-size:21px&quot;&gt;H (política)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;Instrucciones vigentes&lt;br&gt;para negociar.&lt;br&gt;&lt;br&gt;Inicio: versión H0.&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="175" width="235" height="175" />
+        </mxCell>
+        <mxCell id="improve" value="&lt;b style=&quot;font-size:21px&quot;&gt;Mejorador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;Propone otra política H.&lt;br&gt;&lt;br&gt;Sigue φ (instrucciones&lt;br&gt;de mejora).&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="300" y="175" width="270" height="175" />
+        </mxCell>
+        <mxCell id="negotiate" value="&lt;b style=&quot;font-size:21px&quot;&gt;Negociador · LLM&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;Prueba la política candidata&lt;br&gt;con deudas y conversación.&lt;br&gt;&lt;br&gt;Devuelve una decisión.&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF3F9;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="615" y="175" width="260" height="175" />
+        </mxCell>
+        <mxCell id="eval" value="&lt;b style=&quot;font-size:21px&quot;&gt;Evaluación · Python&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;Compara con lo esperado.&lt;br&gt;&lt;br&gt;Conserva la política si mejora&lt;br&gt;y cumple las reglas.&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EDF5F1;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="920" y="175" width="280" height="175" />
+        </mxCell>
+        <mxCell id="a" value="" source="h" target="improve" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="b" value="" source="improve" target="negotiate" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="c" value="" source="negotiate" target="eval" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="repeat" value="Repetir: política conservada y fallos de desarrollo" source="eval" target="h" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1060" y="135" />
+              <mxPoint x="138" y="135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="update" value="&lt;b style=&quot;font-size:21px&quot;&gt;Actualizador · LLM · Solo B2&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;Usa los fallos de desarrollo para reescribir φ&lt;br&gt;(instrucciones de mejora) antes del siguiente intento.&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F6EFF3;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="615" y="420" width="585" height="110" />
+        </mxCell>
+        <mxCell id="feedback" value="Fallos" source="eval" target="update" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;exitX=0.5;exitY=1;entryX=0.75;entryY=0;dashed=1;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="phi" value="φ nueva" source="update" target="improve" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#597B98;fontFamily=Arial;fontSize=16;labelBackgroundColor=default;exitX=0;exitY=0.5;entryX=0.5;entryY=1;dashed=1;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="435" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fixed" value="&lt;b style=&quot;font-size:20px&quot;&gt;B1: φ permanece fija&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px&quot;&gt;B2 puede reemplazarla.&lt;br&gt;Ambas pueden cambiar H.&lt;br&gt;Los pesos no se entrenan.&lt;/span&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#20364D;fontFamily=Arial;align=left;verticalAlign=middle;spacing=14;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="410" width="330" height="125" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
