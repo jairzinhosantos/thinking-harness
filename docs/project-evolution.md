@@ -9,7 +9,10 @@ La [guía raíz](../README.md#estructura) describe las carpetas actuales.
 ```text
 case-0003-debt-negotiation/
   README.md
-  prompt-search.ipynb
+  notebooks/
+    prompt-search.ipynb
+    inference-tuning.ipynb
+    ...
   prompt-search.pdf
   config.yaml
   golden-set.yaml
@@ -22,7 +25,8 @@ case-0003-debt-negotiation/
   results/
 ```
 
-El README es la fuente narrativa; el notebook presenta la ejecución; el PDF es una copia
+La entrega en `docs/README.md` enlaza directamente los notebooks y presenta la guía visual.
+El README del caso conserva el índice de pruebas; el notebook presenta la ejecución; el PDF es una copia
 regenerable de lectura. `utils/` es apoyo local, no un framework instalable. Un caso solo
 Markdown no necesita carpetas de implementación. Véase [dec-0007](decisions/dec-0007-case-local-utils.md).
 

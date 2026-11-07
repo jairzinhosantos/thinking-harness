@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "diagrams": [
+    {
+      "source": "research/cases/case-0003-debt-negotiation/diagrams/learning-loop.drawio",
+      "preview": "research/cases/case-0003-debt-negotiation/diagrams/learning-loop.svg",
+      "source_sha256": "f85f139f80194bc1b12d691f0c5e5f7eb3af1fc56af0ac775f92828b79f0e8b6",
+      "preview_sha256": "38b88b4090eafccf1b493f2029ea5ed42ba0def57800971722b511060be4b3fd"
+    }
+  ]
+}

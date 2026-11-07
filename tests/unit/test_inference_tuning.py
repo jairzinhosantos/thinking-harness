@@ -99,7 +99,7 @@ class TuningTests(unittest.TestCase):
                     self.assertEqual(list(Path(folder).iterdir()), [])
 
     def test_notebook_uses_only_saved_evidence(self):
-        notebook = json.loads((CASE / 'inference-tuning.ipynb').read_text())
+        notebook = json.loads((CASE / 'notebooks' / 'inference-tuning.ipynb').read_text())
         scope = {}
         with patch('urllib.request.urlopen', side_effect=AssertionError('Unexpected network call')), patch('IPython.display.display'):
             for cell in notebook['cells']:

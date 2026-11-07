@@ -210,7 +210,7 @@ class PromptSearchTests(unittest.TestCase):
             self.check_offline_notebook(name)
 
     def check_offline_notebook(self, name):
-        notebook=json.loads((CASE/name).read_text())
+        notebook=json.loads((CASE/'notebooks'/name).read_text())
         self.assertEqual(notebook['nbformat'],4)
         scope={}
         display=types.ModuleType('IPython.display')
@@ -261,20 +261,20 @@ class PromptSearchTests(unittest.TestCase):
             with self.assertRaises(m.ProviderFailure): m.get_prompt(candidate)
 
     def test_canonical_spanish_notebook_and_local_links(self):
-        self.assertEqual(sorted(p.name for p in CASE.glob('*.ipynb')),
+        self.assertEqual(sorted(p.name for p in (CASE/'notebooks').glob('*.ipynb')),
                          ['harness-smoke-test.ipynb', 'inference-tuning.ipynb', 'local-model-test.ipynb', 'paired-search.ipynb', 'prompt-search.ipynb', 'structured-output.ipynb'])
-        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        notebook=json.loads((CASE / 'notebooks' / 'prompt-search.ipynb').read_text())
         first_code=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code')
         self.assertIn("LANGUAGE = 'es'", first_code)
         for cell in notebook['cells']:
             if cell['cell_type']=='markdown':
                 for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', ''.join(cell['source'])):
                     if not target.startswith(('https:', 'attachment:')):
-                        self.assertTrue((CASE/target.split('#')[0]).exists(),target)
+                        self.assertTrue((CASE/'notebooks'/target.split('#')[0]).exists(),target)
 
     def test_notebook_version_and_trace_display_with_test_evidence(self):
         # Exercise presentation with a marked test double; never publish this as a live run.
-        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        notebook=json.loads((CASE / 'notebooks' / 'prompt-search.ipynb').read_text())
         cells=[''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code']
         display=types.ModuleType('IPython.display')
         rendered=[]
@@ -295,7 +295,7 @@ class PromptSearchTests(unittest.TestCase):
     def test_notebook_reading_content_and_diagram_provenance(self):
         import base64
         for name in ('prompt-search.ipynb',):
-            notebook = json.loads((CASE/name).read_text())
+            notebook = json.loads((CASE/'notebooks'/name).read_text())
             prose = '\n'.join(''.join(c['source']) for c in notebook['cells'] if c['cell_type'] == 'markdown')
             for internal in ('OPENAI_API_KEY', 'RUN_LIVE', 'REPLAY_REPORT', 'allow_live', '```mermaid', 'Regenerar'):
                 self.assertNotIn(internal, prose)
@@ -326,7 +326,7 @@ class PromptSearchTests(unittest.TestCase):
             self.assertIn('&lt;img', view.table(['Text'], [['<img src=x>']]))
 
     def test_published_live_evidence_is_consistent_and_shared(self):
-        notebook=json.loads((CASE/'prompt-search.ipynb').read_text())
+        notebook=json.loads((CASE / 'notebooks' / 'prompt-search.ipynb').read_text())
         evidence=notebook['metadata']['evidence']
         path=CASE/evidence['report']
         self.assertEqual(m.hashlib.sha256(path.read_bytes()).hexdigest(),evidence['sha256'])

@@ -45,13 +45,28 @@ def digest(path):
 
 
 def drawio_records(root):
-    return [
-        {'source': source.relative_to(root).as_posix(),
-         'preview': (Path('docs/designs/diagrams/exports') / (source.stem + '.svg')).as_posix(),
-         'source_sha256': digest(source),
-         'preview_sha256': digest(root / 'docs/designs/diagrams/exports' / (source.stem + '.svg'))}
-        for source in sorted((root / 'docs/designs/diagrams/source').glob('*.drawio'))
-    ]
+    sources = [(source, root / 'docs/designs/diagrams/exports' / (source.stem + '.svg'))
+               for source in sorted((root / 'docs/designs/diagrams/source').glob('*.drawio'))]
+    sources += [(source, source.with_suffix('.svg'))
+                for source in sorted((root / 'research/cases').glob('*/diagrams/*.drawio'))]
+    return [{'source': source.relative_to(root).as_posix(),
+             'preview': preview.relative_to(root).as_posix(),
+             'source_sha256': digest(source), 'preview_sha256': digest(preview)}
+            for source, preview in sources]
+
+
+
+def export_groups(root, records):
+    """Keep each case's export manifest beside its editable figures."""
+    groups = {}
+    legacy = root / 'docs/designs/diagrams/exports/manifest.json'
+    if legacy.exists():
+        groups[legacy] = []
+    for record in records:
+        source = Path(record['source'])
+        target = root / source.parent / 'manifest.json' if source.parts[0] == 'research' else legacy
+        groups.setdefault(target, []).append(record)
+    return groups
 
 
 def preview_checks(root):
@@ -60,15 +75,14 @@ def preview_checks(root):
         expected = drawio_records(root)
     except FileNotFoundError as exc:
         return [f'Missing Draw.io preview: {exc.filename}']
-    manifest = root / 'docs/designs/diagrams/exports/manifest.json'
-    if not expected and not manifest.exists():
-        return []
-    try:
-        actual = json.loads(manifest.read_text())
-        if actual.get('diagrams') != expected:
-            errors.append('Draw.io source/preview hashes differ from the recorded export; regenerate and review.')
-    except (OSError, ValueError, AttributeError) as exc:
-        errors.append(f'Invalid Draw.io export manifest: {exc}')
+    groups = export_groups(root, expected)
+    for manifest, records in groups.items():
+        try:
+            actual = json.loads(manifest.read_text())
+            if actual.get('diagrams') != records:
+                errors.append('Draw.io source/preview hashes differ from the recorded export; regenerate and review.')
+        except (OSError, ValueError, AttributeError) as exc:
+            errors.append(f'Invalid Draw.io export manifest: {exc}')
     for record in expected:
         try:
             tree = ET.parse(root / record['preview'])
@@ -131,10 +145,10 @@ def main(argv=None):
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.record_drawio:
-        target = root / 'docs/designs/diagrams/exports/manifest.json'
-        target.parent.mkdir(parents=True, exist_ok=True)
         try:
-            target.write_text(json.dumps({'schema_version': 1, 'diagrams': drawio_records(root)}, indent=2) + '\n')
+            for target, records in export_groups(root, drawio_records(root)).items():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps({'schema_version': 1, 'diagrams': records}, indent=2) + '\n')
         except OSError as exc:
             print(exc, file=sys.stderr)
             return 1

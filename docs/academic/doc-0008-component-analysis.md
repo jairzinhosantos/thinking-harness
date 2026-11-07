@@ -2,15 +2,15 @@
 id: doc-0008
 title: "Variables y análisis de componentes del harness"
 status: in-review
-revision: 4
+revision: 5
 created: 2026-10-30
-updated: 2026-10-30
+updated: 2026-11-06
 ---
 
 # Variables y análisis de componentes del harness
 
 Detalle del [siguiente sprint y su matriz](https://github.com/jairzinhosantos/thinking-harness/blob/develop/docs/academic/README.md), aplicado al [caso de negociación sintética](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/README.md).
-Se preparan las comparaciones entre componentes. El [Test 1](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/harness-smoke-test.ipynb) ya ejecuta el bucle sobre prompts, pero no mide todavía el aporte de cada componente.
+Se preparan las comparaciones entre componentes. El [Test 1](https://github.com/jairzinhosantos/thinking-harness/blob/develop/research/cases/case-0003-debt-negotiation/notebooks/harness-smoke-test.ipynb) ya ejecuta el bucle sobre prompts, pero no mide todavía el aporte de cada componente.
 
 ## Qué significa importancia en este caso
 

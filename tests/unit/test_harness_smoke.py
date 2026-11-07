@@ -110,7 +110,7 @@ class SmokeTests(unittest.TestCase):
             self.assertIsNone(result['T_meta'])
 
     def test_notebook_replay_is_executed_and_never_uses_network(self):
-        notebook = json.loads((CASE / 'harness-smoke-test.ipynb').read_text())
+        notebook = json.loads((CASE / 'notebooks' / 'harness-smoke-test.ipynb').read_text())
         scope = {}
         with patch('urllib.request.urlopen', side_effect=AssertionError('Unexpected network call')), \
                 patch('IPython.display.display'), contextlib.redirect_stdout(io.StringIO()):
@@ -123,14 +123,14 @@ class SmokeTests(unittest.TestCase):
                 else:
                     for link in re.findall(r'\]\(([^)]+)\)', source):
                         if not link.startswith(('https://', 'attachment:')):
-                            self.assertTrue((CASE / link).exists(), link)
+                            self.assertTrue((CASE / 'notebooks' / link).exists(), link)
         self.assertFalse(scope['RUN_LIVE'])
         self.assertEqual(scope['report']['protocol'], smoke.PROTOCOL)
         self.assertEqual(scope['rho'], 1)
 
     def test_trace_audit_rejects_missing_origins_and_false_evaluations(self):
         from notebook_view import audit_harness_changes
-        notebook = json.loads((CASE / 'harness-smoke-test.ipynb').read_text())
+        notebook = json.loads((CASE / 'notebooks' / 'harness-smoke-test.ipynb').read_text())
         directory = (CASE / notebook['metadata']['evidence']['report']).parent
         protocol, report = smoke.load_run(directory)
         calls = [json.loads(x) for x in (directory / 'calls.jsonl').read_text().splitlines()]
