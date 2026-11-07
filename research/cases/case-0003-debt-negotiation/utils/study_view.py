@@ -205,14 +205,17 @@ def show_model_results(records):
         final = report['test']['selected']['rows']
         model = record['protocol']['model'].split('/')[-1]
         cost = report.get('estimated_cost_usd')
+        gain = report['test']['selected']['q'] - report['test']['initial']['q']
+        change = 'Mejoró' if gain > 0 else 'Sin mejora' if gain == 0 else 'Bajó'
+        goal = 'meta alcanzada' if report['passes'] else 'meta pendiente'
         rows.append([
             model, label(record), f"H{report['selected_iteration']}",
             f"{sum(r['success'] for r in initial)}/{len(initial)}",
             f"{sum(r['success'] for r in final)}/{len(final)}",
             f"{sum(bool(r['violations']) for r in final)}/{len(final)}",
             report['calls'], report['tokens'],
-            'Local' if cost is None else f'{cost:.5f}',
+            'Local' if cost is None else f'{cost:.5f}', f'{change} · {goal}',
         ])
     table(['Modelo', 'Estrategia', 'Política elegida', 'Aciertos iniciales',
            'Aciertos finales', 'Respuestas con infracción', 'Llamadas',
-           'Tokens totales', 'API (USD estimados)'], rows)
+           'Tokens totales', 'API (USD estimados)', 'Resultado final'], rows)
