@@ -226,3 +226,19 @@ def show_model_results(records):
     table(['Modelo', 'Estrategia', 'Política', 'H0', 'Q final', 'V final',
            'Mejora vs. H0 (pp)', 'B2 menos B1 (pp)', 'Resultado'], outcomes)
     table(['Modelo', 'Estrategia', 'Llamadas', 'Tokens totales', 'API (USD estimados)'], usage)
+
+
+def show_transfer_results(report):
+    policies = report['policies']
+    rows = []
+    for name, result in policies.items():
+        hits = sum(row['success'] for row in result['rows'])
+        violations = sum(bool(row['violations']) for row in result['rows'])
+        total = len(result['rows'])
+        delta = 100 * (result['q'] - policies['H0']['q'])
+        extra = 100 * (result['q'] - policies['B1']['q'])
+        rows.append([name, f'{hits}/{total}', f'{violations}/{total}', f'{delta:+.1f}',
+                     f'{extra:+.1f}' if name == 'B2' else '—', result['calls'], result['tokens'],
+                     'Alcanzada' if result['q'] >= .8 and violations == 0 else 'Pendiente'])
+    table(['Política', 'Aciertos', 'Con infracción', 'Frente a H0 (pp)', 'B2 menos B1 (pp)',
+           'Llamadas', 'Tokens', 'Meta'], rows)
