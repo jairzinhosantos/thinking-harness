@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 31
+revision: 32
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -201,8 +201,7 @@ los siguientes ajustes se incorporan a esa lectura, sin crear otra notebook por 
 Los notebooks leen evidencia guardada. Ejecutar los scripts de prueba sí inicia nuevas llamadas.
 Los pesos permanecen en la caché local.
 
-**Comparación GPT:** bucle B1/B2 preparado; pendiente de configurar la clave local.
-Los controles API registrados usan política manual y no demuestran automejora.
+**Comparación con OpenAI.** GPT-4o mini completó cinco propuestas con cada estrategia. La [notebook principal](notebooks/study-overview.ipynb) muestra la selección en validación y los resultados frente a Qwen3 8B.
 
 ## Piloto inicial
 

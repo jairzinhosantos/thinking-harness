@@ -27,6 +27,8 @@ class SearchReplayTests(unittest.TestCase):
                     for text, count in [('policy', 'policy_tokens'), ('strategy_used', 'strategy_tokens')]:
                         if count in row:
                             lengths[row[text]] = row[count]
+                model = protocol.get('model_key', 'qwen3-8b')
+                decoding = protocol.get('decoding', 'prompt_only')
                 owner = self
                 class ReplayClient:
                     def __init__(self, key, folder, snapshot, started, *, sampling, limits):
@@ -38,13 +40,14 @@ class SearchReplayTests(unittest.TestCase):
                     def ask(self, role, instructions, payload, schema):
                         saved = calls[self.calls]
                         owner.assertEqual(role, saved['role'])
-                        owner.assertEqual(models.messages_for('qwen3-8b', instructions, payload, schema), saved['messages'])
+                        owner.assertEqual(models.messages_for(model, instructions, payload, schema), saved['messages'])
                         self.calls += 1
                         self.tokens += saved['input_tokens'] + saved['output_tokens']
                         return saved.get('parsed'), saved.get('error')
                 with tempfile.TemporaryDirectory() as folder, patch.object(search.importlib.metadata, 'version', return_value='test-only'):
                     path = search.run(protocol['strategy'], folder, ReplayClient,
-                                      output_tokens=protocol['limits']['output_tokens'], decoding=protocol.get('decoding', 'prompt_only'))
+                                      model=model, output_tokens=protocol['limits']['output_tokens'],
+                                      decoding='prompt_only' if decoding == 'api_json_schema' else decoding)
                     actual = json.loads((path / 'report.json').read_text())
                 for field in ('status', 'search_status', 'rounds', 'strategy_updates', 'selected_iteration',
                               'selected_policy', 'selected_strategy', 'test', 'passes', 'tokens', 'calls'):
