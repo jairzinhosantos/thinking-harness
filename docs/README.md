@@ -1,82 +1,75 @@
-# Thinking Harness · entrega semana 8
+# Thinking Harness
 
-**[Notebook en GitHub: ajuste de hiperparámetros](../research/cases/case-0003-debt-negotiation/notebooks/inference-tuning.ipynb)**
+**Semana 8 · [Notebook en GitHub](../research/cases/case-0003-debt-negotiation/notebooks/inference-tuning.ipynb)**
 
-Celdas ejecutadas, configuraciones probadas, resultados y consumo. Se puede leer directamente;
-esta página explica el caso y cómo se conecta el ajuste de inferencia con la automejora.
+Ajuste de inferencia con celdas ejecutadas, resultados y consumo.
 
-## Qué buscamos
+## Objetivo del estudio
 
-Se estudia si un sistema puede mejorar las instrucciones que utiliza para resolver una tarea,
-y si también conviene que cambie sus instrucciones para proponer esas mejoras. El modelo
-mantiene sus pesos: se ajusta su ejecución y se modifica una parte del harness, el andamiaje
-que organiza su comportamiento.
+Mejorar automáticamente la política del agente y comparar dos estrategias:
 
-**Caso actual:** negociación de deudas simuladas. El agente recibe deudas e historial y decide
-si pregunta, ofrece un plan, acepta un acuerdo o se detiene. Se evalúa una respuesta por escenario.
+- **B1:** instrucciones del mejorador fijas.
+- **B2:** instrucciones del mejorador adaptativas.
 
-Por ejemplo, con capacidad mensual de 225 y deudas A=200, B=300 y C=600, se permiten uno o dos
-pagos. Corresponde ofrecer **B en dos cuotas de 150**: C no cabe y A es una deuda menor.
-Ofrecer A sería un error de elección, aunque su cuota no supere la capacidad.
+Los pesos del modelo permanecen fijos.
 
-## Cómo funciona la mejora
+## Caso de prueba
 
-![Flujo de propuesta, ejecución, evaluación y selección; actualización adicional de instrucciones en B2](../research/cases/case-0003-debt-negotiation/diagrams/learning-loop.svg)
+Negociación de deudas simuladas. El agente recibe deudas e historial y responde:
+**preguntar, ofrecer, aceptar o detenerse**. Se evalúa una respuesta por escenario.
 
-- **Negociador:** usa la política H para responder al escenario.
-- **Mejorador:** propone otra política H usando sus instrucciones φ y los fallos de desarrollo.
-- **Evaluador:** código con reglas fijas; comprueba la decisión y los incumplimientos.
-- **B1:** cambia H y conserva φ. **B2:** también puede actualizar φ para el siguiente intento.
+**Ejemplo:** capacidad mensual de 225; deudas A=200, B=300 y C=600; uno o dos pagos.
+Corresponde **B en dos cuotas de 150**: es la mayor deuda viable. Elegir A falla la tarea,
+aunque su cuota sea admisible.
 
-La validación selecciona la política; sus respuestas no se entregan al mejorador. La prueba final
-se consulta después de fijar la selección. La figura corresponde a los Tests 4 y 5.
+## Flujo de mejora
 
-## Qué significa ajustar hiperparámetros aquí
+![Mejora del harness](../research/cases/case-0003-debt-negotiation/diagrams/learning-loop.svg)
 
-Primero comprobamos si el negociador puede resolver el caso con una política manual fija.
-Así separamos la capacidad del modelo de la capacidad del mejorador. **Ese es el Test 3,
-el notebook principal de esta entrega.** Después retomamos la búsqueda automática de políticas.
+**H:** política del negociador. **φ:** instrucciones del mejorador.
+El LLM propone; el evaluador de Python comprueba reglas; la validación selecciona.
+Solo los fallos de desarrollo guían las propuestas. La prueba final se consulta después.
 
-| Ajuste | Qué cambia | Dónde se registra |
+## Definición de hiperparámetros
+
+Se ajusta la generación de respuestas, sin entrenar pesos. El **Test 3** utiliza una política
+manual fija para comprobar al negociador. Los **Tests 4 y 5** incorporan la mejora automática.
+
+| Ajuste | Valores o función | Prueba |
 |---|---|---|
-| Temperatura | Variación del muestreo: 0; 0,3; 0,7 en el barrido directo | Test 3 |
-| Modo de razonamiento y muestreo | Activación del razonamiento con temperatura 0,6, top_p 0,95 y top_k 20 | Test 3 |
-| Máximo de tokens de salida | 2.048 frente a 4.096, incluyendo razonamiento y respuesta | Test 4, sección 8 |
-| Generación estructurada | Restringir los tokens al esquema JSON después del razonamiento | Test 5 |
+| Temperatura | 0; 0,3; 0,7 en el barrido directo | Test 3 |
+| Razonamiento y muestreo | Razonamiento activo; temperatura 0,6; top_p 0,95; top_k 20 | Test 3 |
+| Límite de salida | 2.048 frente a 4.096 tokens, incluido razonamiento | Test 4, sección 8 |
+| Salida estructurada | Restringir el JSON al esquema | Test 5 |
 
-No se entrenan pesos. Temperatura y límite de tokens son parámetros de inferencia;
-el modo de razonamiento y la salida estructurada son opciones de ejecución. Cambiar de modelo
-es otra condición experimental. Cuando cambian varias opciones juntas, no atribuimos el resultado
-a una sola.
+Temperatura y límite de tokens son parámetros de inferencia. Razonamiento y JSON son opciones
+de ejecución; cambiar el modelo es otra condición experimental. Los ajustes conjuntos no aíslan efectos individuales.
 
-## Qué medimos y qué obtuvimos
+## Métricas y criterio
 
-- **Q, calidad:** decisiones correctas y sin incumplimientos, divididas entre respuestas evaluadas.
-- **V, incumplimientos:** respuestas que infringen alguna regla, divididas entre respuestas evaluadas.
-- **Recursos:** tokens, llamadas y tiempo. En API también se registra el costo estimado.
-- **Criterio del piloto:** Q ≥ 80 % y V = 0. Se comprueba formato, plan autorizado, capacidad,
-  rechazo y consentimiento. No acredita cumplimiento bancario real.
+- **Q:** decisiones correctas sin incumplimientos / respuestas evaluadas.
+- **V:** respuestas con alguna infracción / respuestas evaluadas.
+- **Recursos:** tokens, llamadas, tiempo y costo de API cuando aplica.
+- **Aceptación:** Q ≥ 80 % y V = 0. Reglas: formato, plan autorizado, capacidad, rechazo y consentimiento.
 
-| Prueba | Resultado observado | Qué permite concluir |
+## Resultados principales
+
+| Prueba | Resultado | Alcance |
 |---|---|---|
-| **Test 3: inferencia** | Qwen 8B con razonamiento y política manual: 24/24 respuestas correctas en ocho casos reservados, tres repeticiones; sin incumplimientos | Esa configuración resolvió el control. No demuestra automejora |
-| **Test 4: búsqueda B1/B2** | Ambas pasan de 3/8 con H0 a 7/8 con la política seleccionada; sin incumplimientos finales | Se obtuvo una política mejor en esta prueba, sin ventaja final de B2 |
-| **Test 5: JSON restringido** | B1: 53/53 respuestas válidas; B2: 73/73. Ambas mantienen 7/8 decisiones finales correctas | El formato deja de fallar en estas ejecuciones; persiste un error de decisión |
+| Test 3 | Qwen 8B: 24/24 respuestas correctas, sin infracciones; ocho casos reservados y tres repeticiones | Política manual; no demuestra automejora |
+| Test 4 | B1 y B2: de 3/8 a 7/8 decisiones correctas, sin infracciones finales | Sin ventaja final observada de B2 |
+| Test 5 | JSON válido: B1 53/53, B2 73/73; ambas mantienen 7/8 decisiones correctas | Mejora del formato, sin aumento de calidad |
 
-Los protocolos y las particiones cambian entre pruebas: esta tabla resume el recorrido, no es
-una clasificación comparable de modelos. Los ajustes posteriores del Test 4 y el Test 5 reutilizan
-casos finales ya conocidos. Falta ampliar escenarios y repetir búsquedas para estudiar estabilidad.
+Los protocolos difieren entre pruebas. El ajuste posterior del Test 4 y el Test 5 reutilizan
+casos finales conocidos. Falta ampliar escenarios y repetir búsquedas; no se acredita fiabilidad general ni cumplimiento bancario.
 
-## Abrir la evidencia
+## Notebooks ejecutados
 
-1. **[Notebook en GitHub · Test 3](../research/cases/case-0003-debt-negotiation/notebooks/inference-tuning.ipynb):** ajuste de inferencia, controles fallidos y confirmación.
-2. [Test 4 · mejora fija y adaptativa](../research/cases/case-0003-debt-negotiation/notebooks/paired-search.ipynb): búsqueda de políticas y ajuste de tokens.
-3. [Test 5 · salida estructurada](../research/cases/case-0003-debt-negotiation/notebooks/structured-output.ipynb): formato frente a calidad.
+1. **[Test 3 · inferencia](../research/cases/case-0003-debt-negotiation/notebooks/inference-tuning.ipynb):** entrega principal.
+2. [Test 4 · búsqueda B1/B2](../research/cases/case-0003-debt-negotiation/notebooks/paired-search.ipynb): mejora y límite de tokens.
+3. [Test 5 · JSON estructurado](../research/cases/case-0003-debt-negotiation/notebooks/structured-output.ipynb): formato y calidad.
 
-[Detalle del caso e historial completo](../research/cases/case-0003-debt-negotiation/README.md)
+[Historial del caso](../research/cases/case-0003-debt-negotiation/README.md)
 · [Matriz de consistencia](academic/README.md)
 · [Matriz en PDF](academic/consistency-matrix.pdf)
 · [Índice del proyecto](../README.md)
-
-La entrega se mantiene en `develop`. Cada caso conserva sus pruebas y registros originales;
-esta entrada presenta la entrega actual y puede apuntar a otros casos conforme avance el estudio.
