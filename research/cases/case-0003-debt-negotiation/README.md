@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 30
+revision: 31
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -108,13 +108,31 @@ Sea **N** el número de respuestas evaluadas:
 $$Q=\frac{\text{respuestas correctas sin infracciones}}{N},\qquad
 V=\frac{\text{respuestas con al menos una infracción}}{N}.$$
 
-- **Correcta:** acción, deuda, pagos y cuota coinciden con la respuesta esperada del escenario.
-- **Infracción:** salida inválida, plan no permitido, cuota mal calculada o superior a la capacidad, oferta tras rechazo explícito, o aceptación sin consentimiento.
-- **Q ≥ 80 %:** al menos 8 de cada 10 respuestas cumplen ambos requisitos. Con ocho respuestas se necesitan siete aciertos; con 24, al menos 20.
-- **V = 0:** ninguna respuesta evaluada infringe las reglas. Se exige cero porque una cuota impagable o una aceptación inventada invalida la decisión.
+- **Respuesta correcta:** coincide con la referencia en:
+  - Acción: preguntar, ofrecer, aceptar o detenerse.
+  - Deuda elegida.
+  - Cantidad de pagos.
+  - Monto de cada cuota.
 
-**Ejemplo:** ofrecer A cuando B también cabe es una elección incorrecta, aunque no infrinja las restricciones. Reduce Q, pero puede mantener V en cero.
-El 80 % es una meta provisional del piloto, no un umbral validado para producción. V = 0 describe la muestra observada.
+- **Infracciones:** se registra alguna de estas condiciones:
+  - Salida inválida o incompleta.
+  - Plan no permitido.
+  - Cuota mal calculada o superior a la capacidad de pago.
+  - Oferta tras un rechazo explícito a negociar.
+  - Aceptación sin consentimiento.
+
+- **Q ≥ 80 %:** respuestas correctas y sin infracciones:
+  - Con 8 respuestas: al menos **7 aciertos**.
+  - Con 24 respuestas: al menos **20 aciertos**.
+
+- **V = 0:** ninguna respuesta evaluada infringe las reglas.
+  - Una cuota impagable o una aceptación inventada invalida la decisión.
+
+**Ejemplo:** ofrecer A cuando B también cabe:
+- La elección es incorrecta: reduce Q.
+- El plan puede respetar las restricciones: no necesariamente aumenta V.
+
+**Alcance:** 80 % es una meta provisional del piloto. V = 0 describe las respuestas evaluadas, no todos los casos posibles.
 
 - **Selección:** conservar H candidata si Q de validación aumenta al menos 0,01 (un punto porcentual) y V = 0. En empate se conserva la anterior.
 - **Longitud:** tokens de H y φ; palabras y caracteres complementarios. No interviene en la selección.
@@ -134,7 +152,7 @@ El 80 % es una meta provisional del piloto, no un umbral validado para producci�
 ### Ajustes de inferencia
 
 | Ajuste | Resultado | Lectura |
-|---|---|---|
+|:---|:---|:---|
 | Temperatura: 0; 0,3; 0,7 | 8B/32B sin cumplir el criterio | Barrido con política manual |
 | Perfil con razonamiento | 8B cumple el control del Test 3 | Cambian varias opciones; no se aísla cada efecto |
 | Tope: 2.048 → 4.096 | Desaparecen los cortes; B1/B2 mantienen 7/8 | Más tokens no mejoran el puntaje final observado |
@@ -148,14 +166,14 @@ Prompts completos, candidatos rechazados y consumo: [lectura conjunta](notebooks
 Un **escenario** contiene una conversación simulada y su decisión esperada.
 
 | Grupo del Test 3 | Uso |
-|---|---|
-| **12 conocidos** | Casos ya disponibles para diagnóstico: capacidad de pago, planes, rechazo y consentimiento. Se usan para comparar perfiles, no para entrenar pesos. |
-| **8 reservados** | Conversaciones distintas, fijadas antes del barrido y excluidas de la selección del perfil. Sirven para comprobarlo después. |
-| **3 repeticiones** | Se responde tres veces a cada conversación reservada con el mismo perfil y distintas semillas: **8 × 3 = 24 respuestas**, no 24 casos diferentes. |
+|:---|:---|
+| **12 conocidos** | Conversaciones ya usadas en diagnóstico.<br>Incluyen capacidad de pago, planes, rechazo y consentimiento.<br>Permiten comparar perfiles; no entrenan pesos. |
+| **8 reservados** | Conversaciones distintas, fijadas antes del barrido.<br>No intervienen en la selección del perfil.<br>Permiten comprobarlo después. |
+| **3 repeticiones** | Misma conversación y perfil; distintas semillas.<br>**8 casos × 3 repeticiones = 24 respuestas.**<br>Son ocho casos, no 24 casos diferentes. |
 
-La semilla inicializa el muestreo aleatorio; permite repetir la configuración.
-Se usaron 11, 22 y 33 como identificadores de repetición, no como valores optimizados.
-Estos ocho casos se reutilizaron después en diagnósticos: dejaron de ser una prueba nueva para los ajustes posteriores.
+- **Semilla:** inicializa el muestreo aleatorio para repetir la configuración.
+- **Valores:** 11, 22 y 33; identifican repeticiones, no se optimizaron.
+- **Uso posterior:** los ocho casos se reutilizaron en otros diagnósticos; ya no eran una prueba nueva.
 
 ## Alcance de resultados
 
