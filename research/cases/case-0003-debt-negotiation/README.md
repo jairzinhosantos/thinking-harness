@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 28
+revision: 29
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -18,46 +18,83 @@ updated: 2026-11-06
 
 ## Objetivo del estudio
 
-Mejorar automáticamente la política del negociador y comparar:
+Mejorar automáticamente las instrucciones que usa un agente para negociar una deuda.
+Ese texto se llama **política H**: por ejemplo, «ofrece la mayor deuda cuya cuota pueda pagar el cliente».
 
-- **B1:** instrucciones del mejorador fijas.
-- **B2:** instrucciones del mejorador adaptativas.
-- **Controles:** pesos, contratos y evaluador fijos durante cada comparación.
+El sistema realiza tres llamadas distintas al mismo modelo:
+
+| Rol | Trabajo |
+|---|---|
+| **Negociador** | Usa H para decidir qué responder al cliente. |
+| **Mejorador** | Propone otra H a partir de los fallos observados. Sigue unas instrucciones llamadas **φ**. |
+| **Actualizador** | Reescribe φ para cambiar cómo trabaja el mejorador en el siguiente intento. |
+
+Se comparan dos estrategias de búsqueda:
+
+| Estrategia | Política H | Instrucciones φ |
+|---|---|---|
+| **B1: mejora fija** | Puede cambiar entre intentos | Se mantienen iguales durante toda la búsqueda |
+| **B2: mejora adaptativa** | Puede cambiar entre intentos | El actualizador puede reemplazarlas entre intentos |
+
+**H0, H1… son versiones del texto; B1 y B2 son estrategias.** Cambiar un texto no garantiza mejor desempeño.
+
+**Restricción experimental:** no se entrenan los pesos del modelo. Se editan textos;
+el modelo, las reglas de evaluación y el presupuesto se mantienen iguales al comparar B1 con B2.
 
 ## Caso de prueba
 
-**Entrada:** deudas sintéticas, planes permitidos e historial del cliente.
+**Entrada del negociador:**
 
-| Deuda | Monto | Un pago | Dos cuotas mensuales |
-|---|---:|---:|---:|
-| A | 200 | 200 | 100 |
-| B | 300 | 300 | 150 |
-| C | 600 | 600 | 300 |
+- **Tabla de deudas:** montos ficticios y planes permitidos, indicados abajo.
+- **Historial de conversación:** mensajes previos del cliente y del asistente. Puede incluir capacidad de pago, ofertas, rechazo o aceptación; no es un historial de pagos.
 
-**Acciones alternativas:**
+El agente elige una acción: **preguntar** por la capacidad (`ask`), **ofrecer** un plan (`offer`),
+**confirmar** un plan aceptado (`accept`) o **detenerse** (`stop`).
 
-- **Preguntar:** falta la capacidad mensual.
-- **Ofrecer:** existe un plan viable; elegir la mayor deuda posible.
-- **Aceptar:** el cliente confirmó explícitamente ese plan.
-- **Detenerse:** rechazo de la negociación o ningún plan viable.
+| Dato del ejemplo | Valor |
+|---|---|
+| Mensaje ilustrativo del cliente | «Puedo destinar 225 al mes para pagar». |
+| Capacidad de pago mensual | **225 unidades ficticias** disponibles para la deuda; no es el ingreso mensual |
+| Planes permitidos | Un pago o dos cuotas mensuales iguales |
 
-**Ejemplo:** capacidad mensual 225 → deuda B → dos cuotas de 150.
+| Deuda | Monto total / un pago | Cuota con dos pagos | Evaluación |
+|---|---:|---:|---|
+| A | 200 | 100 | Viable, pero de menor monto |
+| B | 300 | 150 | **Mayor deuda viable: ofrecer dos cuotas** |
+| C | 600 | 300 | La cuota supera la capacidad de pago |
 
-Se evalúa una respuesta por escenario. No se ejecutan pagos ni se usan datos bancarios reales.
+**JSON esperado del negociador** en los Tests 3–5:
+
+```json
+{
+  "action": "offer",
+  "debt": "B",
+  "payments": 2,
+  "installment": 150
+}
+```
+
+| Campo | Significado |
+|---|---|
+| `action` | Acción; `offer` significa ofrecer, no confirmar un acuerdo |
+| `debt` | Deuda elegida; `B` identifica el monto de 300 |
+| `payments` | Número de pagos; aquí, dos |
+| `installment` | Monto de cada cuota mensual; aquí, 150 |
+
+Para `ask` y `stop`: `debt=null`, `payments=0`, `installment=0`.
+Python redacta el mensaje a partir de esos campos, sin corregir la decisión.
+La respuesta esperada pertenece al evaluador: **el negociador no la recibe**.
 
 ## Prompts y roles
 
-| Elemento | Función | Ejemplo ilustrativo |
-|---|---|---|
-| **H: política** | Guía al negociador | «Ofrece la mayor deuda viable». |
-| **φ: instrucciones de mejora** | Guían al mejorador | «Diagnostica los fallos y corrige la regla». |
-| **Actualizador** | Propone nuevas instrucciones φ; solo B2 | Revisar el método tras evaluar una candidata. |
-| **Evaluador** | Comprueba decisión y restricciones | Validar acción, deuda, pagos y cuota. |
+- **System prompt:** instrucciones para una llamada. Combina un contrato fijo (límites y formato) con el texto editable H o φ, según el rol.
+- **Entrada `user`:** datos para esa llamada. En el negociador son deudas y conversación; en el mejorador son objetivo, H y fallos de desarrollo.
+- **Salida:** decisión JSON del negociador, nueva H del mejorador o nueva φ del actualizador.
 
-Un mismo LLM cumple los roles de negociador, mejorador y actualizador en llamadas separadas.
-En los Tests 3–5, Python evalúa. H y φ son textos distintos; cada versión reemplaza la anterior.
+**Ejemplos ilustrativos:** H: «Ofrece la mayor deuda viable». φ: «Revisa primero los fallos de capacidad y corrige esa regla».
+φ guía al mejorador; **no se añade al prompt del negociador**. Una versión aceptada reemplaza a la anterior.
 
-**H0, H1…:** versiones de la política. **B1/B2:** estrategias de búsqueda.
+![Entradas y salidas](diagrams/model-inputs.svg)
 
 ## Flujo de mejora
 
@@ -72,22 +109,24 @@ sin recibir esa política manual.
 
 ## Métricas y selección
 
-| Medida | Definición |
-|---|---|
-| **Q** | Decisiones correctas sin incumplimientos / respuestas evaluadas |
-| **V** | Respuestas con alguna infracción / respuestas evaluadas |
-| **T(H), T(φ)** | Tokens de cada texto con el tokenizer nativo, sin tokens especiales |
-| **Recursos** | Tokens totales, llamadas, tiempo y costo de API cuando aplica |
+Sea **N** el número de respuestas evaluadas:
 
-- **Conservar candidata:** mejora de Q en validación ≥ 0,01 y V = 0. En empate, conservar H.
-- **Criterio final:** Q ≥ 80 % y V = 0 en los Tests 3–5.
-- **Longitud:** se registra; no selecciona candidatos ni mide claridad.
-- **Formato:** JSON válido no garantiza una decisión correcta.
+$$Q=\frac{\text{respuestas correctas sin infracciones}}{N},\qquad
+V=\frac{\text{respuestas con al menos una infracción}}{N}.$$
 
-El [notebook conjunto](notebooks/study-overview.ipynb) añade palabras y caracteres, y distingue
-tamaño de H/φ del consumo total de las llamadas.
+- **Correcta:** acción, deuda, pagos y cuota coinciden con la respuesta esperada del escenario.
+- **Infracción:** salida inválida, plan no permitido, cuota mal calculada o superior a la capacidad, oferta tras rechazo explícito, o aceptación sin consentimiento.
+- **Q ≥ 80 %:** al menos 8 de cada 10 respuestas cumplen ambos requisitos. Con ocho respuestas se necesitan siete aciertos; con 24, al menos 20.
+- **V = 0:** ninguna respuesta evaluada infringe las reglas. Se exige cero porque una cuota impagable o una aceptación inventada invalida la decisión.
 
-## Historial de pruebas
+**Ejemplo:** ofrecer A cuando B también cabe es una elección incorrecta, aunque no infrinja las restricciones. Reduce Q, pero puede mantener V en cero.
+El 80 % es una meta provisional del piloto, no un umbral validado para producción. V = 0 describe la muestra observada.
+
+- **Selección:** conservar H candidata si Q de validación aumenta al menos 0,01 (un punto porcentual) y V = 0. En empate se conserva la anterior.
+- **Longitud:** tokens de H y φ; palabras y caracteres complementarios. No interviene en la selección.
+- **Recursos:** tokens totales, llamadas, tiempo y costo de API.
+
+## Pruebas ejecutadas
 
 | Prueba | Qué se evalúa | Resultado registrado | Notebook |
 |---|---|---|---|
@@ -107,8 +146,22 @@ tamaño de H/φ del consumo total de las llamadas.
 | Tope: 2.048 → 4.096 | Desaparecen los cortes; B1/B2 mantienen 7/8 | Más tokens no mejoran el puntaje final observado |
 | JSON restringido | Desaparecen los errores de esquema registrados | Persiste el fallo de elegir A cuando B cabe en dos cuotas |
 
-Definiciones de temperatura, `top_p`, `top_k` y límite de salida: [guía de la entrega](../../../docs/README.md#definición-de-hiperparámetros).
+Valores y fundamento de temperatura, `top_p`, `top_k` y límite de salida: [guía de la entrega](../../../docs/README.md#definición-de-hiperparámetros).
 Prompts completos, candidatos rechazados y consumo: [lectura conjunta](notebooks/study-overview.ipynb).
+
+## Escenarios y repeticiones
+
+Un **escenario** contiene una conversación simulada y su decisión esperada.
+
+| Grupo del Test 3 | Uso |
+|---|---|
+| **12 conocidos** | Casos ya disponibles para diagnóstico: capacidad de pago, planes, rechazo y consentimiento. Se usan para comparar perfiles, no para entrenar pesos. |
+| **8 reservados** | Conversaciones distintas, fijadas antes del barrido y excluidas de la selección del perfil. Sirven para comprobarlo después. |
+| **3 repeticiones** | Se responde tres veces a cada conversación reservada con el mismo perfil y distintas semillas: **8 × 3 = 24 respuestas**, no 24 casos diferentes. |
+
+La semilla inicializa el muestreo aleatorio; permite repetir la configuración.
+Se usaron 11, 22 y 33 como identificadores de repetición, no como valores optimizados.
+Estos ocho casos se reutilizaron después en diagnósticos: dejaron de ser una prueba nueva para los ajustes posteriores.
 
 ## Alcance de resultados
 

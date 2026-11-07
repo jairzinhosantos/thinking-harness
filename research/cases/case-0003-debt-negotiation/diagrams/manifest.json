@@ -4,14 +4,20 @@
     {
       "source": "research/cases/case-0003-debt-negotiation/diagrams/inference-control.drawio",
       "preview": "research/cases/case-0003-debt-negotiation/diagrams/inference-control.svg",
-      "source_sha256": "58effae7cb5dd8909920bc7e1e2ac1c44fbd4f9768e8fb05419214c45a13d5fa",
-      "preview_sha256": "03e40e68f4205feb4cdf694ccc8370a0f88b03b6006ab6eb172e3ecf014307e5"
+      "source_sha256": "f06112745efee5d421821a9638c6351cdfc6fda3e6c4323e4e8c95b306c03b31",
+      "preview_sha256": "c874cd56c081494b42bd18a47622111e0db313c87c12b45c860919a904bce6cf"
     },
     {
       "source": "research/cases/case-0003-debt-negotiation/diagrams/learning-loop.drawio",
       "preview": "research/cases/case-0003-debt-negotiation/diagrams/learning-loop.svg",
-      "source_sha256": "02a183cf8c8285eb6ed6a9864f675bd1d6f335d532de20fb104caa3a501ba302",
-      "preview_sha256": "8614ece7d35c83280bfb0e5d946ce3c3df9d763c8d2fb9b648e89086b6f7a52a"
+      "source_sha256": "77bb93807df115f06b8cbfb43ee90e9d3b3c4d79f60bc5f78c725d84a6454af9",
+      "preview_sha256": "f818b605c986dad35567c2e3318ced74025229d8107f44f392a76aba1b36797f"
+    },
+    {
+      "source": "research/cases/case-0003-debt-negotiation/diagrams/model-inputs.drawio",
+      "preview": "research/cases/case-0003-debt-negotiation/diagrams/model-inputs.svg",
+      "source_sha256": "ba9d12eeaca5107eabec3e714ba198182cc6035464fcbe07048e440877def52a",
+      "preview_sha256": "b31f3fd9b8c5c6b5c49d6d036fe8e1108104b56615de7d6250ba796d3f611171"
     }
   ]
 }

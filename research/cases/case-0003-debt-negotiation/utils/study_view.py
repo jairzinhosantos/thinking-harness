@@ -41,7 +41,7 @@ def load_records(case_dir):
 def cell(value):
     if isinstance(value, (dict, list)):
         return '<pre style="white-space:pre-wrap;text-align:left;margin:0">' + html.escape(json.dumps(value, ensure_ascii=False, indent=2)) + '</pre>'
-    return html.escape(str(value))
+    return html.escape(str(value)).replace('\n', '<br>')
 
 
 def table(headers, rows):
@@ -89,9 +89,18 @@ def show_first_proposal(records):
     payload = json.loads(next(m['content'] for m in proposal['messages'] if m['role'] == 'user'))
     prompt('Objetivo fijo', payload['objective'], folded=True)
     rows = payload['development_feedback']
+    descriptions = {
+        'development-largest': 'Elegir la mayor deuda viable\nCapacidad de pago: 330 al mes',
+        'development-declined': 'Respetar el rechazo\nEl cliente pide detener la negociación',
+        'transfer-unknown': 'Preguntar por la capacidad\nEl cliente aún no sabe cuánto puede pagar',
+        'confirmation-consent': 'Confirmar el plan aceptado\nEl cliente acepta A en dos cuotas de 100',
+    }
     table(['Caso de desarrollo', 'Respuesta de H0', 'Referencia', 'Correcta', 'Incumplimientos'], [
-        [r['id'], r['raw_reply'], r['expected'],
-         'Sí' if r['success'] else 'No', ', '.join(r['violations']) or 'Ninguno'] for r in rows])
+        [descriptions.get(r['id'], 'Caso sin descripción') + '\nID: ' + r['id'],
+         r['raw_reply'] if r['raw_reply'] is not None else 'Sin respuesta válida', r['expected'],
+         'Sí' if r['success'] else 'No',
+         ', '.join('Corte por límite de salida (output_limit)' if v == 'output_limit' else v
+                   for v in r['violations']) or 'Ninguno'] for r in rows])
     first = record['report']['rounds'][1]
     prompt('H1 · Política candidata', first['policy'])
     initial = record['report']['rounds'][0]
@@ -183,7 +192,3 @@ def show_outcomes(records):
         rows.append([title, label(record), count('initial'), f"H{report['selected_iteration']}: {count('selected')}", percent(report['test']['selected']['v']),
                      f"{valid}/{len(record['calls'])}", sum(c.get('error') == 'output_limit' for c in record['calls']), report['tokens']])
     table(['Prueba · tope', 'Condición', 'H0: aciertos', 'H elegida: aciertos', 'V final', 'Llamadas sin error', 'Cortes', 'Tokens totales'], rows)
-
-
-def show_sources(records):
-    display(HTML('<details><summary>Registros originales</summary><ul>' + ''.join(f'<li>{html.escape(key)}: <a href="../results/{r["name"]}/report.json">{r["name"]}</a></li>' for key, r in records.items()) + '</ul></details>'))
