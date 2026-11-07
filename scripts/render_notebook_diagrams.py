@@ -17,7 +17,7 @@ def main():
     executable = str(local) if local.exists() else shutil.which('mmdc')
     if not executable:
         raise RuntimeError('Mermaid CLI is not installed')
-    for notebook in sorted(CASE.glob('*.ipynb')):
+    for notebook in sorted((CASE / 'notebooks').glob('*.ipynb')):
         content = json.loads(notebook.read_text())
         for cell in content['cells']:
             record = cell.get('metadata', {}).get('diagram')

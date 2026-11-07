@@ -3,24 +3,43 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 24
+revision: 25
 created: 2026-10-16
 updated: 2026-11-06
 ---
 
 # Negociación de deudas sintéticas
 
-[Notebook](prompt-search.ipynb) · [PDF de lectura](prompt-search.pdf) · [Matriz y próximo sprint](../../../docs/academic/README.md)
+**[Notebook en GitHub · ajuste de inferencia](notebooks/inference-tuning.ipynb)**
+· [Guía visual de la entrega](../../../docs/README.md)
+· [Matriz](../../../docs/academic/README.md)
 
-El código de apoyo está en `utils/`: [búsqueda acotada](utils/prompt_search.py) y
-[presentación de evidencia](utils/notebook_view.py). El notebook y los YAML permanecen
-en la raíz del caso; `results/` conserva las ejecuciones registradas. Cada nueva prueba
-conserva su notebook ejecutado. Los notebooks anteriores permanecen como historial;
-no se reemplazan al añadir otra prueba.
+Se estudia la mejora de la política de un negociador sobre deudas e historiales sintéticos.
+El negociador responde, el evaluador comprueba reglas y el mejorador propone cambios.
+B1 conserva las instrucciones del mejorador; B2 también puede adaptarlas. El modelo mantiene
+sus pesos durante cada comparación.
+
+Los notebooks ejecutados están en `notebooks/`; el código de apoyo, en `utils/`;
+y los registros originales, en `results/`. Las figuras editables están en `diagrams/`.
+Los resultados previos, incluidos fallos y paradas, se conservan.
+
+## Historial de pruebas
+
+| Prueba | Pregunta | Notebook ejecutado |
+|---|---|---|
+| Piloto inicial | ¿Una búsqueda con optimizador fijo mejora el prompt? | [Piloto](notebooks/prompt-search.ipynb) |
+| Test 1 | ¿Se actualizan y reutilizan las instrucciones de mejora? | [Adaptación mínima](notebooks/harness-smoke-test.ipynb) |
+| Test 2 | ¿Cómo responden Qwen 4B y 8B con búsqueda y política manual? | [Modelos locales](notebooks/local-model-test.ipynb) |
+| Test 3 | ¿Qué configuración de inferencia permite resolver el control? | [Ajuste de inferencia](notebooks/inference-tuning.ipynb) |
+| Test 4 | ¿Qué aporta B2 frente a B1 y aumentar el límite de salida? | [Búsqueda comparada](notebooks/paired-search.ipynb) |
+| Test 5 | ¿Restringir el JSON mejora el formato y las decisiones? | [Salida estructurada](notebooks/structured-output.ipynb) |
+
+Cada notebook describe su protocolo. Los resultados de un test no se trasladan a otro:
+pueden cambiar escenarios, evaluador y configuración.
 
 ## Test 1: adaptación de instrucciones
 
-El [notebook ejecutado](harness-smoke-test.ipynb) recorre cinco iteraciones de B2: propone una política,
+El [notebook ejecutado](notebooks/harness-smoke-test.ipynb) recorre cinco iteraciones de B2: propone una política,
 actualiza las instrucciones de mejora y las utiliza en la siguiente propuesta. Explica las variables
 con respuestas de API, criterios de selección y consumo.
 
@@ -31,7 +50,7 @@ ni se midió el efecto del idioma de forma controlada.
 
 ## Test 2: Qwen3 de 4B y 8B
 
-El [notebook ejecutado](local-model-test.ipynb) compara ambos modelos a 4 bits con MLX,
+El [notebook ejecutado](notebooks/local-model-test.ipynb) compara ambos modelos a 4 bits con MLX,
 sin entrenamiento ni API. Cada modelo realiza los tres papeles del bucle. B1 conserva
 las instrucciones de mejora; B2 puede actualizarlas. Se permiten tres propuestas por condición.
 
@@ -74,7 +93,7 @@ La política manual no consiguió resolver validación; no es una referencia de 
 correcto ni una mejora descubierta por el sistema. Se redactó después de revisar fallos previos.
 Los 12 casos son conocidos: este control no mide generalización ni aísla toda la causa del fallo.
 
-El [notebook, sección 7](local-model-test.ipynb) muestra la política exacta y cada respuesta.
+El [notebook, sección 7](notebooks/local-model-test.ipynb) muestra la política exacta y cada respuesta.
 La prueba usó 24 llamadas locales: 10.085 tokens con 4B y 10.022 con 8B.
 **Decisión tras este control:** comprobar inferencia y capacidad antes de retomar la búsqueda.
 El Test 3 recoge ese ajuste; este control por sí solo no justifica sustituir 4B por 8B.
@@ -105,7 +124,7 @@ Fuentes: [MLX-LM](https://github.com/ml-explore/mlx-lm),
 
 ## Test 3: ajuste de inferencia
 
-El [notebook de la semana 8](inference-tuning.ipynb) ajusta cómo se genera la respuesta,
+El [notebook de la semana 8](notebooks/inference-tuning.ipynb) ajusta cómo se genera la respuesta,
 con pesos, política manual y evaluador fijos. No hay fine-tuning. Se barren temperaturas
 0, 0,3 y 0,7 con Qwen3 8B y 32B a 4 bits: 84 llamadas por modelo sobre 12 casos conocidos.
 Ningún perfil directo alcanzó el criterio: al menos 80% de decisiones correctas y cero
@@ -129,7 +148,7 @@ la memoria por sí sola no fue el bloqueo. Esta prueba no compara todavía B1 y 
 
 ## Test 4: mejorador fijo y adaptativo
 
-El [notebook comparativo](paired-search.ipynb) parte de H0, una política que pregunta siempre
+El [notebook comparativo](notebooks/paired-search.ipynb) parte de H0, una política que pregunta siempre
 por la capacidad y no ofrece planes. B1 mantiene las instrucciones del mejorador; B2 puede
 actualizarlas. La política manual del Test 3 no se entrega al modelo.
 
@@ -188,7 +207,7 @@ fuentes de las ejecuciones anteriores permanecen intactos.
 
 ## Test 5: salida JSON estructurada
 
-El [nuevo notebook](structured-output.ipynb) compara pedir JSON mediante instrucciones con
+El [nuevo notebook](notebooks/structured-output.ipynb) compara pedir JSON mediante instrucciones con
 restringir sus tokens durante la generación. Se mantienen Qwen3 8B, 4.096 tokens de salida,
 cinco intentos y los presupuestos del Test 4. El razonamiento sigue libre; el esquema se aplica
 al JSON final del negociador, mejorador y actualizador. No hay reparación ni reintentos.
@@ -213,7 +232,12 @@ diagnóstico, no una nueva confirmación ni una comparación estadística.
 El [análisis de componentes](../../../docs/academic/doc-0008-component-analysis.md) prepara una comparación de prompts y workflows,
 con mejora fija o adaptativa. Es un diseño posterior al piloto; no cambia su objetivo ni sus resultados.
 
-## Caso
+## Especificación del piloto inicial
+
+Las secciones siguientes describen el piloto de `prompt-search.ipynb`, con optimizador fijo
+y juez semántico. Los Tests 1–5 tienen sus propios protocolos; no usan todos este mismo diseño.
+
+### Caso
 
 Un asistente negocia con un cliente ficticio el pago de una deuda. Busca un acuerdo para la
 mayor deuda viable, respetando la capacidad de pago, los planes permitidos y el consentimiento.

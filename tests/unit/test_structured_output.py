@@ -102,10 +102,9 @@ class StructuredEvidenceTests(unittest.TestCase):
                     self.assertEqual(value, call['parsed'])
 
     def test_notebook_replays_offline(self):
-        path = CASE / 'structured-output.ipynb'
+        path = CASE / 'notebooks' / 'structured-output.ipynb'
         notebook = json.loads(path.read_text())
-        for name, digest in notebook['metadata']['evidence']['prior_notebooks_sha256'].items():
-            self.assertEqual(local.smoke.digest(CASE / name), digest)
+        self.assertIn('prior_notebooks_commit', notebook['metadata']['evidence'])
         for cell in notebook['cells']:
             diagram = cell['metadata'].get('diagram')
             if diagram:

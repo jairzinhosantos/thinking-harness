@@ -85,7 +85,7 @@ class PairedSearchTests(unittest.TestCase):
             paired.run('fixed',output_tokens=16384)
 
     def test_notebook_replays_without_network_or_models(self):
-        notebook=json.loads((CASE/'paired-search.ipynb').read_text())
+        notebook=json.loads((CASE / 'notebooks' / 'paired-search.ipynb').read_text())
         scope={}
         with patch('urllib.request.urlopen',side_effect=AssertionError('Unexpected network')), patch('IPython.display.display'):
             for cell in notebook['cells']:
