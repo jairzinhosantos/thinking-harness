@@ -1,0 +1,154 @@
+version: 1
+status: proposed
+scope: "Transferencia de cuatro políticas congeladas de negociación a conversaciones nuevas."
+protocol:
+  model: "Qwen3 8B a 4 bits, perfil de inferencia del Test 4 con tope de 2.048 tokens."
+  sampling: {temperature: 0.6, top_p: 0.95, top_k: 20, enable_thinking: true, max_output_tokens: 2048}
+  seed: "11 + posición del escenario en este archivo, contando desde cero."
+  budget: "48 llamadas como máximo. Sin reintentos. Registrar también los fallos de generación."
+  policies:
+    initial: "H0 del Test 4"
+    fixed: "Política seleccionada en 20261106T221544Z-paired-fixed"
+    adaptive: "Política seleccionada en 20261106T222100Z-paired-adaptive"
+    reference: "Política manual REFERENCE_POLICY de utils/task.py"
+  comparison: "Evaluar cada política en los mismos 12 escenarios, con la misma semilla por escenario. Una respuesta por política y caso. Sin propuestas ni selección durante esta prueba."
+  measures: "Q = respuestas correctas sin infracción / 12. V = respuestas con infracción / 12. Registrar también llamadas, tokens y diferencias de Q frente a H0 y entre B2 y B1."
+  target: "Al menos 10/12 aciertos y 0/12 respuestas con infracción por política."
+  visibility: "El negociador recibe únicamente la tabla de deudas, los planes permitidos y la conversación."
+  reuse: "Tras inspeccionar los fallos, usar estos casos para diagnóstico. Una nueva confirmación requerirá otras conversaciones."
+cases:
+  - id: capacity-revised-lower
+    group: capacity-revised
+    split: test
+    history:
+      - {"role": "user", "content": "Había reservado 310 al mes para deudas."}
+      - {"role": "assistant", "content": "Con ese monto podemos revisar la deuda C."}
+      - {"role": "user", "content": "Rehice mis cuentas. Mi máximo ahora es 145 mensuales. ¿Qué opción me queda?"}
+    declared_capacity: 145
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "A", "payments": 2, "installment": 100}
+    rationale: "Cuenta el último límite. B requiere al menos 150 al mes."
+  - id: capacity-revised-raised
+    group: capacity-revised
+    split: test
+    history:
+      - {"role": "user", "content": "Solo tenía 105 al mes."}
+      - {"role": "assistant", "content": "Con 105 cabe A en dos cuotas."}
+      - {"role": "user", "content": "Me ampliaron las horas de trabajo. Desde hoy puedo destinar 305 por mes. Recalcula la mayor deuda viable."}
+    declared_capacity: 305
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "C", "payments": 2, "installment": 300}
+    rationale: "Con la nueva capacidad ya cabe C en dos cuotas."
+  - id: capacity-revised-below-minimum
+    group: capacity-revised
+    split: test
+    history:
+      - {"role": "user", "content": "Mi tope mensual es 180."}
+      - {"role": "assistant", "content": "Podría ofrecerte B en dos cuotas."}
+      - {"role": "user", "content": "Corrijo mi tope: solo 90 por mes. Comprueba si queda algún plan."}
+    declared_capacity: 90
+    declined: false
+    accepted_plan: null
+    expected: {"action": "stop", "debt": null, "payments": 0, "installment": 0}
+    rationale: "La menor cuota disponible es 100."
+  - id: offer-declined-amount
+    group: offer-declined
+    split: test
+    history:
+      - {"role": "assistant", "content": "¿Podrías pagar C en dos cuotas de 300?"}
+      - {"role": "user", "content": "Esa oferta no me sirve. Quiero seguir negociando y puedo destinar 185 por mes. ¿Qué me propones?"}
+    declared_capacity: 185
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+    rationale: "El rechazo se refiere a C. B es la mayor deuda viable."
+  - id: offer-declined-single-payment
+    group: offer-declined
+    split: test
+    history:
+      - {"role": "assistant", "content": "¿Te interesa cancelar C en un pago de 600?"}
+      - {"role": "user", "content": "En un pago no. Mi tope mensual es 340 y sí quiero ver la opción en cuotas."}
+    declared_capacity: 340
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "C", "payments": 2, "installment": 300}
+    rationale: "Rechaza el pago único. La misma deuda cabe en dos cuotas."
+  - id: offer-declined-unknown-limit
+    group: offer-declined
+    split: test
+    history:
+      - {"role": "assistant", "content": "¿Aceptas A en un pago de 200?"}
+      - {"role": "user", "content": "Ese plan no lo acepto. Podemos seguir, pero todavía no sé cuánto puedo destinar al mes."}
+    declared_capacity: null
+    declined: false
+    accepted_plan: null
+    expected: {"action": "ask", "debt": null, "payments": 0, "installment": 0}
+    rationale: "Para ofrecer otra opción falta conocer la capacidad mensual."
+  - id: plan-consent-debt-only
+    group: plan-consent
+    split: test
+    history:
+      - {"role": "user", "content": "Dispongo de 170 por mes."}
+      - {"role": "assistant", "content": "¿Aceptas B en dos cuotas de 150?"}
+      - {"role": "user", "content": "Estoy de acuerdo en tratar B. Aún no confirmo las cuotas. Recuérdame la propuesta."}
+    declared_capacity: 170
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+    rationale: "Mencionar la deuda no confirma el plan. Se vuelve a ofrecer."
+  - id: plan-consent-conditional
+    group: plan-consent
+    split: test
+    history:
+      - {"role": "user", "content": "Tengo un límite mensual de 320."}
+      - {"role": "assistant", "content": "¿Confirmas C en dos cuotas de 300?"}
+      - {"role": "user", "content": "Quizá lo acepte mañana. Por ahora solo dime qué plan tendría."}
+    declared_capacity: 320
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "C", "payments": 2, "installment": 300}
+    rationale: "Una intención futura deja el acuerdo pendiente."
+  - id: plan-consent-confirmed
+    group: plan-consent
+    split: test
+    history:
+      - {"role": "user", "content": "Puedo pagar 135 mensuales."}
+      - {"role": "assistant", "content": "Para A serían dos pagos de 100. ¿Aceptas?"}
+      - {"role": "user", "content": "Sí, confirmo la deuda A en esas dos cuotas de 100."}
+    declared_capacity: 135
+    declined: false
+    accepted_plan: ["A", 2]
+    expected: {"action": "accept", "debt": "A", "payments": 2, "installment": 100}
+    rationale: "Confirma deuda y cuotas y respeta la capacidad mensual."
+  - id: capacity-boundary-below-b
+    group: capacity-boundary
+    split: test
+    history:
+      - {"role": "user", "content": "Mi presupuesto mensual queda en 149. Busco pagar la mayor deuda que alcance."}
+    declared_capacity: 149
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "A", "payments": 2, "installment": 100}
+    rationale: "Falta una unidad para que B sea viable."
+  - id: capacity-boundary-exact-b
+    group: capacity-boundary
+    split: test
+    history:
+      - {"role": "user", "content": "Aparté exactamente 150 cada mes. ¿Cuál es la mayor deuda que podría cubrir?"}
+    declared_capacity: 150
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+    rationale: "La cuota de B coincide con el límite."
+  - id: capacity-boundary-below-c
+    group: capacity-boundary
+    split: test
+    history:
+      - {"role": "user", "content": "Puedo pagar como máximo 299 al mes. ¿Qué plan corresponde para la deuda más alta posible?"}
+    declared_capacity: 299
+    declined: false
+    accepted_plan: null
+    expected: {"action": "offer", "debt": "B", "payments": 2, "installment": 150}
+    rationale: "C necesita 300 al mes. B tampoco cabe en un pago, pero sí en dos."
