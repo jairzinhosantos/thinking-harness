@@ -3,7 +3,7 @@ id: case-0003
 language: es
 title: "Negociación de deudas sintéticas"
 status: in-review
-revision: 32
+revision: 33
 created: 2026-10-16
 updated: 2026-11-06
 ---
@@ -12,9 +12,15 @@ updated: 2026-11-06
 
 **Automejora del prompt · Caso 3**
 
-**[Notebook en GitHub](notebooks/study-overview.ipynb)** · Prompts, iteraciones, tamaño y resultados.
+**[Síntesis de las pruebas de negociación](notebooks/study-overview.ipynb)** · Recorrido del caso, ejemplos de decisiones y resultados con Qwen y GPT.
 
-[Guía de la entrega](../../../docs/README.md) · [Matriz de consistencia](../../../docs/academic/README.md)
+## Preguntas de investigación
+
+| Bloque | Pregunta | Dónde empezar |
+|:---|:---|:---|
+| Capacidad del negociador | Con una política conocida, ¿qué escenarios resuelve cada modelo? | [Modelos locales y política de referencia](notebooks/local-model-test.ipynb) |
+| Ajuste de inferencia | Con la política fija, ¿qué cambia al ajustar el muestreo y el límite de salida? | [Perfiles de inferencia](notebooks/inference-tuning.ipynb) |
+| Mejora de políticas | ¿Mejora la política de negociación? ¿Qué aporta adaptar también las instrucciones del mejorador? | [Búsqueda fija y adaptativa](notebooks/paired-search.ipynb) · [Prueba con salida estructurada](notebooks/structured-output.ipynb) |
 
 ## Objetivo del estudio
 
@@ -182,6 +188,10 @@ Un **escenario** contiene una conversación simulada y su decisión esperada.
 - **Muestra pequeña:** una búsqueda por condición; sin conclusión de superioridad general de B2.
 - **Continuación:** ampliar escenarios y repetir búsquedas. El [análisis de componentes](../../../docs/academic/doc-0008-component-analysis.md) prepara el contraste posterior.
 
+## Historial del caso
+
+**6 de noviembre de 2026 · Semana 8.** Ajuste de inferencia y búsqueda de políticas con Qwen. Versión de `develop` disponible al enviar el enlace a las 18:54 (Lima). [Índice de esa fecha](https://github.com/jairzinhosantos/thinking-harness/tree/ffb877710cd25884a09be43ea3602c0925f14dde/docs) · [Notebook de inferencia](https://github.com/jairzinhosantos/thinking-harness/blob/ffb877710cd25884a09be43ea3602c0925f14dde/research/cases/case-0003-debt-negotiation/inference-tuning.ipynb)
+
 ## Archivos del caso
 
 | Ruta | Contenido |
@@ -260,6 +270,8 @@ La mejora iterativa se compara con ese baseline; no está garantizada.
 </details>
 
 ## Referencias del caso
+
+[Guía del estudio](../../../docs/README.md) · [Matriz de consistencia](../../../docs/academic/README.md)
 
 - [STOP](https://arxiv.org/abs/2310.02304): mejoradores; este caso no reproduce el paper.
 - [Automatic Prompt Optimization](https://arxiv.org/abs/2305.03495): búsqueda con feedback.
