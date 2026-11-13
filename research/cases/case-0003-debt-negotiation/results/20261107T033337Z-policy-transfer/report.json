@@ -1,0 +1,997 @@
+{
+  "status": "completed",
+  "policies": {
+    "H0": {
+      "q": 0.25,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "capacity-revised-lower",
+          "call": 1,
+          "seed": 11,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-revised-raised",
+          "call": 2,
+          "seed": 12,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-revised-below-minimum",
+          "call": 3,
+          "seed": 13,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-amount",
+          "call": 4,
+          "seed": 14,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "offer-declined-single-payment",
+          "call": 5,
+          "seed": 15,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "offer-declined-unknown-limit",
+          "call": 6,
+          "seed": 16,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-debt-only",
+          "call": 7,
+          "seed": 17,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "plan-consent-conditional",
+          "call": 8,
+          "seed": 18,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "plan-consent-confirmed",
+          "call": 9,
+          "seed": 19,
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-b",
+          "call": 10,
+          "seed": 20,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-boundary-exact-b",
+          "call": 11,
+          "seed": 21,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-boundary-below-c",
+          "call": 12,
+          "seed": 22,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        }
+      ],
+      "calls": 12,
+      "tokens": 13712
+    },
+    "B1": {
+      "q": 0.8333333333333334,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "capacity-revised-lower",
+          "call": 13,
+          "seed": 11,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-revised-raised",
+          "call": 14,
+          "seed": 12,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-revised-below-minimum",
+          "call": 15,
+          "seed": 13,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-amount",
+          "call": 16,
+          "seed": 14,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-single-payment",
+          "call": 17,
+          "seed": 15,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-unknown-limit",
+          "call": 18,
+          "seed": 16,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-debt-only",
+          "call": 19,
+          "seed": 17,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "plan-consent-conditional",
+          "call": 20,
+          "seed": 18,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-confirmed",
+          "call": 21,
+          "seed": 19,
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-b",
+          "call": 22,
+          "seed": 20,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-exact-b",
+          "call": 23,
+          "seed": 21,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-c",
+          "call": 24,
+          "seed": 22,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ],
+      "calls": 12,
+      "tokens": 16548
+    },
+    "B2": {
+      "q": 0.8333333333333334,
+      "v": 0.0,
+      "rows": [
+        {
+          "id": "capacity-revised-lower",
+          "call": 25,
+          "seed": 11,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "capacity-revised-raised",
+          "call": 26,
+          "seed": 12,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-revised-below-minimum",
+          "call": 27,
+          "seed": 13,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-amount",
+          "call": 28,
+          "seed": 14,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-single-payment",
+          "call": 29,
+          "seed": 15,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-unknown-limit",
+          "call": 30,
+          "seed": 16,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-debt-only",
+          "call": 31,
+          "seed": 17,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "plan-consent-conditional",
+          "call": 32,
+          "seed": 18,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-confirmed",
+          "call": 33,
+          "seed": 19,
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-b",
+          "call": 34,
+          "seed": 20,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-exact-b",
+          "call": 35,
+          "seed": 21,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-c",
+          "call": 36,
+          "seed": 22,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ],
+      "calls": 12,
+      "tokens": 16548
+    },
+    "Manual": {
+      "q": 0.9166666666666666,
+      "v": 0.08333333333333333,
+      "rows": [
+        {
+          "id": "capacity-revised-lower",
+          "call": 37,
+          "seed": 11,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-revised-raised",
+          "call": 38,
+          "seed": 12,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-revised-below-minimum",
+          "call": 39,
+          "seed": 13,
+          "raw_reply": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "stop",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-amount",
+          "call": 40,
+          "seed": 14,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-single-payment",
+          "call": 41,
+          "seed": 15,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "offer-declined-unknown-limit",
+          "call": 42,
+          "seed": 16,
+          "raw_reply": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "expected": {
+            "action": "ask",
+            "debt": null,
+            "payments": 0,
+            "installment": 0
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-debt-only",
+          "call": 43,
+          "seed": 17,
+          "raw_reply": null,
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [
+            "output_limit"
+          ],
+          "task_match": false,
+          "success": false
+        },
+        {
+          "id": "plan-consent-conditional",
+          "call": 44,
+          "seed": 18,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "C",
+            "payments": 2,
+            "installment": 300
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "plan-consent-confirmed",
+          "call": 45,
+          "seed": 19,
+          "raw_reply": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "accept",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-b",
+          "call": 46,
+          "seed": 20,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "A",
+            "payments": 2,
+            "installment": 100
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-exact-b",
+          "call": 47,
+          "seed": 21,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        },
+        {
+          "id": "capacity-boundary-below-c",
+          "call": 48,
+          "seed": 22,
+          "raw_reply": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "expected": {
+            "action": "offer",
+            "debt": "B",
+            "payments": 2,
+            "installment": 150
+          },
+          "violations": [],
+          "task_match": true,
+          "success": true
+        }
+      ],
+      "calls": 12,
+      "tokens": 18124
+    }
+  },
+  "calls": 48,
+  "tokens": 64932,
+  "seconds": 438.44254320800246
+}
